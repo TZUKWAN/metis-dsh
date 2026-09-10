@@ -1,0 +1,49 @@
+.settings-image-generation__state {
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 3px 8px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.settings-image-generation__state--configured {
+  border-color: color-mix(in srgb, var(--accent) 42%, var(--border));
+  color: var(--accent);
+}
+
+.settings-image-generation__state--saving,
+.settings-image-generation__state--loading {
+  color: var(--text-secondary);
+}
+
+.settings-image-generation__state--unavailable {
+  border-color: color-mix(in srgb, var(--danger) 48%, var(--border));
+  color: var(--danger);
+}
+
+.settings-image-generation__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.settings-image-generation__endpoint {
+  grid-column: 1 / -1;
+}
+
+/* 密钥说明小字：压缩为一行，跟随输入框下方（刘总重排，原大卡片已移除）。 */
+.settings-image-generation__field-hint { display: block; margin-top: 4px; color: var(--text-secondary); font-size: 12px; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* 保存/重新读取按钮右对齐（刘总重排）。 */
+.settings-image-generation .settings-actions { justify-content: flex-end; }
+.settings-image-generation__notice { margin: 12px 0 0; font-size: 12px; line-height: 1.5; }
+.settings-image-generation__notice--success { color: var(--status-completed); }
+.settings-image-generation__notice--error { color: var(--danger); }
+.settings-image-generation__notice--info { color: var(--text-secondary); }
+
+@media (max-width: 640px) {
+  .settings-image-generation__grid { grid-template-columns: 1fr; }
+  .settings-image-generation__field-hint { white-space: normal; }
+}

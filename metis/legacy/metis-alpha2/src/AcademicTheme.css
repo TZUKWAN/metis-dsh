@@ -1,0 +1,527 @@
+/**
+ * METIS — global design tokens (Rational / Technological / Professional).
+ *
+ * Visual direction: Linear, Raycast, Cursor, ChatGPT Desktop. Elite, minimal,
+ * high-density desktop productivity. Color is restrained; hierarchy comes from
+ * typography, spacing, alignment, and neutral surfaces.
+ *
+ * This file is the single source of truth for theme variables. Component
+ * styles must reference these custom properties; hardcoded colors and arbitrary
+ * spacing are not allowed.
+ */
+
+/* ─── Light Theme ───────────────────────────────────── */
+
+:root {
+  color-scheme: light;
+
+  /* Layout */
+  --sidebar-width: 220px;
+  --chat-sidebar-width: 240px;
+  --right-panel-width: 260px;
+
+  /* Radii — strict scale */
+  --radius: 10px;        /* Modal / Sheet */
+  --radius-sm: 6px;      /* Button / Input / Small container */
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-card: 8px;    /* Panel / Card */
+  --radius-pill: 9999px; /* Badge / Status / Tag only */
+
+  /* Typography */
+  --font-sans: Inter, "Noto Sans SC", "PingFang SC", system-ui, sans-serif;
+  --font-serif: "STSong", "SimSun", "Songti SC", "Source Han Serif SC", "Noto Serif CJK SC", "Crimson Pro", Georgia, serif;
+  --font-mono: "JetBrains Mono", "SF Mono", "Source Code Pro", Consolas, monospace;
+  --font-size-xs: 11px;  /* Caption */
+  --font-size-sm: 12px;  /* Label */
+  --font-size-base: 14px; /* Body / Secondary / Sub Title */
+  --font-size-lg: 16px;  /* Section Title */
+  --line-height: 1.5;
+  --line-height-tight: 1.35;
+  --line-height-relaxed: 1.65;
+
+  /* Spacing — 4px grid */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-3);
+  --space-lg: var(--space-5);
+
+  /* Surfaces */
+  --bg-main: #F7F8FA;
+  --bg-body: var(--bg-main);
+  --bg-card: #FFFFFF;
+  --bg-secondary: #FAFAFB;
+  --bg-sidebar: #F7F8FA;
+  --bg-inspector: #FAFAFB;
+  --bg-hover: rgba(0, 0, 0, 0.04);
+  --bg-active: rgba(0, 0, 0, 0.06);
+  --bg-input: #FFFFFF;
+  --bg-input-disabled: #F7F8FA;
+  --bg-code-header: #F7F8FA;
+  --bg-code-block: #1d1f24;
+  --bg-modal-overlay: rgba(0, 0, 0, 0.4);
+  --bg-modal: #FFFFFF;
+  --bg-danger-hover: #FEF2F2;
+  --bg-secondary: #FAFAFB;
+  --search-highlight-bg: #FFFBEB;
+
+  /* Accent — reserved for primary actions, focus, active/selected states */
+  --accent: #2563EB;
+  --accent-hover: #1F5ED0;
+  --accent-soft: #EEF4FF;
+  --accent-warm: #B45309;             /* restrained amber */
+  --accent-warm-soft: #FEF3C7;
+
+  /* Legacy primary alias */
+  --primary: var(--accent);
+  --primary-hover: var(--accent-hover);
+  --primary-soft: var(--accent-soft);
+
+  /* Text hierarchy */
+  --text-heading: #17191D;
+  --text-primary: var(--text-heading);
+  --text-body: #17191D;
+  --text-secondary: #606772;
+  --text-muted: #6B7280;
+  --text-on-accent: #FFFFFF;
+  --text-on-primary: var(--text-on-accent);
+  --text-on-sidebar: var(--text-secondary);
+  --text-on-sidebar-muted: var(--text-muted);
+  --text-on-sidebar-hover: var(--text-heading);
+  --text-link: var(--accent);
+
+  /* Borders */
+  --border: #E4E7EB;
+  --border-light: #ECEEF1;
+  --border-danger: #EF4444;
+
+  /* Shadows — only for floating layers */
+  --shadow-card: none;
+  --shadow-raised: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-modal: 0 24px 48px rgba(0, 0, 0, 0.16);
+  --shadow-dropdown: 0 10px 38px rgba(0, 0, 0, 0.12);
+  --shadow-tooltip: 0 4px 12px rgba(0, 0, 0, 0.12);
+  --transition-fast: 120ms ease;
+  --transition-standard: 180ms ease;
+
+  /* Status — semantic colors */
+  --status-read-bg: #F0FDF4;
+  --status-read-text: #166534;
+  --status-reading-bg: #EFF6FF;
+  --status-reading-text: #1D4ED8;
+  --status-skimmed-bg: #FFFBEB;
+  --status-skimmed-text: #92400E;
+  --status-unread-bg: #F7F8FA;
+  --status-unread-text: #606772;
+  --status-running: var(--accent);
+  --status-running-bg: var(--accent-soft);
+  --status-completed: #16A34A;
+  --status-completed-bg: #F0FDF4;
+  --status-failed: #DC2626;
+  --status-failed-bg: #FEF2F2;
+  --status-danger: #DC2626;
+  --danger: var(--status-failed);
+  --success: var(--status-completed);
+
+  /* Evidence status */
+  --evidence-verified: #16A34A;
+  --evidence-pending: #D97706;
+  --evidence-contested: #D97706;
+  --evidence-stale: #71717A;
+  --evidence-refuted: #DC2626;
+
+  /* Chart palette — low-saturation, colorblind-aware */
+  --chart-1: #2563EB;
+  --chart-2: #16A34A;
+  --chart-3: #71717A;
+  --chart-4: #4F7396;
+  --chart-5: #DC2626;
+  --chart-6: #CA8A04;
+  --chart-7: #64748B;
+  --chart-8: #8C7B70;
+
+  /* Focus ring */
+  --focus-ring-color: rgba(37, 99, 235, 0.78);
+  --focus-ring-shadow: 0 0 0 2px rgba(37, 99, 235, 0.28);
+  --focus-ring: 0 0 0 2px rgba(37, 99, 235, 0.4);
+
+  /* Tag / legacy accents */
+  --tag-bg: var(--accent-soft);
+  --tag-text: var(--accent);
+  --accent-cool: var(--text-muted);
+  --accent-purple: var(--text-muted);
+
+  /* Typographic discipline */
+  --tracking-display: -0.01em;
+  --tracking-heading: -0.005em;
+  --tracking-label: 0.01em;
+  --leading-display: 1.25;
+  --leading-tight-data: 1.4;
+  --weight-heading: 600;
+  --weight-medium: 500;
+
+  /* Aurora / glass / glow — disabled by default in the new rational system.
+     Tokens remain so existing references do not break, but they render inert. */
+  --aurora-opacity: 0;
+  --aurora-1: transparent;
+  --aurora-2: transparent;
+  --aurora-3: transparent;
+  --glass-surface: var(--bg-card);
+  --glass-surface-strong: var(--bg-card);
+  --glass-blur: 0px;
+  --glass-blur-strong: 0px;
+  --glass-saturate: 100%;
+  --glass-edge: var(--border-light);
+  --bg-card-glass: var(--bg-card);
+  --accent-gradient: none;
+  --accent-gradient-soft: none;
+  --glow-accent: none;
+  --glow-accent-soft: none;
+  --title-gradient: none;
+}
+
+/* ─── Dark Theme ────────────────────────────────────── */
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg-main: #0A0A0B;
+  --bg-body: var(--bg-main);
+  --bg-card: #18181B;
+  --bg-secondary: #121214;
+  --bg-sidebar: #0A0A0B;
+  --bg-inspector: #121214;
+  --bg-hover: rgba(255, 255, 255, 0.05);
+  --bg-active: rgba(255, 255, 255, 0.08);
+  --bg-input: #18181B;
+  --bg-input-disabled: #0A0A0B;
+  --bg-code-header: #27272A;
+  --bg-code-block: #121214;
+  --bg-modal-overlay: rgba(0, 0, 0, 0.6);
+  --bg-modal: #18181B;
+  --bg-danger-hover: rgba(220, 38, 38, 0.1);
+  --bg-secondary: #121214;
+  --search-highlight-bg: #3F3818;
+
+  --accent: #3B82F6;
+  --accent-hover: #60A5FA;
+  --accent-soft: rgba(59, 130, 246, 0.16);
+  --accent-warm: #F59E0B;
+  --accent-warm-soft: rgba(245, 158, 11, 0.16);
+
+  --primary: var(--accent);
+  --primary-hover: var(--accent-hover);
+  --primary-soft: var(--accent-soft);
+
+  --text-heading: #FAFAFA;
+  --text-primary: var(--text-heading);
+  --text-body: #E4E4E7;
+  --text-secondary: #A1A1AA;
+  --text-muted: #A1A1AA;
+  --text-on-accent: #000000;
+  --text-on-primary: var(--text-on-accent);
+  --text-on-sidebar: var(--text-secondary);
+  --text-on-sidebar-muted: var(--text-muted);
+  --text-on-sidebar-hover: var(--text-heading);
+  --text-link: var(--accent);
+
+  --border: rgba(255, 255, 255, 0.1);
+  --border-light: rgba(255, 255, 255, 0.06);
+  --border-danger: #F87171;
+
+  --shadow-card: none;
+  --shadow-raised: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-modal: 0 24px 48px rgba(0, 0, 0, 0.4);
+  --shadow-dropdown: 0 10px 38px rgba(0, 0, 0, 0.3);
+  --shadow-tooltip: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+  --status-read-bg: rgba(22, 163, 74, 0.12);
+  --status-read-text: #4ADE80;
+  --status-reading-bg: rgba(59, 130, 246, 0.14);
+  --status-reading-text: #93C5FD;
+  --status-skimmed-bg: rgba(217, 119, 6, 0.12);
+  --status-skimmed-text: #FCD34D;
+  --status-unread-bg: rgba(113, 113, 122, 0.12);
+  --status-unread-text: #A1A1AA;
+  --status-running: var(--accent);
+  --status-running-bg: var(--accent-soft);
+  --status-completed: #4ADE80;
+  --status-completed-bg: rgba(22, 163, 74, 0.12);
+  --status-failed: #F87171;
+  --status-failed-bg: rgba(248, 113, 113, 0.12);
+  --status-danger: #F87171;
+  --danger: var(--status-failed);
+  --success: var(--status-completed);
+
+  --evidence-verified: #4ADE80;
+  --evidence-pending: #FCD34D;
+  --evidence-contested: #FCD34D;
+  --evidence-stale: #A1A1AA;
+  --evidence-refuted: #F87171;
+
+  --chart-1: #3B82F6;
+  --chart-2: #4ADE80;
+  --chart-3: #A1A1AA;
+  --chart-4: #7FAAD4;
+  --chart-5: #F87171;
+  --chart-6: #FCD34D;
+  --chart-7: #94A3B8;
+  --chart-8: #A8A29E;
+
+  --focus-ring-color: rgba(59, 130, 246, 0.82);
+  --focus-ring-shadow: 0 0 0 2px rgba(59, 130, 246, 0.35);
+  --focus-ring: 0 0 0 2px rgba(59, 130, 246, 0.5);
+
+  --tag-bg: var(--accent-soft);
+  --tag-text: var(--accent);
+  --accent-cool: var(--text-muted);
+  --accent-purple: var(--text-muted);
+
+  --aurora-opacity: 0;
+  --aurora-1: transparent;
+  --aurora-2: transparent;
+  --aurora-3: transparent;
+  --glass-surface: var(--bg-card);
+  --glass-surface-strong: var(--bg-card);
+  --glass-blur: 0px;
+  --glass-blur-strong: 0px;
+  --glass-saturate: 100%;
+  --glass-edge: var(--border-light);
+  --bg-card-glass: var(--bg-card);
+  --accent-gradient: none;
+  --accent-gradient-soft: none;
+  --glow-accent: none;
+  --glow-accent-soft: none;
+  --title-gradient: none;
+}
+
+/* ─── Accent themes ───────────────────────────────────── */
+
+[data-accent="blue"] {
+  --accent: #2563EB;
+  --accent-hover: #1F5ED0;
+  --accent-soft: #EEF4FF;
+  --focus-ring-color: rgba(37, 99, 235, 0.78);
+  --focus-ring-shadow: 0 0 0 2px rgba(37, 99, 235, 0.28);
+  --focus-ring: 0 0 0 2px rgba(37, 99, 235, 0.4);
+}
+
+[data-theme="dark"][data-accent="blue"] {
+  --accent: #3B82F6;
+  --accent-hover: #60A5FA;
+  --accent-soft: rgba(59, 130, 246, 0.16);
+  --focus-ring-color: rgba(59, 130, 246, 0.82);
+  --focus-ring-shadow: 0 0 0 2px rgba(59, 130, 246, 0.35);
+  --focus-ring: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+[data-accent="gold"] {
+  --accent: #A16207;
+  --accent-hover: #854D0E;
+  --accent-soft: #FEF3C7;
+  --focus-ring-color: rgba(161, 98, 7, 0.78);
+  --focus-ring-shadow: 0 0 0 2px rgba(161, 98, 7, 0.28);
+  --focus-ring: 0 0 0 2px rgba(161, 98, 7, 0.4);
+}
+
+[data-theme="dark"][data-accent="gold"] {
+  --accent: #D97706;
+  --accent-hover: #F59E0B;
+  --accent-soft: rgba(217, 119, 6, 0.16);
+  --text-on-accent: #000000;
+  --text-on-primary: #000000;
+  --focus-ring-color: rgba(217, 119, 6, 0.82);
+  --focus-ring-shadow: 0 0 0 2px rgba(217, 119, 6, 0.35);
+  --focus-ring: 0 0 0 2px rgba(217, 119, 6, 0.5);
+}
+
+[data-accent="green"] {
+  --accent: #15803D;
+  --accent-hover: #166534;
+  --accent-soft: #DCFCE7;
+  --focus-ring-color: rgba(21, 128, 61, 0.78);
+  --focus-ring-shadow: 0 0 0 2px rgba(21, 128, 61, 0.28);
+  --focus-ring: 0 0 0 2px rgba(21, 128, 61, 0.4);
+}
+
+[data-theme="dark"][data-accent="green"] {
+  --accent: #22C55E;
+  --accent-hover: #4ADE80;
+  --accent-soft: rgba(34, 197, 94, 0.16);
+  --focus-ring-color: rgba(34, 197, 94, 0.82);
+  --focus-ring-shadow: 0 0 0 2px rgba(34, 197, 94, 0.35);
+  --focus-ring: 0 0 0 2px rgba(34, 197, 94, 0.5);
+}
+
+[data-accent="gray"] {
+  --accent: #52525B;
+  --accent-hover: #3F3F46;
+  --accent-soft: #F4F4F5;
+  --focus-ring-color: rgba(82, 82, 91, 0.78);
+  --focus-ring-shadow: 0 0 0 2px rgba(82, 82, 91, 0.28);
+  --focus-ring: 0 0 0 2px rgba(82, 82, 91, 0.4);
+}
+
+[data-theme="dark"][data-accent="gray"] {
+  --accent: #A1A1AA;
+  --accent-hover: #D4D4D8;
+  --accent-soft: rgba(161, 161, 170, 0.16);
+  --focus-ring-color: rgba(161, 161, 170, 0.82);
+  --focus-ring-shadow: 0 0 0 2px rgba(161, 161, 170, 0.35);
+  --focus-ring: 0 0 0 2px rgba(161, 161, 170, 0.5);
+}
+
+/* ─── Focus-visible (a11y) ─────────────────────────────── */
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring-color);
+  outline-offset: 2px;
+  box-shadow: var(--focus-ring-shadow);
+}
+
+button,
+[role="button"],
+a,
+input,
+select,
+textarea {
+  transition: border-color var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+a {
+  cursor: pointer;
+}
+
+[data-theme="dark"] :focus-visible {
+  outline-color: var(--focus-ring-color);
+}
+
+/* ─── Reduced motion ───────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─── Forced colors ────────────────────────────────────── */
+
+@media (forced-colors: active) {
+  :root {
+    --border: ButtonBorder;
+    --border-light: ButtonBorder;
+    --primary: Highlight;
+    --primary-hover: Highlight;
+    --text-secondary: CanvasText;
+    --text-muted: GrayText;
+    --text-on-accent: HighlightText;
+    --text-on-primary: HighlightText;
+    --bg-hover: Canvas;
+    --focus-ring-color: Highlight;
+    --status-read-bg: Canvas;
+    --status-read-text: CanvasText;
+    --status-unread-bg: Canvas;
+    --status-unread-text: GrayText;
+    --accent: Highlight;
+    --accent-hover: Highlight;
+    --text-heading: CanvasText;
+    --text-body: CanvasText;
+    --text-primary: CanvasText;
+    --bg-main: Canvas;
+    --bg-card: Canvas;
+    --bg-sidebar: Canvas;
+    --bg-inspector: Canvas;
+    --bg-input: Canvas;
+    --aurora-opacity: 0;
+    --aurora-1: transparent;
+    --aurora-2: transparent;
+    --aurora-3: transparent;
+    --glass-surface: Canvas;
+    --glass-surface-strong: Canvas;
+    --bg-card-glass: Canvas;
+    --accent-gradient: none;
+    --accent-gradient-soft: none;
+    --glow-accent: none;
+    --glow-accent-soft: none;
+    --title-gradient: none;
+  }
+  [data-theme="dark"] {
+    --border: ButtonBorder;
+    --accent: Highlight;
+    --accent-hover: Highlight;
+    --text-heading: CanvasText;
+    --text-body: CanvasText;
+    --bg-main: Canvas;
+    --bg-card: Canvas;
+  }
+  [data-accent] {
+    --accent: Highlight;
+    --accent-hover: Highlight;
+    --focus-ring-color: Highlight;
+    --focus-ring-shadow: 0 0 0 2px Highlight;
+    --focus-ring: 0 0 0 2px Highlight;
+  }
+  [data-theme="dark"][data-accent] {
+    --accent: Highlight;
+    --accent-hover: Highlight;
+    --focus-ring-color: Highlight;
+    --focus-ring-shadow: 0 0 0 2px Highlight;
+    --focus-ring: 0 0 0 2px Highlight;
+  }
+  :focus-visible {
+    outline: 3px solid Highlight;
+    outline-offset: 2px;
+  }
+}
+
+/* ─── z-index scale ────────────────────────────────────── */
+:root {
+  --z-sticky: 3;
+  --z-sidebar: 30;
+  --z-inpage: 40;
+  --z-dropdown: 80;
+  --z-overlay: 89;
+  --z-overlay-top: 90;
+  --z-modal: 100;
+  --z-modal-top: 1000;
+  --z-approval: 1200;
+  --z-toast: 1500;
+}
+
+/* ─── Form controls base ───────────────────────────────── */
+textarea,
+select,
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]) {
+  background: var(--bg-input);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+textarea::placeholder,
+input::placeholder {
+  color: var(--text-muted);
+}
+
+textarea:focus-visible,
+select:focus-visible,
+input:focus-visible {
+  border-color: var(--accent);
+}
+
+/* 经典滚动条的上下箭头按钮在密集工作区里是纯视觉噪声，统一隐藏。 */
+::-webkit-scrollbar-button {
+  display: none;
+}

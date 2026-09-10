@@ -1,0 +1,10 @@
+{
+  "name": "100k-reasoning-deltas",
+  "textDeltas": 50,
+  "reasoningDeltas": 100000,
+  "textChunk": "答",
+  "reasoningChunk": "思",
+  "markdown": false,
+  "stopAtDelta": null,
+  "expectFinalAnswer": "100K 推理增量流的最终完整答案"
+}

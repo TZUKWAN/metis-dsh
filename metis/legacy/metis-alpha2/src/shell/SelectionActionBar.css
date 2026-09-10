@@ -1,0 +1,473 @@
+/**
+ * SelectionActionBar styles — bottom-fixed selection toolbar with slide-up animation.
+ *
+ * Provides: selection count display, batch-action buttons (delete / restore / export),
+ * clear-selection, expandable "more actions" menu, loading state, error/recovery state.
+ *
+ * Accessibility: full keyboard navigation (arrow keys), forced-colors support,
+ * prefers-reduced-motion, RTL via logical properties, 200% text resize compatible.
+ */
+
+.selection-action-bar {
+  position: fixed;
+  inset-inline-start: 50%;
+  bottom: 0;
+  z-index: var(--z-modal); /* L2 统一层级：底部固定操作条（模态档） */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  max-width: calc(100vw - 32px);
+  min-width: 320px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light, var(--border-light));
+  border-bottom: 0;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  box-shadow: 0 -4px 18px rgb(15 23 42 / 12%);
+  color: var(--text-body, var(--border));
+  font-size: 13px;
+  font-family: inherit;
+  transform: translate(-50%, 0);
+  animation: selection-action-bar-slide-up 220ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  overflow: hidden;
+}
+
+/* ── Slide-up enter animation ── */
+@keyframes selection-action-bar-slide-up {
+  from {
+    transform: translate(-50%, 100%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+
+/* ── Unmount / hidden state ── */
+.selection-action-bar[aria-hidden='true'] {
+  display: none;
+}
+
+/* ── Count badge ── */
+.selection-action-bar__count {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-inline: 10px;
+  min-width: 0;
+  max-width: 160px;
+  color: var(--accent-hover);
+  font-weight: 650;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+}
+
+.selection-action-bar__count-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.selection-action-bar__count-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Separator ── */
+.selection-action-bar__separator {
+  width: 1px;
+  height: 20px;
+  background: var(--border-light, var(--border-light));
+  flex-shrink: 0;
+  margin-inline: 2px;
+}
+
+/* ── Action buttons ── */
+.selection-action-bar__actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.selection-action-bar__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 9px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-body, var(--border));
+  font-size: 12.5px;
+  font-family: inherit;
+  font-weight: 500;
+  line-height: 1.4;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  user-select: none;
+}
+
+.selection-action-bar__btn:hover:not(:disabled):not(.selection-action-bar__btn--loading) {
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+}
+
+.selection-action-bar__btn:active:not(:disabled):not(.selection-action-bar__btn--loading) {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.selection-action-bar__btn:focus-visible {
+  outline: 3px solid var(--focus-ring-color);
+  outline-offset: 2px;
+}
+
+.selection-action-bar__btn:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+/* ── Danger variant ── */
+.selection-action-bar__btn--danger {
+  color: var(--evidence-refuted);
+}
+
+.selection-action-bar__btn--danger:hover:not(:disabled):not(.selection-action-bar__btn--loading) {
+  color: var(--evidence-refuted);
+  background: color-mix(in srgb, var(--evidence-refuted) 10%, transparent);
+  border-color: color-mix(in srgb, var(--evidence-refuted) 24%, transparent);
+}
+
+/* ── Restore variant ── */
+.selection-action-bar__btn--restore {
+  color: var(--evidence-verified);
+}
+
+.selection-action-bar__btn--restore:hover:not(:disabled):not(.selection-action-bar__btn--loading) {
+  color: var(--evidence-verified);
+  background: color-mix(in srgb, var(--evidence-verified) 10%, transparent);
+  border-color: color-mix(in srgb, var(--evidence-verified) 24%, transparent);
+}
+
+/* ── Loading state ── */
+.selection-action-bar__btn--loading {
+  position: relative;
+  color: transparent;
+  pointer-events: none;
+}
+
+.selection-action-bar__spinner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted, var(--text-muted));
+}
+
+.selection-action-bar__spinner::after {
+  content: '';
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border-light, var(--border-light));
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: selection-action-bar-spin 600ms linear infinite;
+}
+
+@keyframes selection-action-bar-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Clear selection button ── */
+.selection-action-bar__clear {
+  margin-inline-start: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 5px 8px;
+  border: 1px solid var(--border-light, var(--border-light));
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted, var(--text-muted));
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.12s, color 0.12s;
+  flex-shrink: 0;
+}
+
+.selection-action-bar__clear:hover:not(:disabled) {
+  background: var(--bg-main, var(--bg-secondary));
+  color: var(--text-body, var(--border));
+}
+
+.selection-action-bar__clear:focus-visible {
+  outline: 3px solid var(--focus-ring-color);
+  outline-offset: 2px;
+}
+
+/* ── More-actions dropdown ── */
+.selection-action-bar__more {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.selection-action-bar__more-menu {
+  position: absolute;
+  inset-inline-end: 0;
+  bottom: calc(100% + 6px);
+  min-width: 160px;
+  padding: 4px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light, var(--border-light));
+  border-radius: var(--radius-md);
+  box-shadow: 0 6px 20px rgb(15 23 42 / 14%);
+  animation: selection-action-bar-fade-in 120ms ease-out;
+  z-index: calc(var(--z-modal) + 1); /* L2：浮在所属操作条（--z-modal）之上 */
+  overflow: hidden;
+}
+
+@keyframes selection-action-bar-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.selection-action-bar__more-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text-body, var(--border));
+  font-size: 12.5px;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: start;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.selection-action-bar__more-item:hover:not(:disabled) {
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+}
+
+.selection-action-bar__more-item:focus-visible {
+  outline: 2px solid var(--focus-ring-color);
+  outline-offset: 1px;
+}
+
+.selection-action-bar__more-item:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.selection-action-bar__more-item--danger {
+  color: var(--evidence-refuted);
+}
+
+/* ── Error state ── */
+.selection-action-bar__error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  margin: 0;
+  background: color-mix(in srgb, var(--evidence-refuted) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--evidence-refuted) 22%, transparent);
+  border-radius: 6px;
+  color: var(--evidence-refuted);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.selection-action-bar__error-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-wrap: anywhere;
+}
+
+.selection-action-bar__retry-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 6px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.1s;
+}
+
+.selection-action-bar__retry-btn:hover {
+  background: color-mix(in srgb, var(--evidence-refuted) 14%, transparent);
+}
+
+.selection-action-bar__retry-btn:focus-visible {
+  outline: 2px solid var(--focus-ring-color);
+  outline-offset: 1px;
+}
+
+/* ── Responsive: narrow band ── */
+.selection-action-bar[data-responsive-band='narrow'] {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  padding: 8px 10px;
+  min-width: 0;
+  width: calc(100vw - 24px);
+  max-width: calc(100vw - 24px);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.selection-action-bar[data-responsive-band='narrow'] .selection-action-bar__count {
+  max-width: 100%;
+  justify-content: center;
+  padding-inline: 6px;
+}
+
+.selection-action-bar[data-responsive-band='narrow'] .selection-action-bar__separator {
+  display: none;
+}
+
+.selection-action-bar[data-responsive-band='narrow'] .selection-action-bar__actions {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.selection-action-bar[data-responsive-band='narrow'] .selection-action-bar__clear {
+  margin-inline-start: 0;
+  justify-content: center;
+}
+
+.selection-action-bar[data-responsive-band='narrow'] .selection-action-bar__more-menu {
+  inset-inline-end: 0;
+  bottom: calc(100% + 4px);
+  min-width: 140px;
+}
+
+.selection-action-bar[data-responsive-band='narrow'] .selection-action-bar__error {
+  justify-content: center;
+}
+
+/* ── Respect reduced motion preference ── */
+@media (prefers-reduced-motion: reduce) {
+  .selection-action-bar {
+    animation: none;
+  }
+
+  .selection-action-bar__more-menu {
+    animation: none;
+  }
+
+  .selection-action-bar__btn,
+  .selection-action-bar__clear,
+  .selection-action-bar__retry-btn,
+  .selection-action-bar__more-item {
+    transition: none;
+  }
+
+  .selection-action-bar__spinner::after {
+    animation-duration: 2s;
+  }
+}
+
+/* ── Forced colors mode ── */
+@media (forced-colors: active) {
+  .selection-action-bar {
+    border-color: CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .selection-action-bar__btn {
+    border-color: ButtonBorder;
+    color: ButtonText;
+  }
+
+  .selection-action-bar__btn:hover:not(:disabled) {
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .selection-action-bar__btn:focus-visible {
+    outline-color: Highlight;
+  }
+
+  .selection-action-bar__btn:disabled {
+    opacity: 0.5;
+  }
+
+  .selection-action-bar__btn--danger {
+    color: CanvasText;
+  }
+
+  .selection-action-bar__btn--restore {
+    color: CanvasText;
+  }
+
+  .selection-action-bar__clear {
+    border-color: ButtonBorder;
+    color: ButtonText;
+  }
+
+  .selection-action-bar__clear:hover:not(:disabled) {
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .selection-action-bar__separator {
+    background: CanvasText;
+    opacity: 0.25;
+  }
+
+  .selection-action-bar__error {
+    border-color: CanvasText;
+    color: CanvasText;
+  }
+
+  .selection-action-bar__more-menu {
+    border-color: CanvasText;
+    background: Canvas;
+  }
+
+  .selection-action-bar__more-item {
+    color: CanvasText;
+  }
+
+  .selection-action-bar__more-item:hover:not(:disabled) {
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .selection-action-bar__more-item--danger {
+    color: CanvasText;
+  }
+
+  .selection-action-bar__spinner::after {
+    border-top-color: Highlight;
+  }
+}

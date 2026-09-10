@@ -1,0 +1,10 @@
+{
+  "name": "long-markdown-stop",
+  "textDeltas": 4000,
+  "reasoningDeltas": 0,
+  "textChunk": "## 小节标题\n\n- 列表项 **加粗** `code`\n- 第二项 [链接](https://example.com)\n\n| 列A | 列B |\n|---|---|\n| 1 | 2 |\n\n",
+  "reasoningChunk": "",
+  "markdown": true,
+  "stopAtDelta": 2000,
+  "expectFinalAnswer": ""
+}

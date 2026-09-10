@@ -1,0 +1,47 @@
+/** CloudSyncSection — 设置页云备份区块。 */
+
+.cloud-sync__hint {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin: 0 0 8px 0;
+}
+
+.cloud-sync__row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.cloud-sync__row .settings-input { flex: 1; }
+
+.cloud-sync__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.cloud-sync__notice {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.cloud-sync__backups {
+  list-style: none;
+  margin: 10px 0 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cloud-sync__backups li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  border-bottom: 1px solid var(--border-light);
+  padding: 4px 0;
+}

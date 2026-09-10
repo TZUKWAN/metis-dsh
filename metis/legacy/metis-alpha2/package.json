@@ -1,0 +1,224 @@
+{
+  "name": "metis-workbench",
+  "private": true,
+  "version": "0.1.0-alpha.3",
+  "description": "AI-powered research workbench for literature, notes, analysis, writing, and reproducible research workflows.",
+  "author": "Metis",
+  "license": "MIT",
+  "homepage": "https://github.com/TZUKWAN/metis-in-social-science#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TZUKWAN/metis-in-social-science.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TZUKWAN/metis-in-social-science/issues"
+  },
+  "type": "module",
+  "main": "dist-electron/electron/main.js",
+  "scripts": {
+    "dev": "vite",
+    "dev:electron": "concurrently --kill-others-on-fail \"vite\" \"wait-on http://localhost:5173 && node scripts/start-electron-dev.mjs\"",
+    "clean": "node scripts/clean-build.cjs",
+    "typecheck": "tsc -p tsconfig.app.json --noEmit --incremental false && tsc -p tsconfig.engine.json --noEmit --incremental false && tsc -p tsconfig.node.json --noEmit --incremental false && tsc -p electron/tsconfig.json --noEmit --incremental false",
+    "build": "npm run build:electron",
+    "build:electron": "npm run typecheck && npm run clean && tsc -p electron/tsconfig.json && node scripts/copy-electron-assets.cjs && node scripts/stage-genoffice-sidecar.cjs && node scripts/stage-genoffice-runtime.cjs && vite build && npm run rebuild:electron",
+    "build:native": "bash scripts/rebuild-native.sh",
+    "rebuild:node": "npm rebuild better-sqlite3",
+    "rebuild:electron": "electron-rebuild -f -o better-sqlite3",
+    "start": "electron .",
+    "acceptance:layout": "python scripts/run-electron-layout-acceptance.py --output-dir logs/layout-acceptance-current",
+    "acceptance:commercial": "node scripts/generate-commercial-acceptance.mjs",
+    "acceptance:goal-recovery": "electron scripts/electron-goal-recovery-e2e.cjs",
+    "acceptance:shutdown-relaunch-approval": "node scripts/electron-shutdown-relaunch-approval-e2e.cjs",
+    "test": "npm run rebuild:node && vitest run",
+    "test:fast": "vitest run",
+    "test:watch": "npm run rebuild:node && vitest",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "pack": "electron-builder --dir",
+    "release:source": "node scripts/release-provenance.mjs source",
+    "release:dist": "node scripts/release-provenance.mjs dist",
+    "release:compliance": "node scripts/generate-sbom-licenses.mjs",
+    "release:scan": "node scripts/scan-release-package.mjs",
+    "release:package": "node scripts/release-provenance.mjs package",
+    "release:verify": "node scripts/verify-release-policy.mjs",
+    "release:windows": "npm run release:source && npm run build:electron && npm run release:dist && electron-builder --win nsis msi && npm run release:compliance && npm run release:scan && npm run release:package && npm run release:verify",
+    "verify:reliability": "node scripts/reliability-gate.mjs --tier=1",
+    "verify:reliability:desktop": "node scripts/reliability-gate.mjs --tier=2",
+    "verify:reliability:nightly": "node scripts/reliability-gate.mjs --tier=3",
+    "verify:reliability:release": "node scripts/reliability-gate.mjs --tier=4",
+    "ipc:snapshot:check": "node scripts/ipc-contract-scan.mjs",
+    "ipc:snapshot:update": "node scripts/ipc-contract-scan.mjs --write",
+    "test:electron": "node scripts/run-vitest-electron.mjs",
+    "dist": "npm run release:windows"
+  },
+  "dependencies": {
+    "@xterm/addon-fit": "^0.11.0",
+    "@xterm/xterm": "^6.0.0",
+    "better-sqlite3": "^12.10.0",
+    "csv-parse": "^6.2.1",
+    "electron-updater": "^6.8.9",
+    "fast-xml-parser": "^5.3.4",
+    "imapflow": "^1.7.2",
+    "jsonrepair": "^3.15.0",
+    "jszip": "^3.10.1",
+    "katex": "^0.17.0",
+    "lucide-react": "^1.17.0",
+    "node-pty": "^1.1.0",
+    "nodemailer": "^9.0.5",
+    "pdfjs-dist": "^4.9.155",
+    "prismjs": "^1.30.0",
+    "qrcode.react": "^4.2.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "react-is": "^19.2.7",
+    "react-markdown": "^10.1.0",
+    "react-window": "^2.3.0",
+    "reactflow": "^11.11.4",
+    "recharts": "^3.8.1",
+    "remark-gfm": "^4.0.1",
+    "utif2": "^4.1.0",
+    "zod": "^4.4.3",
+    "zustand": "^5.0.14"
+  },
+  "build": {
+    "appId": "com.metis.workbench",
+    "productName": "Metis Research Workbench",
+    "npmRebuild": false,
+ "afterPack": "scripts/after-pack-genoffice.cjs",
+    "icon": "build/icon.png",
+    "directories": {
+      "output": "release4"
+    },
+    "files": [
+      "LICENSE",
+      "dist/**/*",
+      "dist-electron/**/*",
+      "!dist-electron/genoffice/**/*",
+      "node_modules/better-sqlite3/**/*",
+      "node_modules/node-pty/**/*",
+      "!**/*.map",
+      "!**/*.{ts,tsx,mts,cts,tsbuildinfo}",
+      "!**/{test,tests,__tests__,fixtures,example,examples}{,/**/*}",
+      "!**/{test,spec}.{js,cjs,mjs,ts,tsx,mts,cts}",
+      "!node_modules/node-pty/src/**/*",
+      "!**/*.test.*",
+      "!**/*.spec.*"
+    ],
+    "extraResources": [
+      {
+        "from": "dist-electron/genoffice",
+        "to": "genoffice",
+        "filter": [
+          "**/*",
+          "node_modules/**/*",
+          "!**/*.map"
+        ]
+      }
+    ],
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "category": "public.app-category.productivity"
+    },
+    "win": {
+      "artifactName": "Metis-Research-Workbench-${version}-${arch}.${ext}",
+      "verifyUpdateCodeSignature": false,
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "msi",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "category": "Office"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "allowElevation": true,
+      "guid": "d8750f35-9d24-4ca0-ae31-470c38e5d9d1",
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "artifactName": "Metis-Research-Workbench-Setup-${version}-${arch}.${ext}"
+    },
+    "msi": {
+      "oneClick": true,
+      "perMachine": true,
+      "runAfterFinish": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "upgradeCode": "8f1d3af6-43a8-4a4a-9b6c-38ac99b5d342",
+      "artifactName": "Metis-Research-Workbench-${version}-${arch}.${ext}"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "TZUKWAN",
+        "repo": "metis-in-social-science",
+        "releaseType": "release"
+      }
+    ]
+  },
+  "devDependencies": {
+    "@electron/asar": "^3.4.1",
+    "@eslint/js": "^10.0.1",
+    "@tailwindcss/vite": "^4.3.0",
+    "@testing-library/react": "^16.3.2",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/csv-parse": "^1.1.12",
+    "@types/node": "^24.12.3",
+    "@types/nodemailer": "^8.0.1",
+    "@types/prismjs": "^1.26.6",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "@vitest/coverage-v8": "^4.1.8",
+    "concurrently": "^10.0.3",
+    "electron": "41.10.3",
+    "electron-builder": "^26.15.7",
+    "eslint": "^10.3.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.6.0",
+    "jsdom": "^29.1.1",
+    "qrcode": "^1.5.4",
+    "tailwindcss": "^4.3.0",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.59.2",
+    "vite": "^8.0.12",
+    "vitest": "^4.1.8",
+    "wait-on": "^9.0.10"
+  },
+  "overrides": {
+    "brace-expansion@^1.0.0": "1.1.18",
+    "brace-expansion@^2.0.0": "2.1.4"
+  }
+}

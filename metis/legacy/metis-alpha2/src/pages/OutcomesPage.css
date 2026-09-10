@@ -1,0 +1,333 @@
+.outcomes-page{height:100%;min-height:0;display:grid;grid-template-columns:var(--outcomes-cols,250px minmax(420px,1fr) minmax(290px,350px));overflow:hidden;background:var(--bg-main)}
+.outcomes-tree,.outcomes-editor,.outcome-assistant{min-width:0;min-height:0}.outcomes-tree{display:flex;flex-direction:column;border-right:1px solid var(--border-light);background:var(--bg-sidebar)}.outcomes-editor{position:relative;display:flex;flex-direction:column;overflow:hidden;background:var(--bg-main)}
+.outcomes-tree>header,.outcomes-editor-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-bottom:1px solid var(--border-light);background:var(--bg-card)}.outcomes-tree>header small,.outcomes-editor-head small{display:block;color:var(--text-muted);font-size:11px}.outcomes-tree>header strong{display:block;overflow:hidden;font-size:13px;text-overflow:ellipsis;white-space:nowrap}.outcomes-tree button,.outcomes-editor button{font:inherit;cursor:pointer}.outcomes-tree>header button,.outcomes-new-category{border:1px solid var(--border-light);border-radius:4px;background:var(--bg-card);color:var(--text-secondary);padding:6px}.outcomes-search{margin:10px 12px;padding:7px 8px;border:1px solid var(--border-light);border-radius:4px;background:var(--bg-input);color:var(--text-primary);font-size:12px}.outcomes-tree-scroll{flex:1;overflow:auto;padding:6px}.outcomes-category{min-height:25px;margin:4px 0 12px;border-radius:5px;transition:background .15s}.outcomes-category:has(.outcome-tree-item:hover){background:color-mix(in srgb,var(--bg-active) 48%,transparent)}.outcomes-category-title{display:flex;align-items:center;justify-content:space-between;padding:5px 7px;color:var(--text-muted);font-size:11px;font-weight:700}.outcomes-category-title button{border:0;background:transparent;color:var(--text-muted)}.outcome-tree-item{display:flex;align-items:center;gap:7px;width:100%;padding:7px;border:0;border-radius:4px;background:transparent;color:var(--text-secondary);cursor:grab;text-align:left;font-size:12px}.outcome-tree-item:active{cursor:grabbing}.outcome-tree-item:hover,.outcome-tree-item.selected{background:var(--bg-active);color:var(--text-primary)}.outcome-tree-item__grip{margin-left:-4px;color:var(--text-muted);opacity:0}.outcome-tree-item:hover .outcome-tree-item__grip{opacity:.7}.outcome-tree-item span{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.outcome-tree-item small{color:var(--text-muted);font-size:10px}.outcomes-new-category{margin:10px;border-width:0;border-top-width:1px;text-align:left}
+.outcomes-editor-head>div{display:flex;align-items:center;gap:8px}.outcomes-editor-head input{display:block;width:min(390px,42vw);border:0;background:transparent;color:var(--text-primary);font-weight:700;font-size:14px;outline:0}.outcomes-editor-head__actions{flex-wrap:wrap;justify-content:flex-end}.outcomes-editor-head__actions button{display:inline-flex;align-items:center;gap:5px}.outcomes-editor-head button,.word-toolbar button,.ppt-toolbar button,.outcomes-modal footer button,.citation-panel footer button{border:1px solid var(--border-light);border-radius:var(--radius-sm,6px);background:var(--bg-card);color:var(--text-secondary);padding:6px 9px;font-size:12px}.primary{min-height:32px;padding:7px 16px;border-radius:999px;background:var(--accent-soft)!important;border:1px solid color-mix(in srgb,var(--accent) 32%,transparent)!important;color:var(--accent)!important;font-weight:600;font-size:12px;transition:background var(--transition-fast),border-color var(--transition-fast),color var(--transition-fast),transform var(--transition-fast)}.primary:hover:not(:disabled){background:color-mix(in srgb,var(--accent) 15%,transparent)!important;color:var(--accent)!important}.primary:active:not(:disabled){transform:scale(.97)}.outcomes-page :is(button,input,select,textarea,[contenteditable]):focus-visible{outline:2px solid var(--primary);outline-offset:2px}.outcomes-page button:disabled{cursor:not-allowed}.outcomes-empty{display:flex;min-height:0;flex:1;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:36px;color:var(--text-secondary);text-align:center}.outcomes-empty--editor{padding-bottom:90px}.outcomes-empty h2{margin:0;color:var(--text-primary);font-size:17px}.outcomes-empty p{max-width:460px;margin:0}
+.outcomes-external-editor-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid var(--border-light);background:var(--bg-subtle);color:var(--text-secondary)}.outcomes-external-editor-actions>div{display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap}.outcomes-external-editor-actions strong{color:var(--text-primary);font-size:12px}.outcomes-external-editor-actions small{color:var(--text-muted);font-size:11px}.outcomes-external-editor-actions span{color:var(--text-muted);font-size:11px}.outcomes-external-editor-actions button{display:inline-flex;align-items:center;gap:5px;flex:none;border:1px solid var(--border-light);border-radius:4px;background:var(--bg-card);color:var(--text-secondary);padding:6px 9px;font-size:12px}.outcome-document-file{display:flex;min-height:220px;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:32px;color:var(--text-secondary);text-align:center}.outcome-document-file strong{color:var(--text-primary);font-size:15px}.outcome-document-file span{max-width:420px;font-size:12px;line-height:1.5}@media(max-width:720px){.outcomes-external-editor-actions{align-items:stretch;flex-direction:column}.outcomes-external-editor-actions>div{align-items:flex-start;flex-direction:column}}
+.outcomes-modal-backdrop{position:fixed;z-index:50;inset:0;display:grid;place-items:center;background:rgba(15,20,25,.32)}.outcomes-modal{width:min(410px,calc(100vw - 32px));padding:16px;border:1px solid var(--border-light);border-radius:6px;background:var(--bg-card);box-shadow:0 14px 42px rgba(15,20,25,.2)}.outcomes-modal header,.citation-panel header{display:flex;align-items:center;justify-content:space-between}.outcomes-modal header button,.citation-panel header button{border:0;background:transparent;color:var(--text-muted)}.outcomes-modal label{display:block;margin-top:11px;color:var(--text-secondary);font-size:12px}.outcomes-modal input,.outcomes-modal select,.citation-panel textarea{box-sizing:border-box;width:100%;margin-top:4px;padding:7px;border:1px solid var(--border-light);border-radius:4px;background:var(--bg-input);color:var(--text-primary);font:inherit}.outcomes-modal footer,.citation-panel footer{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+.word-studio{position:relative;display:flex;min-height:0;flex:1;flex-direction:column;overflow:auto;background:var(--bg-subtle)}.word-toolbar,.ppt-toolbar{position:sticky;z-index:3;top:0;display:flex;align-items:center;gap:7px;padding:8px 14px;border-bottom:1px solid var(--border-light);background:var(--bg-card)}.word-toolbar{flex-wrap:wrap}.word-toolbar :is(select,input){height:29px;box-sizing:border-box;border:1px solid var(--border-light);border-radius:4px;background:var(--bg-input);color:var(--text-secondary);font:12px inherit}.word-toolbar input[aria-label="字体"]{width:90px;padding:0 7px}.word-toolbar input[aria-label="字号"]{width:52px;padding:0 5px}.word-toolbar input[type="color"]{width:30px;padding:2px}.word-toolbar button.active{border-color:var(--primary);background:color-mix(in srgb,var(--primary) 10%,var(--bg-card));color:var(--primary)}.word-toolbar__redo{transform:scaleX(-1)}.word-toolbar__spacer{flex:1}.word-page{flex:none;width:min(var(--word-page-width,760px),calc(100% - 40px));min-height:var(--word-page-height,900px);margin:24px auto;padding:var(--word-page-margin-top,65px) var(--word-page-margin-right,78px) var(--word-page-margin-bottom,65px) var(--word-page-margin-left,78px);box-sizing:border-box;display:flex;flex-direction:column;background:var(--bg-card);color:var(--text-heading);box-shadow:0 1px 5px rgba(15,20,25,.12);font:14px/1.6 SimSun,serif}.word-page--measure{position:absolute;top:0;left:0;z-index:-1;margin:0;visibility:hidden;pointer-events:none}.word-page__header{flex:none;min-height:1.4em;margin-bottom:18px;color:var(--text-secondary);font-size:12px;text-align:center;white-space:pre-wrap}.word-page__body{flex:1}.word-page__footer{display:flex;flex:none;justify-content:space-between;gap:16px;min-height:1.4em;margin-top:18px;padding-top:8px;border-top:1px solid var(--border-light);color:var(--text-secondary);font-size:12px;white-space:pre-wrap}.word-page__number{margin-left:auto}.word-block{min-height:1.6em;margin:0 0 7px;white-space:pre-wrap;outline:0}.word-block.is-active{outline:1px solid color-mix(in srgb,var(--primary) 28%,transparent);outline-offset:3px}.word-block:focus{outline-color:var(--primary)}.word-block.heading{margin-top:22px;font-family:SimHei,sans-serif;font-weight:700;font-size:17px}.word-page table{width:100%;border-collapse:collapse}.word-page td{border:1px solid var(--text-muted);padding:6px}.word-add-block{border:0;background:transparent;color:var(--text-muted);padding:7px 0}.citation-panel{position:fixed;z-index:60;top:50%;left:50%;width:min(460px,calc(100vw - 32px));padding:15px;transform:translate(-50%,-50%);border:1px solid var(--border-light);border-radius:6px;background:var(--bg-card);box-shadow:0 14px 38px rgba(15,20,25,.25)}.citation-panel p{color:var(--text-muted);font-size:12px}.citation-panel textarea{min-height:106px;resize:vertical}
+.ppt-studio{position:relative;display:flex;min-height:0;flex:1;flex-direction:column;overflow:hidden;background:var(--bg-subtle)}.ppt-toolbar{position:static;justify-content:flex-end}.ppt-toolbar span{margin-right:auto;color:var(--text-muted);font-size:12px}.ppt-editor-body{display:grid;min-height:0;flex:1;grid-template-columns:138px minmax(0,1fr) 172px;overflow:hidden}.ppt-slides{overflow:auto;padding:9px;border-right:1px solid var(--border-light);background:var(--bg-sidebar)}.ppt-slides button{display:flex;flex-direction:column;gap:3px;width:100%;margin-bottom:7px;padding:8px;border:1px solid transparent;border-radius:5px;background:transparent;color:var(--text-secondary);text-align:left;font:11px inherit}.ppt-slides button:hover,.ppt-slides button.selected{border-color:var(--border-light);background:var(--bg-active);color:var(--text-primary)}.ppt-slides small,.ppt-slides span{color:var(--text-muted);font-size:10px}.ppt-slides strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ppt-slides .ppt-slides__add{flex-direction:row;align-items:center;justify-content:center;border:1px dashed var(--border-light)}.ppt-canvas-wrap{min-width:0;overflow:auto;background:var(--bg-subtle)}.ppt-stage{position:relative;width:min(900px,calc(100% - 40px));margin:22px auto;background:var(--ppt-surface, var(--bg-card));border:1px solid var(--border-light);box-shadow:0 2px 8px rgba(15,20,25,.12);overflow:hidden}.ppt-stage>i{position:absolute;width:1px;height:1px;border-right:1px dotted color-mix(in srgb, var(--accent) 13%, transparent);border-bottom:1px dotted color-mix(in srgb, var(--accent) 13%, transparent);pointer-events:none}.ppt-element{position:absolute;display:flex;align-items:center;padding:3px;box-sizing:border-box;border:1px solid transparent;background:transparent;color:var(--ppt-text, var(--accent));font:inherit;white-space:pre-wrap}.ppt-element:hover,.ppt-element.selected{border-color:var(--ppt-primary,var(--primary));background:color-mix(in srgb,var(--ppt-primary,var(--primary)) 8%,transparent)}.ppt-properties{overflow:auto;padding:12px;border-left:1px solid var(--border-light);background:var(--bg-card)}.ppt-properties header{display:flex;align-items:center;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid var(--border-light)}.ppt-properties header small,.ppt-properties__empty{display:block;color:var(--text-muted);font-size:11px}.ppt-properties header strong{display:block;font-size:12px}.ppt-properties header button{border:0;background:transparent;color:var(--text-muted);cursor:pointer}.ppt-properties section{margin-top:14px}.ppt-properties section>span{display:block;margin-bottom:7px;color:var(--text-muted);font-size:11px}.ppt-nudge{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}.ppt-nudge button:first-child,.ppt-nudge button:last-child{grid-column:2}.ppt-nudge button,.ppt-size button,.ppt-properties__actions button{display:inline-flex;align-items:center;justify-content:center;min-height:27px;border:1px solid var(--border-light);border-radius:4px;background:var(--bg-input);color:var(--text-secondary);cursor:pointer}.ppt-size{display:grid;grid-template-columns:27px 1fr 27px 27px;align-items:center;gap:4px}.ppt-size b{text-align:center;font-size:10px}.ppt-properties__actions{display:grid;grid-template-columns:1fr 1fr;gap:5px}.ppt-properties__actions button{gap:4px;padding:4px;font:11px inherit}.ppt-properties__empty{padding-top:48px;text-align:center}.ppt-properties__empty svg{margin:auto;color:var(--text-muted)}.ppt-skill-editor{position:absolute;z-index:9;top:78px;right:14px;width:min(370px,calc(100% - 28px));max-height:calc(100% - 90px);overflow:auto;padding:13px;border:1px solid var(--border-light);border-radius:6px;background:var(--bg-card);box-shadow:0 12px 36px rgba(15,20,25,.2)}.ppt-skill-editor header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}.ppt-skill-editor header strong,.ppt-skill-editor header small{display:block}.ppt-skill-editor header small{margin-top:3px;color:var(--text-muted);font-size:10px}.ppt-skill-editor header button{border:0;background:transparent;color:var(--text-muted);cursor:pointer}.ppt-skill-editor>label,.ppt-skill-editor__row label{display:block;margin-top:8px;color:var(--text-secondary);font-size:11px}.ppt-skill-editor input,.ppt-skill-editor select,.ppt-skill-editor textarea{box-sizing:border-box;width:100%;margin-top:4px;padding:6px;border:1px solid var(--border-light);border-radius:4px;background:var(--bg-input);color:var(--text-primary);font:12px inherit}.ppt-skill-editor textarea{min-height:72px;resize:vertical}.ppt-skill-editor__row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ppt-skill-editor footer{display:flex;justify-content:flex-end;gap:7px;margin-top:12px}.ppt-skill-editor footer button{padding:5px 8px;border:1px solid var(--border-light);border-radius:4px;background:var(--bg-input);color:var(--text-secondary);font:11px inherit}.ppt-skill-editor footer .primary{border-color:var(--primary);background:var(--primary);color:var(--text-on-accent)}
+.outcome-media-preview{flex:1;min-height:0;overflow:auto;background:var(--bg-subtle)}.outcome-media-preview>header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border-light);background:var(--bg-card)}.outcome-pdf-frame{display:block;width:min(920px,calc(100% - 36px));min-height:calc(100vh - 190px);margin:18px auto;border:1px solid var(--border-light);background:var(--bg-card)}.outcome-image-frame{width:min(920px,calc(100% - 36px));margin:18px auto;padding:14px;box-sizing:border-box;border:1px solid var(--border-light);background:var(--bg-card)}.outcome-image-frame img{display:block;max-width:100%;max-height:calc(100vh - 220px);margin:auto}.outcome-image-frame figcaption{padding-top:8px;color:var(--text-muted);font-size:12px;text-align:center}
+.outcome-version-panel{position:absolute;right:16px;bottom:14px;z-index:4;display:flex;flex-direction:column;max-width:330px;max-height:min(320px,50%);padding:0;overflow:hidden;border:1px solid var(--border-light);border-radius:5px;background:var(--bg-card);box-shadow:0 2px 12px rgba(15,20,25,.12);font-size:11px}.outcome-version-panel header{display:flex;flex:none;justify-content:space-between;padding:7px 9px;border-bottom:1px solid var(--border-light)}.outcome-version-panel header span{color:var(--text-muted);font-size:10px}.outcome-version-panel>div{display:flex;max-width:330px;min-height:0;flex:1;overflow:auto}.outcome-version-panel article{display:flex;min-width:112px;border-right:1px solid var(--border-light)}.outcome-version-panel article.active{background:var(--bg-active)}.outcome-version-panel article>button:first-child{display:flex;min-width:0;flex:1;flex-direction:column;gap:2px;padding:6px 8px;text-align:left}.outcome-version-panel article span{overflow:hidden;color:var(--text-secondary);font-size:10px;text-overflow:ellipsis;white-space:nowrap}.outcome-version-panel article small{color:var(--text-muted);font-size:9px}.outcome-version-panel__restore{display:grid;place-items:center;width:27px;border:0!important;border-left:1px solid var(--border-light)!important;background:transparent!important;color:var(--text-muted)!important}
+.outcome-assistant{display:flex;flex-direction:column;border-left:1px solid var(--border-light);background:var(--bg-card)}.outcome-assistant__header{display:flex;align-items:center;gap:9px;padding:12px 13px;border-bottom:1px solid var(--border-light)}.outcome-assistant__mark{display:grid;place-items:center;width:28px;height:28px;border-radius:5px;background:color-mix(in srgb,var(--primary) 10%,var(--bg-card));color:var(--primary)}.outcome-assistant__header>div{min-width:0;flex:1}.outcome-assistant__header h2{margin:0;color:var(--text-primary);font-size:13px}.outcome-assistant__header p{overflow:hidden;margin:2px 0 0;color:var(--text-muted);font-size:11px;text-overflow:ellipsis;white-space:nowrap}.outcome-assistant__header>button{display:grid;place-items:center;width:28px;height:28px;border:1px solid var(--border-light);border-radius:4px;background:var(--bg-input);color:var(--text-secondary);cursor:pointer}.outcome-assistant__header>button:disabled{opacity:.45;cursor:not-allowed}.outcome-assistant__empty{display:flex;flex:1;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:26px;color:var(--text-muted);text-align:center}.outcome-assistant__empty h3{margin:0;color:var(--text-primary);font-size:14px}.outcome-assistant__empty p{margin:0;font-size:12px;line-height:1.65}.outcome-assistant__context{padding:10px 13px;border-bottom:1px solid var(--border-light);background:color-mix(in srgb,var(--bg-sidebar) 72%,var(--bg-card))}.outcome-assistant__context strong,.outcome-assistant__context span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.outcome-assistant__context strong{font-size:12px}.outcome-assistant__context span{margin-top:3px;color:var(--text-muted);font-size:10px}.outcome-assistant__messages{display:flex;min-height:0;flex:1;flex-direction:column;gap:10px;overflow:auto;padding:12px}.outcome-assistant__message{max-width:94%;padding:8px 9px;border:1px solid var(--border-light);border-radius:6px;background:var(--bg-sidebar)}.outcome-assistant__message--user{align-self:flex-end;border-color:color-mix(in srgb,var(--primary) 26%,var(--border-light));background:color-mix(in srgb,var(--primary) 8%,var(--bg-card))}.outcome-assistant__message span{display:block;margin-bottom:4px;color:var(--text-muted);font-size:10px;font-weight:700}.outcome-assistant__message p{margin:0;color:var(--text-secondary);font-size:12px;line-height:1.55;white-space:pre-wrap}.outcome-assistant__starter{padding:8px;color:var(--text-muted);font-size:12px}.outcome-assistant__starter p{margin:0 0 8px}.outcome-assistant__starter button{display:block;width:100%;margin-top:6px;padding:7px;border:1px solid var(--border-light);border-radius:5px;background:var(--bg-input);color:var(--text-secondary);cursor:pointer;font:inherit;text-align:left}.outcome-assistant__starter button:hover{border-color:var(--primary);color:var(--primary)}.outcome-assistant__sources{display:flex;flex-wrap:wrap;gap:5px;padding:8px 12px;border-top:1px solid var(--border-light)}.outcome-assistant__sources small{width:100%;color:var(--text-muted);font-size:10px}.outcome-assistant__sources span{max-width:100%;overflow:hidden;padding:3px 5px;border:1px solid var(--border-light);border-radius:3px;color:var(--text-secondary);font-size:10px;text-overflow:ellipsis;white-space:nowrap}.outcome-assistant__notice{margin:0;padding:8px 12px;border-top:1px solid var(--border-light);background:color-mix(in srgb,var(--primary) 6%,var(--bg-card));color:var(--text-secondary);font-size:11px;line-height:1.5}.outcome-assistant__composer{padding:10px 12px;border-top:1px solid var(--border-light)}.outcome-assistant__composer textarea{box-sizing:border-box;width:100%;min-height:74px;max-height:calc(1.5em*10 + 18px);overflow-y:auto;resize:vertical;padding:8px;border:1px solid var(--border-light);border-radius:5px;background:var(--bg-input);color:var(--text-primary);font:12px/1.5 inherit}.outcome-assistant__composer textarea:focus{outline:2px solid color-mix(in srgb,var(--primary) 25%,transparent);border-color:var(--primary)}.outcome-assistant__composer>div{display:flex;align-items:center;justify-content:space-between;margin-top:7px}.outcome-assistant__composer span{color:var(--text-muted);font-size:10px}.outcome-assistant__composer button{display:inline-flex;align-items:center;gap:5px;padding:6px 9px;font-size:12px}.spin{animation:outcomes-spin .85s linear infinite}@keyframes outcomes-spin{to{transform:rotate(360deg)}}
+.outcome-history-dialog{width:min(680px,calc(100vw - 32px));padding:0}.outcome-history-dialog>header{padding:15px;border-bottom:1px solid var(--border-light)}.outcome-history-dialog>header small{display:block;margin-top:4px;color:var(--text-muted);font-size:11px}.outcome-history-dialog__messages{max-height:min(60vh,560px);overflow:auto;padding:4px 15px}.outcome-history-dialog__messages article{padding:12px 0;border-bottom:1px solid var(--border-light)}.outcome-history-dialog__messages b{font-size:12px}.outcome-history-dialog__messages time{float:right;color:var(--text-muted);font-size:10px}.outcome-history-dialog__messages p{margin:6px 0;color:var(--text-secondary);font-size:12px;line-height:1.6;white-space:pre-wrap}.outcome-history-dialog__messages small{color:var(--text-muted);font-size:10px}.outcome-history-dialog footer{padding:0 15px 15px}
+.outcome-assistant__context{padding:10px 13px}.outcome-assistant__context>strong{display:block;font-size:12px}.outcome-assistant__context ul{display:grid;gap:3px;margin:7px 0 0;padding:0;list-style:none;color:var(--text-secondary);font-size:10px;line-height:1.4}.outcome-assistant__context li{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.outcome-assistant__context li>span{display:inline;margin:0;color:inherit;font-size:inherit;font-weight:inherit}.outcome-assistant__context p{margin:7px 0 0;color:var(--text-muted);font-size:10px;line-height:1.45}.outcome-source-list{margin-top:7px;padding-top:7px;border-top:1px solid color-mix(in srgb,var(--border-light) 75%,transparent)}.outcome-source-list>small{display:block;margin-bottom:4px;color:var(--text-muted);font-size:10px;font-weight:600}.outcome-source-list>p{margin:0!important;color:var(--text-muted)!important;font-size:10px!important;line-height:1.45}.outcome-source-list ul{display:grid;gap:4px;margin:0;padding:0;list-style:none}.outcome-source-list li{min-width:0;padding:4px 5px;border:1px solid var(--border-light);border-radius:3px;background:color-mix(in srgb,var(--bg-card) 72%,var(--bg-sidebar))}.outcome-source-list li strong,.outcome-source-list li span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.outcome-source-list li strong{color:var(--text-secondary);font-size:10px}.outcome-source-list li span{margin-top:2px;color:var(--text-muted);font-size:9px}.outcome-history-dialog .outcome-source-list{max-width:100%;margin-top:8px}.outcome-history-dialog .outcome-source-list li{background:var(--bg-sidebar)}
+.outcomes-operation-notice{margin:0;padding:7px 14px;border-bottom:1px solid color-mix(in srgb,var(--primary) 38%,var(--border-light));background:color-mix(in srgb,var(--primary) 6%,var(--bg-card));color:var(--text-secondary);font-size:11px;line-height:1.45}
+.ppt-toolbar select,.ppt-template-strip select{min-height:29px;border:1px solid var(--border-light);border-radius:4px;background:var(--bg-input);color:var(--text-secondary);font:12px inherit}.ppt-toolbar__ratio{display:inline-flex;overflow:hidden;border:1px solid var(--border-light);border-radius:4px}.ppt-toolbar__ratio button{border:0!important;border-radius:0!important}.ppt-toolbar__ratio button.active{background:color-mix(in srgb,var(--primary) 12%,var(--bg-card));color:var(--primary)}.ppt-template-strip{display:flex;align-items:center;gap:9px;padding:7px 14px;border-bottom:1px solid var(--border-light);background:var(--bg-sidebar);font-size:11px}.ppt-template-strip label{display:flex;align-items:center;gap:5px;color:var(--text-muted);white-space:nowrap}.ppt-template-strip button{padding:5px 7px;border:1px solid var(--border-light);border-radius:4px;background:var(--bg-card);color:var(--text-secondary);font:11px inherit;cursor:pointer}.ppt-template-strip button:disabled{cursor:not-allowed;opacity:.52}.ppt-generation-action{display:inline-flex;align-items:center;gap:4px;color:var(--primary)!important}.ppt-template-strip .ppt-generation-instruction{min-width:150px;flex:1;padding:5px 7px;border:1px solid var(--border-light);border-radius:4px;background:var(--bg-card);color:var(--text-primary);font:11px inherit}.ppt-template-strip small{min-width:0;overflow:hidden;color:var(--text-muted);font-size:10px;text-overflow:ellipsis;white-space:nowrap}.ppt-studio__notice{margin:0;padding:7px 14px;border-bottom:1px solid var(--border-light);background:color-mix(in srgb,var(--primary) 6%,var(--bg-card));color:var(--text-secondary);font-size:11px}.ppt-element{cursor:move;user-select:none}.ppt-element:focus-visible{outline:2px solid var(--primary);outline-offset:1px}.ppt-element.locked{cursor:not-allowed;border-style:dashed;opacity:.72}.ppt-element span{display:block;overflow:hidden;width:100%;text-overflow:ellipsis;white-space:nowrap}.ppt-element--rect,.ppt-element--roundRect,.ppt-element--ellipse,.ppt-element--triangle{justify-content:center;background:color-mix(in srgb,var(--ppt-primary,var(--primary)) 12%,var(--bg-card));border-color:color-mix(in srgb,var(--ppt-primary,var(--primary)) 38%,var(--accent))}.ppt-element--roundRect{border-radius:12px}.ppt-element--ellipse{border-radius:50%}.ppt-element--triangle{clip-path:polygon(50% 0,100% 100%,0 100%)}.ppt-element--triangle span{align-self:flex-end;margin-bottom:6px}.ppt-element--line,.ppt-element--arrow{align-items:center;min-height:1px;background:var(--ppt-primary, var(--accent));border-color:var(--ppt-primary, var(--accent))}.ppt-element--arrow::after{position:absolute;right:-1px;top:50%;width:0;height:0;transform:translateY(-50%);border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid var(--ppt-primary, var(--accent));content:''}.ppt-element--table{justify-content:center;background:repeating-linear-gradient(0deg,transparent 0,transparent 23%,color-mix(in srgb,var(--ppt-primary, var(--accent)) 24%,transparent) 24%,transparent 25%),repeating-linear-gradient(90deg,transparent 0,transparent 32%,color-mix(in srgb,var(--ppt-primary, var(--accent)) 24%,transparent) 33%,transparent 34%);border-color:var(--ppt-primary, var(--accent))}.ppt-element--chart{justify-content:center;background:linear-gradient(135deg,color-mix(in srgb,var(--ppt-primary,var(--primary)) 12%,var(--bg-card)),var(--bg-card));border-color:var(--ppt-primary, var(--accent))}.ppt-element--image{justify-content:center;overflow:hidden;border-style:dashed;border-color:var(--ppt-primary, var(--accent));background:repeating-linear-gradient(45deg,var(--bg-subtle) 0,var(--bg-subtle) 5px,var(--bg-card) 5px,var(--bg-card) 10px)}.ppt-element__resize{position:absolute;right:-5px;bottom:-5px;width:10px;height:10px;padding:0;border:1px solid var(--primary);border-radius:2px;background:var(--bg-card);cursor:nwse-resize}.ppt-properties label{display:block;color:var(--text-muted);font-size:11px}.ppt-properties input{box-sizing:border-box;width:100%;margin-top:5px;padding:6px;border:1px solid var(--border-light);border-radius:4px;background:var(--bg-input);color:var(--text-primary);font:12px inherit}.ppt-properties input:disabled{opacity:.62}.ppt-properties__actions{grid-template-columns:1fr 1fr}.ppt-properties__actions button:disabled,.ppt-nudge button:disabled,.ppt-size button:disabled{opacity:.45;cursor:not-allowed}.ppt-properties__colors>div{display:grid;grid-template-columns:1fr 1fr;gap:7px}.ppt-properties__colors label:nth-child(3),.ppt-properties__colors label:nth-child(6){grid-column:span 2}.ppt-properties__colors input[type="color"],.ppt-properties__theme input[type="color"]{height:27px;padding:2px;cursor:pointer}.ppt-properties__colors input[type="number"]{height:27px;padding:4px 6px}.ppt-properties__image-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.ppt-properties__image-grid label,.ppt-properties__crop label{display:block;color:var(--text-muted);font-size:10px}.ppt-properties__image-grid input,.ppt-properties__image-grid select,.ppt-properties__crop input{height:27px;padding:4px 6px}.ppt-properties__image-flips{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.ppt-properties__image-flips label{display:flex;align-items:center;gap:5px;color:var(--text-secondary);font-size:10px}.ppt-properties__image-flips input{width:auto;margin:0}.ppt-properties__crop{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px;padding-top:8px;border-top:1px solid var(--border-light)}.ppt-properties__crop>span{grid-column:1/-1;color:var(--text-muted);font-size:10px}.ppt-properties__draft-status{margin:8px 0 0;color:var(--text-muted);font-size:10px;line-height:1.4}.ppt-properties__palette>div{display:flex;gap:6px}.ppt-properties__palette button{width:22px;height:22px;padding:0;border:1px solid color-mix(in srgb,var(--text-muted) 42%,var(--border-light));border-radius:50%;box-shadow:inset 0 0 0 2px var(--bg-card);cursor:pointer}.ppt-properties__palette button:focus-visible{outline:2px solid var(--primary);outline-offset:2px}.ppt-properties__theme>div{display:grid;grid-template-columns:1fr 1fr;gap:7px}.ppt-properties__theme label{display:grid;grid-template-columns:1fr 29px;align-items:center;gap:5px}.ppt-properties__theme input{margin:0}.ppt-properties__unsupported{margin:14px 0 0;padding-top:9px;border-top:1px solid var(--border-light);color:var(--text-muted);font-size:10px;line-height:1.45}
+@media(max-width:1180px){.outcomes-page{grid-template-columns:220px auto minmax(360px,1fr) auto 285px}.ppt-editor-body{grid-template-columns:110px minmax(0,1fr)}.ppt-properties{display:none}}@media(max-width:860px){.outcomes-page{grid-template-columns:190px auto minmax(0,1fr)}[data-testid='outcomes-split-assistant']{display:none}.outcome-assistant{display:none}.word-page{padding:48px 42px}.outcome-version-panel{display:none}.ppt-template-strip{flex-wrap:wrap}}@media(max-width:720px){.outcomes-page{grid-template-columns:1fr}.outcomes-tree{display:none}.word-page{width:calc(100% - 20px);padding:38px 25px}.ppt-editor-body{grid-template-columns:1fr}.ppt-slides{display:none}.ppt-template-strip small{display:none}}
+.word-local-ai{position:fixed;z-index:55;width:min(310px,calc(100vw - 24px));padding:9px;border:1px solid color-mix(in srgb,var(--primary) 38%,var(--border-light));border-radius:7px;background:var(--bg-card);box-shadow:0 10px 28px rgba(15,20,25,.2);color:var(--text-secondary);font-size:11px}.word-local-ai header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.word-local-ai header strong,.word-local-ai header small{display:block}.word-local-ai header strong{color:var(--text-primary);font-size:12px}.word-local-ai header small{margin-top:2px;color:var(--text-muted);font-size:10px}.word-local-ai header button{display:grid;place-items:center;width:24px;height:24px;border:0;border-radius:4px;background:transparent;color:var(--text-muted);cursor:pointer}.word-local-ai header button:hover{background:var(--bg-active);color:var(--text-primary)}.word-local-ai__actions{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:8px}.word-local-ai__actions button,.word-local-ai footer .primary{display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:27px;border:1px solid var(--border-light);border-radius:4px;background:var(--bg-input);color:var(--text-secondary);cursor:pointer;font:11px inherit}.word-local-ai__actions button:hover:not(:disabled){border-color:var(--primary);color:var(--primary)}.word-local-ai button:disabled,.word-local-ai textarea:disabled{cursor:not-allowed;opacity:.55}.word-local-ai__instruction{display:block;margin-top:8px;color:var(--text-muted);font-size:10px}.word-local-ai__instruction textarea{box-sizing:border-box;width:100%;min-height:48px;margin-top:4px;resize:vertical;padding:6px;border:1px solid var(--border-light);border-radius:4px;background:var(--bg-input);color:var(--text-primary);font:11px/1.45 inherit}.word-local-ai__instruction textarea:focus{outline:2px solid color-mix(in srgb,var(--primary) 22%,transparent);border-color:var(--primary)}.word-local-ai__notice{margin:7px 0 0;padding:6px 7px;border-radius:4px;background:color-mix(in srgb,var(--primary) 7%,var(--bg-card));color:var(--text-secondary);font-size:10px;line-height:1.45}.word-local-ai footer{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px}.word-local-ai footer span{color:var(--text-muted);font-size:9px}.word-local-ai footer .primary{border-color:var(--primary);background:var(--primary);color:var(--text-on-accent);padding:4px 7px}
+.word-block--bullet::before{content:'• ';pointer-events:none}.word-block--numbered::before{content:'1. ';pointer-events:none}
+.ppt-template-strip{flex-wrap:wrap}.ppt-template-apply{border-color:color-mix(in srgb,var(--primary) 42%,var(--border-light))!important;color:var(--primary)!important}.ppt-template-confirm{display:flex;align-items:center;gap:7px;flex:1 1 100%;padding:5px 0;color:var(--text-secondary);font-size:11px}.ppt-template-confirm button:first-of-type{border-color:var(--danger);color:var(--danger)}.ppt-template-association{flex:1 1 100%;padding:2px 0;color:var(--text-muted);line-height:1.4;white-space:normal!important}
+.outcome-media-preview>header>div{display:flex;align-items:center;gap:7px}.outcome-media-preview>header button{display:inline-flex;align-items:center;gap:5px;padding:6px 9px;border:1px solid var(--border-light);border-radius:4px;background:var(--bg-input);color:var(--text-secondary);font:12px inherit;cursor:pointer}.outcome-media-preview>header button.primary{border-color:var(--primary);background:var(--primary);color:var(--text-on-accent)}.outcome-media-preview>header button:disabled{cursor:not-allowed;opacity:.55}.outcome-image-generator{display:grid;grid-template-columns:minmax(180px,1fr) 120px auto;gap:8px;align-items:end;padding:10px 15px;border-bottom:1px solid var(--border-light);background:var(--bg-sidebar)}.outcome-image-generator header{grid-column:1/-1}.outcome-image-generator header strong,.outcome-image-generator header small{display:block}.outcome-image-generator header strong{font-size:12px}.outcome-image-generator header small{margin-top:3px;color:var(--text-muted);font-size:10px}.outcome-image-generator label{display:flex;flex-direction:column;gap:4px;color:var(--text-muted);font-size:10px}.outcome-image-generator textarea,.outcome-image-generator select{box-sizing:border-box;width:100%;padding:6px;border:1px solid var(--border-light);border-radius:4px;background:var(--bg-card);color:var(--text-primary);font:12px inherit}.outcome-image-generator textarea{min-height:52px;resize:vertical}.outcome-image-generator button,.ppt-image-generator button{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:31px;border:1px solid var(--primary);border-radius:4px;background:var(--primary);color:var(--text-on-accent);cursor:pointer;font:12px inherit}.outcome-image-generator button:disabled,.ppt-image-generator button:disabled{cursor:not-allowed;opacity:.55}.outcome-image-generator>p{grid-column:1/-1;margin:0;color:var(--text-secondary);font-size:11px;line-height:1.45}.ppt-image-generator{display:grid;grid-template-columns:minmax(220px,1fr) 120px auto;gap:8px;align-items:end;padding:9px 14px;border-top:1px solid var(--border-light);background:var(--bg-sidebar)}.ppt-image-generator header{grid-column:1/-1}.ppt-image-generator header strong,.ppt-image-generator header small{display:block}.ppt-image-generator header strong{font-size:12px}.ppt-image-generator header small{margin-top:3px;color:var(--text-muted);font-size:10px}.ppt-image-generator label{display:flex;flex-direction:column;gap:4px;color:var(--text-muted);font-size:10px}.ppt-image-generator textarea,.ppt-image-generator select{box-sizing:border-box;width:100%;padding:6px;border:1px solid var(--border-light);border-radius:4px;background:var(--bg-card);color:var(--text-primary);font:12px inherit}.ppt-image-generator textarea{min-height:47px;resize:vertical}.ppt-image-generator>p{grid-column:1/-1;margin:0;color:var(--text-secondary);font-size:10px;line-height:1.4}.ppt-image-generator__export-boundary{color:var(--text-muted)!important}.ppt-element__managed-image{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none}
+
+/* ─── 成果树头部：项目名截断、操作按钮单行 ─────────── */
+.outcomes-tree>header{flex-wrap:nowrap;gap:8px;min-width:0}
+.outcomes-tree>header>div:first-child{min-width:0;flex:1}
+.outcomes-tree__actions{display:flex;flex:none;gap:4px}
+.outcomes-tree__actions button{flex:none;display:inline-flex;align-items:center;padding:5px 6px}
+.outcome-history-dialog__manager{padding:10px 15px 0}
+.outcome-history-dialog__toolbar{display:flex;align-items:center;gap:10px}
+.outcome-history-dialog__toolbar button{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border:1px solid var(--border-light);border-radius:4px;background:var(--bg-card);color:var(--text-secondary);font-size:12px;cursor:pointer}
+.outcome-history-dialog__toolbar button:hover{color:var(--text-primary);border-color:color-mix(in srgb,var(--primary) 35%,transparent)}
+.outcome-history-dialog__toolbar small{color:var(--text-muted);font-size:11px;line-height:1.45}
+.outcome-history-dialog__units{list-style:none;display:flex;flex-direction:column;gap:5px;margin:9px 0 0;padding:0;max-height:170px;overflow:auto}
+.outcome-history-dialog__units li{display:flex;align-items:stretch;gap:5px}
+.outcome-history-dialog__units li>button:first-child{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:6px 8px;border:1px solid var(--border-light);border-radius:4px;background:var(--bg-card);font:inherit;text-align:left;cursor:pointer}
+.outcome-history-dialog__units li>button:first-child:hover{border-color:color-mix(in srgb,var(--primary) 35%,transparent)}
+.outcome-history-dialog__units li.active>button:first-child{border-color:color-mix(in srgb,var(--primary) 45%,transparent);background:color-mix(in srgb,var(--primary) 6%,var(--bg-card))}
+.outcome-history-dialog__units b{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-primary);font-size:12px}
+.outcome-history-dialog__units span{color:var(--text-muted);font-size:10.5px}
+.outcome-history-dialog__units li>button:last-child{flex:none;display:grid;place-items:center;width:28px;border:1px solid var(--border-light);border-radius:4px;background:var(--bg-card);color:var(--text-muted);cursor:pointer}
+.outcome-history-dialog__units li>button:last-child:hover{color:var(--status-failed);border-color:color-mix(in srgb,var(--status-failed) 38%,transparent)}
+.outcome-history-dialog__scope{margin:0;padding:9px 15px;color:var(--text-muted);font-size:11px;border-bottom:1px solid var(--border-light)}
+.outcome-assistant__history-btn{flex:none;display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border:1px solid var(--border-light);border-radius:4px;background:var(--bg-card);color:var(--text-secondary);font-size:12px;cursor:pointer}
+.outcome-assistant__history-btn:hover:not(:disabled){color:var(--text-primary);border-color:color-mix(in srgb,var(--primary) 35%,transparent)}
+.outcome-assistant__history-btn:disabled{opacity:.55;cursor:not-allowed}
+
+.outcome-assistant__composer-tools{display:flex;align-items:center;gap:8px;margin-top:7px}
+/* ── 成果回收站（2026-08-24）：树底部入口 + 行内删除 + 回收站弹窗 ── */
+.outcomes-tree-footer{display:flex;gap:8px;margin:10px;border-top:1px solid var(--border-light);padding-top:10px}
+.outcomes-tree-footer .outcomes-new-category{flex:1;margin:0;border-width:0;padding:6px 0;text-align:left}
+.outcomes-trash-entry{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--border-light);border-radius:4px;background:var(--bg-card);color:var(--text-secondary);padding:6px 9px;font-size:12px}
+.outcomes-trash-entry:hover{background:var(--bg-active);color:var(--text-primary)}
+.outcome-tree-item__trash{display:inline-flex;align-items:center;border:0;border-radius:3px;background:transparent;color:var(--text-muted);padding:2px;opacity:0}
+.outcome-tree-item:hover .outcome-tree-item__trash,.outcome-tree-item__trash:focus-visible{opacity:.85}
+.outcome-tree-item__trash:hover{color:var(--danger)}
+.outcomes-trash-modal{width:min(560px,calc(100vw - 32px))}
+.outcomes-trash-modal__hint{margin:10px 0 0;color:var(--text-muted);font-size:12px}
+.outcomes-trash-modal__empty{margin:14px 0 4px;color:var(--text-muted);font-size:13px;text-align:center}
+.outcomes-trash-list{display:flex;flex-direction:column;gap:8px;max-height:min(50vh,420px);margin:12px 0 0;padding:0;overflow:auto;list-style:none}
+.outcomes-trash-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;border:1px solid var(--border-light);border-radius:5px}
+.outcomes-trash-item__meta{display:flex;min-width:0;align-items:center;gap:8px;color:var(--text-secondary)}
+.outcomes-trash-item__meta>div{min-width:0}
+.outcomes-trash-item__meta strong{display:block;overflow:hidden;color:var(--text-primary);font-size:13px;text-overflow:ellipsis;white-space:nowrap}
+.outcomes-trash-item__meta small{color:var(--text-muted);font-size:11px}
+.outcomes-trash-item__actions{display:flex;flex-shrink:0;align-items:center;gap:6px}
+.outcomes-trash-item__actions button{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--border-light);border-radius:4px;background:var(--bg-card);color:var(--text-secondary);padding:5px 8px;font-size:12px}
+.outcomes-trash-item__actions button.danger{border-color:var(--danger);background:var(--danger);color:var(--text-on-accent)}
+.outcomes-trash-item__warn{color:var(--danger);font-size:11px}
+.word-studio>.word-toolbar{display:none}
+.ppt-studio>.ppt-toolbar{display:none}
+
+/* ── 嵌入式 GenOffice：一级页面内的原生编辑舞台 ── */
+.genoffice-embedded-stage {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 560px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--accent) 6%, transparent), transparent 40%),
+    repeating-linear-gradient(0deg, transparent, transparent 23px, color-mix(in srgb, var(--accent) 4%, transparent) 24px),
+    repeating-linear-gradient(90deg, transparent, transparent 23px, color-mix(in srgb, var(--accent) 4%, transparent) 24px);
+}
+.genoffice-embedded-stage > span {
+  margin-top: 18px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--surface-raised);
+  color: var(--text-secondary);
+  font-size: 12px;
+  pointer-events: none;
+}
+.word-pages-host{flex:none;outline:none}
+/* 投稿等：radio/checkbox 不吃通栏宽度，否则控件与文字被撴开 */
+.outcomes-modal :is(input[type="radio"],input[type="checkbox"]){flex:none;width:auto;margin:0;accent-color:var(--primary)}
+.outcomes-modal fieldset{border:0;margin:0;padding:0;min-width:0}
+
+/* ── 小型按钮统一规范化（2026-09-02）：图标按钮 28×28/圆角6px/透明无底，
+     密集行 24×24；ghost chip 28px 高、padding 0 10px、无底无框。
+     本文件上半部分为压缩格式，故以覆盖层方式追加，类名与 DOM 结构不变。 ── */
+
+.outcomes-tree>header button,
+.outcomes-tree__actions button {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  justify-content: center;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .outcomes-tree>header button:hover:not(:disabled),
+  .outcomes-tree__actions button:hover:not(:disabled) {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+}
+
+.outcomes-tree>header button:active:not(:disabled),
+.outcomes-tree__actions button:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+/* 分类行内的迷你操作钮（密集行 → 24px） */
+.outcomes-category-title button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .outcomes-category-title button:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+}
+
+/* 成果树行内删除（密集行 → 24px，破坏性 hover） */
+.outcome-tree-item__trash {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .outcome-tree-item__trash:hover {
+    color: var(--status-danger);
+    background: color-mix(in srgb, var(--status-danger) 8%, transparent);
+  }
+}
+
+.outcome-tree-item__trash:active { transform: scale(0.95); }
+
+/* 版本面板恢复钮：保留左侧 hairline 分隔，去边框盒子 */
+.outcome-version-panel__restore {
+  width: 28px;
+  border-radius: 0;
+  background: transparent !important;
+  color: var(--text-secondary) !important;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .outcome-version-panel__restore:hover {
+    background: var(--bg-hover) !important;
+    color: var(--text-primary) !important;
+  }
+}
+
+.outcome-version-panel__restore:active { transform: scale(0.95); }
+
+/* AI 成果助手头部「历史记录」为 ghost chip（带文字），需解除 28×28 方框约束 */
+.outcome-assistant__header > button.outcome-assistant__history-btn {
+  width: auto;
+  height: 28px;
+  padding: 0 10px;
+  gap: 6px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .outcome-assistant__header > button.outcome-assistant__history-btn:hover:not(:disabled) {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+}
+
+.outcome-assistant__header > button.outcome-assistant__history-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+/* 弹窗头部关闭钮 */
+.outcomes-modal header button,
+.citation-panel header button {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .outcomes-modal header button:hover,
+  .citation-panel header button:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+}
+
+.outcomes-modal header button:active,
+.citation-panel header button:active {
+  transform: scale(0.95);
+}
+
+/* 历史记录弹窗：删除单元钮（破坏性 hover，去边框盒子） */
+.outcome-history-dialog__units li > button:last-child {
+  width: 28px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .outcome-history-dialog__units li > button:last-child:hover {
+    color: var(--status-danger);
+    background: color-mix(in srgb, var(--status-danger) 8%, transparent);
+  }
+}
+
+.outcome-history-dialog__units li > button:last-child:active { transform: scale(0.95); }
+
+/* 本地 AI 浮窗头部关闭钮 */
+.word-local-ai header button {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+
+.word-local-ai header button:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.word-local-ai header button:active { transform: scale(0.95); }
+
+/* 本地 AI 浮窗通知：限高滚动，避免模型长回答把弹窗撑满整屏 */
+.word-local-ai__notice {
+  max-height: 132px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  font-size: 11px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+/* 树底部「回收站」入口：ghost chip */
+.outcomes-trash-entry {
+  height: 28px;
+  padding: 0 10px;
+  gap: 6px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+
+.outcomes-trash-entry:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.outcomes-trash-entry:active { transform: scale(0.95); }
+
+/* 来源列表操作钮：与 history toolbar / outcomes-modal footer 同一套 secondary 语言 */
+.outcome-source-list li > button {
+  display: inline-flex;
+  align-items: center;
+  margin: 5px 5px 0 0;
+  padding: 3px 8px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm, 6px);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.outcome-source-list li > button:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  color: var(--accent);
+}
+
+.outcome-source-list li > button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* 成果分类 CRUD + 拖拽归类（刘总反馈）：分类标题操作钮排布、删除钮危险色、拖拽落点高亮 */
+.outcomes-category-title__actions{display:inline-flex;align-items:center;gap:2px}
+.outcomes-category-title button.outcomes-category-title__delete:hover{color:var(--danger)}
+.outcomes-category.drop-target{background:color-mix(in srgb,var(--accent) 12%,transparent);outline:1px dashed var(--accent);outline-offset:-2px}

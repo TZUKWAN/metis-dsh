@@ -1,0 +1,404 @@
+/**
+ * ProjectShell styles (METIS-501).
+ *
+ * Three-column grid: left source tree | center workspace | right inspector.
+ * Container-responsive collapse: at <=1200px the right panel uses a rail;
+ * at <=900px both panels use rails. Reopened responsive panels are overlays,
+ * so fixed side widths never squeeze or clip the center workspace.
+ */
+
+.project-shell {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--shell-left-width, var(--chat-sidebar-width, 240px)) minmax(0, 1fr) var(--shell-right-width, var(--right-panel-width, 260px));
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  container-type: inline-size;
+  background: transparent;
+}
+
+.shell-overlay-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 15;
+  border: 0;
+  background: var(--bg-modal-overlay);
+  cursor: default;
+}
+
+.project-shell.left-collapsed {
+  grid-template-columns: 32px minmax(0, 1fr) var(--shell-right-width, var(--right-panel-width, 260px));
+}
+.project-shell.right-collapsed {
+  grid-template-columns: var(--shell-left-width, var(--chat-sidebar-width, 240px)) minmax(0, 1fr) 32px;
+}
+.project-shell.left-collapsed.right-collapsed {
+  grid-template-columns: 32px minmax(0, 1fr) 32px;
+}
+
+.project-shell.left-overlay-open .shell-left,
+.project-shell.right-overlay-open .shell-right {
+  z-index: 20;
+  box-shadow: var(--shadow-2, var(--shadow-raised));
+}
+
+.project-shell.left-overlay-open .shell-left {
+  width: min(var(--shell-left-width, var(--chat-sidebar-width, 240px)), calc(100cqw - 64px));
+  overflow: visible;
+}
+
+.project-shell.right-overlay-open .shell-right {
+  width: min(var(--shell-right-width, var(--right-panel-width, 260px)), calc(100cqw - 64px));
+  justify-self: end;
+  overflow: visible;
+}
+
+.project-shell.left-overlay-open .shell-left-content,
+.project-shell.right-overlay-open .shell-right-content {
+  width: 100%;
+  background: var(--bg-card);
+  overflow: hidden auto;
+}
+
+/* ── Left panel ── */
+.shell-left {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--bg-sidebar);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-inline-end: 1px solid var(--border-light, var(--border-light));
+  overflow: hidden;
+}
+
+.shell-left-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* ── Center workspace ── */
+.shell-center {
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* prevents grid blowout / horizontal overflow */
+  min-height: 0;
+  background: transparent;
+}
+.shell-mode-switcher {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border-light, var(--border-light));
+  background: var(--bg-card);
+  padding: 0 12px;
+  flex-shrink: 0;
+}
+.shell-mode-btn {
+  min-height: 38px;
+  padding: 9px 16px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted, var(--text-muted));
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 650;
+  border-bottom: 2px solid transparent;
+  transition: color var(--dur-fast, 160ms) var(--ease-out, ease), border-color var(--dur-fast, 160ms) var(--ease-out, ease), background-color var(--dur-fast, 160ms) var(--ease-out, ease);
+}
+.shell-mode-btn:hover { color: var(--text-primary, var(--border)); background: var(--bg-hover); }
+.shell-mode-btn:focus-visible { outline: 2px solid var(--focus-ring-color); outline-offset: -2px; }
+.shell-mode-btn.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.shell-workspace {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px;
+}
+.shell-workspace--chat {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0;
+}
+.shell-workspace--chat > .chat-main {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* ── Right inspector ── */
+.shell-right {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--bg-card);
+  border-inline-start: 1px solid var(--border-light, var(--border-light));
+  overflow: hidden;
+}
+.shell-right-content {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.shell-inspector-tabs {
+  display: flex;
+  padding-inline-start: 32px;
+  border-bottom: 1px solid var(--border-light, var(--border-light));
+  flex-shrink: 0;
+}
+.shell-inspector-tab {
+  flex: 1;
+  padding: 8px 4px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted, var(--text-muted));
+  cursor: pointer;
+  font-size: 12px;
+  border-bottom: 2px solid transparent;
+}
+.shell-inspector-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.shell-inspector-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding: 12px;
+}
+
+/* ── Collapse buttons ── */
+.shell-collapse-btn {
+  position: absolute;
+  top: 8px;
+  z-index: 10;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--border-light, var(--border-light));
+  background: var(--bg-card);
+  color: var(--text-muted, var(--text-muted));
+  cursor: pointer;
+  border-radius: var(--radius-sm, 6px);
+  font-size: 12px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.shell-collapse-left { inset-inline-end: 4px; }
+.shell-collapse-right { inset-inline-start: 4px; }
+.shell-collapse-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+.shell-mode-btn:focus-visible,
+.shell-inspector-tab:focus-visible,
+.shell-collapse-btn:focus-visible,
+.shell-left-content[role='dialog']:focus-visible,
+.shell-right-content[role='dialog']:focus-visible {
+  outline: 3px solid var(--focus-ring-color);
+  outline-offset: 2px;
+}
+
+[dir='rtl'] .shell-collapse-btn {
+  transform: scaleX(-1);
+}
+
+/* ── KIMI-201: wrapper + run timeline banner ── */
+.project-shell-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+.project-shell-wrapper > .run-timeline-banner {
+  flex-shrink: 0;
+}
+
+/* ── KIMI-201: workspace header ── */
+.shell-workspace-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  padding: 6px 12px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-light, var(--border-light));
+  flex-shrink: 0;
+}
+.shell-workspace-header > .project-switcher {
+  max-width: 260px;
+}
+.shell-workspace-header > .breadcrumbs {
+  flex: 1;
+  min-width: 0;
+}
+.shell-command-bar-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  color: var(--text-muted, var(--text-muted));
+  background: var(--bg-main, var(--bg-secondary));
+  border: 1px solid var(--border-light, var(--border-light));
+  border-radius: var(--radius, 10px);
+  cursor: pointer;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+.shell-command-bar-trigger:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.shell-command-bar-trigger__shortcut {
+  padding: 1px 4px;
+  color: var(--text-muted, var(--text-muted));
+  background: var(--bg-card);
+  border: 1px solid var(--border-light, var(--border-light));
+  border-radius: var(--radius-sm, 6px);
+  font-size: 10px;
+}
+
+.shell-import-create-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  color: var(--text-muted, var(--text-muted));
+  background: var(--bg-main, var(--bg-secondary));
+  border: 1px solid var(--border-light, var(--border-light));
+  border-radius: var(--radius, 10px);
+  cursor: pointer;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+.shell-import-create-trigger:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ── KIMI-201: object tabs slot ── */
+.shell-center > .object-tabs {
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border-light, var(--border-light));
+}
+
+/* ── KIMI-201: selection action bar slot ── */
+.shell-center > .selection-action-bar {
+  position: static;
+  transform: none;
+  flex-shrink: 0;
+  margin: 8px 12px 12px;
+}
+
+/* ── KIMI-201: workspace overlay for version/diff/reviewer and recycle/restore ── */
+.shell-workspace-overlay {
+  position: fixed;
+  inset: 0;
+  /* P1-6 实冲突必修：此处承载版本评审/回收站大模态，原 50 低于 JobsIndicator(80)，
+   * 提升到全局模态档 --z-modal(100)。 */
+  z-index: var(--z-modal, 100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--bg-modal-overlay);
+  transition: opacity var(--dur-base, 220ms) var(--ease-out, ease);
+}
+.shell-workspace-overlay > .version-diff-reviewer,
+.shell-workspace-overlay > .recycle-restore {
+  width: min(1100px, calc(100% - 48px));
+  height: min(760px, calc(100% - 48px));
+  max-height: 100%;
+  background: var(--bg-card);
+  border-radius: var(--radius-overlay, 10px);
+  box-shadow: var(--shadow-modal);
+  overflow: hidden;
+  transition: opacity var(--dur-base, 220ms) var(--ease-out, ease), transform var(--dur-base, 220ms) var(--ease-out, ease);
+}
+@starting-style {
+  .shell-workspace-overlay { opacity: 0; }
+  .shell-workspace-overlay > .version-diff-reviewer,
+  .shell-workspace-overlay > .recycle-restore { opacity: 0; transform: scale(0.95); }
+}
+
+@media (forced-colors: active) {
+  .project-shell,
+  .shell-left,
+  .shell-right,
+  .shell-mode-switcher,
+  .shell-inspector-tabs,
+  .shell-workspace-header {
+    border-color: CanvasText;
+  }
+
+  .shell-mode-btn.active,
+  .shell-inspector-tab.active {
+    color: HighlightText;
+    background: Highlight;
+    border-color: Highlight;
+  }
+
+  .shell-overlay-backdrop,
+  .shell-workspace-overlay {
+    background: Canvas;
+    opacity: 0.65;
+  }
+
+  .shell-mode-btn:focus-visible,
+  .shell-inspector-tab:focus-visible,
+  .shell-collapse-btn:focus-visible,
+  .shell-command-bar-trigger:focus-visible,
+  .shell-import-create-trigger:focus-visible {
+    outline-color: Highlight;
+  }
+
+  .shell-command-bar-trigger__shortcut {
+    border-color: ButtonText;
+  }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .shell-mode-btn, .shell-inspector-tab, .shell-collapse-btn, .shell-command-bar-trigger, .shell-import-create-trigger {
+    transition: none;
+  }
+}
+
+/* ── KIMI-201: narrow band overrides ── */
+.project-shell[data-responsive-band='narrow'] .shell-workspace-header {
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px;
+}
+.project-shell[data-responsive-band='narrow'] .shell-workspace-header > .project-switcher {
+  max-width: 100%;
+  width: 100%;
+}
+.project-shell[data-responsive-band='narrow'] .shell-command-bar-trigger__label,
+.project-shell[data-responsive-band='narrow'] .shell-import-create-trigger__label {
+  display: none;
+}
+.project-shell[data-responsive-band='narrow'] .shell-workspace-overlay {
+  padding: 0;
+}
+.project-shell[data-responsive-band='narrow'] .shell-workspace-overlay > .version-diff-reviewer,
+.project-shell[data-responsive-band='narrow'] .shell-workspace-overlay > .recycle-restore {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}

@@ -1,0 +1,36 @@
+# Normalize text files so source and provenance hashes do not depend on a
+# contributor's operating system or core.autocrlf setting.
+* text=auto eol=lf
+
+# Windows command scripts are consumed by Windows-native tooling.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+*.psd1 text eol=crlf
+*.psm1 text eol=crlf
+
+# POSIX scripts must retain LF line endings.
+*.sh text eol=lf
+
+# Binary assets and native/package artifacts must never be line-normalized.
+*.asar binary
+*.db binary
+*.dll binary
+*.exe binary
+*.gif binary
+*.gz binary
+*.ico binary
+*.jpeg binary
+*.jpg binary
+*.msi binary
+*.node binary
+*.pdf binary
+*.png binary
+*.sqlite binary
+*.tar binary
+*.ttf binary
+*.wasm binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+*.zip binary

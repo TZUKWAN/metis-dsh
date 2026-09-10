@@ -1,0 +1,482 @@
+/**
+ * CommandBar — command palette overlay (KIMI-201).
+ *
+ * Full-screen dark overlay with a centered command palette. Supports:
+ *   - Cmd/Ctrl+K keyboard shortcut (registered externally)
+ *   - fuzzy search, grouped command list
+ *   - keyboard navigation: ↑↓ Enter, ESC to close
+ *   - empty / no-results states
+ *   - 200 % zoom, RTL, forced-colors, prefers-reduced-motion
+ *   - data-responsive-band narrow adaptation
+ */
+
+/* ── Backdrop ── */
+.command-bar-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal); /* L2 统一层级：全局命令面板模态 */
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-block-start: 18vh;
+  background: var(--bg-modal-overlay);
+}
+
+.command-bar-backdrop--enter {
+  animation: command-bar-fade-in 150ms ease-out;
+}
+
+@keyframes command-bar-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .command-bar-backdrop--enter {
+    animation: none;
+  }
+}
+
+/* ── Palette ── */
+.command-bar-palette {
+  width: min(560px, calc(100vw - 32px));
+  max-height: min(480px, calc(100vh - 20vh - 32px));
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light, var(--border-light));
+  border-radius: var(--radius-md);
+  box-shadow:
+    0 4px 12px rgb(15 23 42 / 8%),
+    0 12px 40px rgb(15 23 42 / 18%);
+  transform-origin: top center;
+  animation: command-bar-scale-in 180ms ease-out;
+}
+
+@keyframes command-bar-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .command-bar-palette {
+    animation: none;
+  }
+}
+
+/* ── Search bar ── */
+.command-bar-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-light, var(--border-light));
+}
+
+.command-bar-search__icon {
+  display: flex;
+  flex-shrink: 0;
+  color: var(--text-muted, var(--text-muted));
+}
+
+.command-bar-search__input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  color: var(--text-main, var(--border));
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.command-bar-search__input::placeholder {
+  color: var(--text-muted, var(--text-muted));
+}
+
+.command-bar-search__shortcut {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+  padding: 3px 7px;
+  color: var(--text-muted, var(--text-muted));
+  background: var(--bg-main, var(--bg-secondary));
+  border: 1px solid var(--border-light, var(--border-light));
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.command-bar-search__shortcut kbd {
+  all: unset;
+  font-family: inherit;
+}
+
+/* ── List container ── */
+.command-bar-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-light, var(--border-light)) transparent;
+}
+
+.command-bar-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.command-bar-list::-webkit-scrollbar-thumb {
+  background: var(--border-light, var(--border-light));
+  border-radius: 3px;
+}
+
+/* ── Group header ── */
+.command-bar-group-label {
+  padding: 6px 10px 4px;
+  color: var(--text-muted, var(--text-muted));
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+}
+
+/* ── Command item ── */
+.command-bar-item {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  padding: 8px 10px;
+  text-align: start;
+  color: var(--text-main, var(--border));
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.35;
+  transition: background 80ms ease, color 80ms ease;
+}
+
+.command-bar-item:hover {
+  background: color-mix(in srgb, var(--bg-main, var(--bg-secondary)) 60%, var(--bg-card));
+}
+
+.command-bar-item.is-active {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.command-bar-item:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.command-bar-item:disabled:hover {
+  background: transparent;
+}
+
+.command-bar-item__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--text-muted, var(--text-muted));
+}
+
+.command-bar-item.is-active .command-bar-item__icon {
+  color: var(--accent);
+}
+
+.command-bar-item__copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.command-bar-item__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.command-bar-item__description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-muted, var(--text-muted));
+  font-size: 11px;
+}
+
+.command-bar-item__shortcut {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+  padding: 2px 6px;
+  color: var(--text-muted, var(--text-muted));
+  background: var(--bg-main, var(--bg-secondary));
+  border: 1px solid var(--border-light, var(--border-light));
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.command-bar-item.is-active .command-bar-item__shortcut {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--bg-card));
+  border-color: color-mix(in srgb, var(--accent) 22%, var(--border-light, var(--border-light)));
+}
+
+/* ── Empty & no-results states ── */
+.command-bar-empty,
+.command-bar-no-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 40px 16px;
+  color: var(--text-muted, var(--text-muted));
+  text-align: center;
+}
+
+.command-bar-empty__icon,
+.command-bar-no-results__icon {
+  display: flex;
+  color: var(--text-muted, var(--text-muted));
+  opacity: 0.55;
+}
+
+.command-bar-empty__title,
+.command-bar-no-results__title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main, var(--border));
+}
+
+.command-bar-empty__hint,
+.command-bar-no-results__hint {
+  font-size: 11px;
+  line-height: 1.5;
+  max-width: 280px;
+}
+
+/* ── Loader ── */
+.command-bar-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 32px 16px;
+  color: var(--text-muted, var(--text-muted));
+  font-size: 12px;
+}
+
+.command-bar-loading__spinner {
+  animation: command-bar-spin 800ms linear infinite;
+}
+
+@keyframes command-bar-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .command-bar-loading__spinner {
+    animation: none;
+    opacity: 0.6;
+  }
+}
+
+/* ── Error ── */
+.command-bar-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 28px 16px;
+  text-align: center;
+}
+
+.command-bar-error__message {
+  color: var(--status-danger);
+  font-size: 12px;
+  line-height: 1.5;
+  max-width: 300px;
+  overflow-wrap: anywhere;
+}
+
+.command-bar-error__retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  color: var(--text-main, var(--border));
+  background: var(--bg-card);
+  border: 1px solid var(--border-light, var(--border-light));
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.command-bar-error__retry:hover {
+  background: var(--bg-main, var(--bg-secondary));
+}
+
+/* ── Footer ── */
+.command-bar-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 14px;
+  border-top: 1px solid var(--border-light, var(--border-light));
+  color: var(--text-muted, var(--text-muted));
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.command-bar-footer__hints {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.command-bar-footer__hint {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.command-bar-footer__hint kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  color: var(--text-muted, var(--text-muted));
+  background: color-mix(in srgb, var(--bg-main, var(--bg-secondary)) 70%, var(--bg-card));
+  border: 1px solid var(--border-light, var(--border-light));
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.command-bar-footer__count {
+  color: var(--text-muted, var(--text-muted));
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Focus visible ── */
+.command-bar-search__input:focus-visible,
+.command-bar-item:focus-visible {
+  outline: 3px solid var(--focus-ring-color);
+  outline-offset: -1px;
+  border-radius: 6px;
+}
+
+.command-bar-error__retry:focus-visible {
+  outline: 3px solid var(--focus-ring-color);
+  outline-offset: 2px;
+}
+
+/* ── RTL ── */
+[dir='rtl'] .command-bar-item {
+  direction: rtl;
+}
+
+[dir='rtl'] .command-bar-search__shortcut {
+  direction: ltr;
+}
+
+[dir='rtl'] .command-bar-item__shortcut {
+  direction: ltr;
+}
+
+/* ── Forced colors ── */
+@media (forced-colors: active) {
+  .command-bar-backdrop {
+    background: Canvas;
+    opacity: 0.72;
+  }
+
+  .command-bar-palette {
+    border-color: CanvasText;
+    box-shadow: none;
+  }
+
+  .command-bar-search,
+  .command-bar-footer {
+    border-color: CanvasText;
+  }
+
+  .command-bar-item {
+    border: 1px solid transparent;
+  }
+
+  .command-bar-item.is-active {
+    color: HighlightText;
+    background: Highlight;
+    border-color: Highlight;
+  }
+
+  .command-bar-search__input:focus-visible,
+  .command-bar-item:focus-visible,
+  .command-bar-error__retry:focus-visible {
+    outline-color: Highlight;
+  }
+}
+
+/* ── Narrow responsive band (data-responsive-band='narrow') ── */
+[data-responsive-band='narrow'] .command-bar-palette {
+  width: min(100vw - 16px, 560px);
+  max-height: min(360px, calc(100vh - 12vh - 16px));
+  border-radius: var(--radius-md);
+}
+
+[data-responsive-band='narrow'] .command-bar-search {
+  padding: 10px 12px;
+}
+
+[data-responsive-band='narrow'] .command-bar-search__input {
+  font-size: 14px;
+}
+
+[data-responsive-band='narrow'] .command-bar-list {
+  padding: 4px;
+}
+
+[data-responsive-band='narrow'] .command-bar-item {
+  padding: 7px 8px;
+  font-size: 12px;
+}
+
+[data-responsive-band='narrow'] .command-bar-footer {
+  padding: 5px 10px;
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .command-bar-item {
+    transition: none;
+  }
+}

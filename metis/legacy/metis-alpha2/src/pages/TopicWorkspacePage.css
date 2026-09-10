@@ -1,0 +1,152 @@
+/* Topic Workspace 样式（自 scenarioWorkbench.css 抽出，2026-09-08 解耦直接入口加载） */
+.topic-workspace { display: flex; height: 100%; min-height: 0; background: var(--bg-primary); color: var(--text-primary); }
+.topic-workspace__candidates > header { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.topic-workspace__candidates > header strong { font-size: 13px; }
+.topic-workspace__new { display: flex; flex-direction: column; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+.topic-workspace__new textarea { font-family: inherit; font-size: 12.5px; line-height: 1.55; padding: 7px 9px; border: 1px solid var(--border); border-radius: var(--radius-sm, 6px); background: var(--bg-input, transparent); color: var(--text-primary); resize: vertical; }
+.topic-workspace__new-row { display: flex; align-items: center; gap: 6px; }
+.topic-workspace__new-row select, .topic-workspace__new-row input { font-family: inherit; font-size: 12.5px; padding: 4px 6px; border: 1px solid var(--border); border-radius: var(--radius-sm, 6px); background: var(--bg-input, transparent); color: var(--text-primary); }
+.topic-workspace__new-row .btn-primary { margin-left: auto; }
+/* ── 会话 tab 条(2026-09 刘总:tab 化替代左栏列表;按分类分组)── */
+.topic-workspace__tabs { display: flex; align-items: flex-end; gap: 8px; padding: 6px 10px 0; border-bottom: 1px solid var(--border); }
+.topic-workspace__tabs-scroll { display: flex; align-items: flex-end; gap: 4px; flex: 1 1 auto; min-width: 0; overflow-x: auto; }
+.topic-workspace__tab-group { display: inline-flex; align-items: flex-end; gap: 4px; flex: 0 0 auto; }
+.topic-workspace__tab-group-label { font-size: 11px; color: var(--text-secondary); padding: 0 4px 7px; white-space: nowrap; }
+.topic-workspace__tab { display: inline-flex; align-items: center; flex: 0 0 auto; border: 1px solid var(--border); border-bottom: none; border-radius: 8px 8px 0 0; background: var(--bg-secondary, transparent); }
+.topic-workspace__tab.active { background: var(--bg-active, rgba(0,0,0,.06)); }
+.topic-workspace__tab > button[role="tab"] { border: none; background: transparent; color: var(--text-primary); font-size: 12.5px; padding: 6px 2px 6px 10px; cursor: pointer; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.topic-workspace__tab-close { border: none; background: transparent; color: var(--text-secondary); font-size: 12px; line-height: 1; padding: 6px 8px 6px 4px; cursor: pointer; }
+.topic-workspace__tab-close:hover { color: var(--danger, #b3261e); }
+.topic-workspace__tabs-empty { font-size: 12px; color: var(--text-secondary); padding: 0 4px 7px; }
+.topic-workspace__tabs .topic-workspace__header-actions { flex: 0 0 auto; padding-bottom: 6px; }
+/* ── 当前会话管理条(重命名/分类/删除)── */
+.topic-workspace__sessionbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 6px 14px; border-bottom: 1px solid var(--border); font-size: 12px; color: var(--text-secondary); }
+.topic-workspace__sessionbar label { display: inline-flex; align-items: center; gap: 4px; }
+.topic-workspace__sessionbar select, .topic-workspace__sessionbar input { font-family: inherit; font-size: 12px; padding: 3px 6px; border: 1px solid var(--border); border-radius: var(--radius-sm, 6px); background: var(--bg-input, transparent); color: var(--text-primary); }
+.topic-workspace__empty { padding: 10px 12px; font-size: 12px; color: var(--text-secondary); }
+.topic-workspace__main { flex: 1 1 auto; display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.topic-workspace__selected-banner { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 14px; border-bottom: 1px solid var(--border); background: var(--bg-elevated, transparent); font-size: 13px; flex-wrap: wrap; }
+.topic-workspace__banner-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.topic-workspace__notice { padding: 6px 14px; font-size: 12px; color: var(--warning, #a15c00); }
+.topic-workspace__messages { flex: 1 1 auto; overflow-y: auto; padding: 14px 18px; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+.topic-workspace__intro { max-width: 640px; }
+.topic-workspace__intro h2 { font-size: 18px; margin: 0 0 8px; }
+.topic-workspace__intro p { font-size: 13px; line-height: 1.7; color: var(--text-primary); }
+.topic-workspace__intro-note { color: var(--text-secondary) !important; font-size: 12px !important; }
+.topic-message { max-width: 760px; font-size: 13.5px; line-height: 1.7; }
+.topic-message--user { align-self: flex-end; background: var(--bg-active, rgba(0,0,0,.06)); padding: 8px 12px; border-radius: 10px; }
+.topic-message--user p { margin: 0; }
+.topic-message--assistant p { margin: 0; }
+.topic-message--pending small { color: var(--text-secondary); font-style: italic; white-space: pre-wrap; }
+.topic-evidence { margin: 6px 0 0; padding-left: 18px; font-size: 12px; color: var(--text-secondary); }
+.topic-evidence small { display: block; color: var(--text-muted, var(--text-secondary)); }
+.topic-workspace__input { display: flex; flex-direction: column; gap: 6px; padding: 8px 14px 10px; border-top: 1px solid var(--border); }
+.topic-workspace__input-tools { display: flex; align-items: center; gap: 6px; }
+.topic-workspace__input-row { display: flex; gap: 8px; align-items: flex-end; }
+.topic-workspace__input textarea { flex: 1 1 auto; min-width: 0; font-family: inherit; font-size: 13px; line-height: 1.6; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm, 6px); background: var(--bg-input, transparent); color: var(--text-primary); resize: none; }
+.topic-workspace__candidates { width: 320px; flex: 0 0 auto; border-left: 1px solid var(--border); display: flex; flex-direction: column; min-height: 0; }
+.topic-workspace__candidates.collapsed { width: 44px; }
+.topic-workspace__candidates.collapsed > header { justify-content: center; padding: 10px 4px; }
+.topic-workspace__candidates.collapsed strong { display: none; }
+.topic-workspace__candidates .rotated { transform: rotate(180deg); }
+.topic-workspace__candidate-list { list-style: none; margin: 0; padding: 4px; border-bottom: 1px solid var(--border); max-height: 40%; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; }
+.topic-workspace__candidate-list li button { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; padding: 6px 8px; border: none; border-radius: var(--radius-sm, 6px); background: transparent; color: var(--text-primary); cursor: pointer; text-align: left; }
+.topic-workspace__candidate-list li button:hover { background: var(--bg-hover, rgba(0,0,0,.04)); }
+.topic-workspace__candidate-list li.active button { background: var(--bg-active, rgba(0,0,0,.08)); }
+.topic-workspace__candidate-list li button small { color: var(--text-secondary); font-size: 11px; }
+.topic-workspace__candidate-detail { flex: 1 1 auto; overflow-y: auto; padding: 10px 12px; }
+.topic-workspace__candidate-detail h3 { font-size: 13.5px; margin: 0 0 8px; }
+.topic-workspace__candidate-detail p { font-size: 12.5px; line-height: 1.65; margin: 4px 0; color: var(--text-primary); }
+.topic-workspace__candidate-detail p strong { color: var(--text-secondary); font-weight: 600; }
+.topic-workspace__candidate-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.topic-workspace__selected-tag { font-size: 12px; color: var(--text-secondary); padding: 2px 8px; border: 1px solid var(--border); border-radius: 999px; }
+
+/* ── ProjectsPage Project→Conversation 树(多对话架构第二期)── */
+.projects-page__conversations { display: flex; flex-direction: column; gap: 2px; padding: 4px 0 8px 14px; border-top: 1px dashed var(--border); }
+.projects-page__conversation { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 5px 8px; border: none; border-radius: var(--radius-sm, 6px); background: transparent; color: var(--text-primary); cursor: pointer; text-align: left; font-size: 12.5px; }
+.projects-page__conversation:hover { background: var(--bg-hover, rgba(0,0,0,.04)); }
+.projects-page__conversation-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.projects-page__conversation-meta { flex: 0 0 auto; font-size: 11px; color: var(--text-secondary); }
+.projects-page__conversation-empty { font-size: 11.5px; color: var(--text-secondary); padding: 4px 8px; }
+
+/* ── 成果提示词工程 Settings(任务4)── */
+.settings-outcome-prompts h3 { font-size: 14px; margin: 0 0 4px; }
+.settings-outcome-prompts__desc { font-size: 12px; color: var(--text-secondary); margin: 0 0 10px; }
+.settings-outcome-prompts__toolbar { display: flex; gap: 8px; margin-bottom: 10px; }
+.settings-outcome-prompts__layout { display: grid; grid-template-columns: 220px 1fr; gap: 12px; align-items: start; }
+.settings-outcome-prompts__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.settings-outcome-prompts__list button { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; padding: 7px 9px; border: none; border-radius: var(--radius-sm, 6px); background: transparent; color: var(--text-primary); cursor: pointer; text-align: left; }
+.settings-outcome-prompts__list button:hover { background: var(--bg-hover, rgba(0,0,0,.04)); }
+.settings-outcome-prompts__list button.active { background: var(--bg-active, rgba(0,0,0,.08)); }
+.settings-outcome-prompts__list small { color: var(--text-secondary); font-size: 11px; }
+.settings-outcome-prompts__editor { min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.settings-outcome-prompts__head { display: flex; align-items: center; gap: 8px; }
+.settings-outcome-prompts__status { font-size: 11px; padding: 1px 8px; border: 1px solid var(--border); border-radius: 999px; color: var(--text-secondary); }
+.settings-outcome-prompts__scope { font-size: 12px; color: var(--text-secondary); margin: 0; }
+.settings-outcome-prompts__scope em { color: var(--text-muted, var(--text-secondary)); }
+.settings-outcome-prompts__editor textarea { font-family: inherit; font-size: 13px; line-height: 1.6; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm, 6px); background: var(--bg-input, transparent); color: var(--text-primary); resize: vertical; width: 100%; box-sizing: border-box; }
+.settings-outcome-prompts__actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.settings-outcome-prompts__assistant { display: flex; flex-direction: column; gap: 8px; padding: 10px; border: 1px dashed var(--border); border-radius: var(--radius-sm, 6px); }
+.settings-outcome-prompts__assistant input { font-family: inherit; font-size: 13px; padding: 7px 9px; border: 1px solid var(--border); border-radius: var(--radius-sm, 6px); background: var(--bg-input, transparent); color: var(--text-primary); }
+.settings-outcome-prompts__suggestion { display: flex; flex-direction: column; gap: 6px; }
+.settings-outcome-prompts__revisions summary { font-size: 12px; cursor: pointer; color: var(--text-secondary); }
+.settings-outcome-prompts__revisions ul { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--text-secondary); }
+.settings-outcome-prompts__revisions li { display: flex; align-items: center; gap: 8px; }
+.settings-outcome-prompts__notice { font-size: 12px; color: var(--text-secondary); margin: 0; }
+.settings-outcome-prompts__empty { font-size: 12px; color: var(--text-secondary); }
+
+/* ── Settings Metis Office Profiles(任务5)── */
+.settings-office-profiles { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); }
+.settings-office-profiles h3 { font-size: 14px; margin: 0 0 4px; }
+.settings-office-profiles__desc { font-size: 12px; color: var(--text-secondary); margin: 0 0 10px; }
+.settings-office-profiles__layout { display: grid; grid-template-columns: 180px 1fr; gap: 12px; align-items: start; }
+.settings-office-profiles__kinds { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.settings-office-profiles__kinds button { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; padding: 6px 9px; border: none; border-radius: var(--radius-sm, 6px); background: transparent; color: var(--text-primary); cursor: pointer; text-align: left; }
+.settings-office-profiles__kinds button:hover { background: var(--bg-hover, rgba(0,0,0,.04)); }
+.settings-office-profiles__kinds button.active { background: var(--bg-active, rgba(0,0,0,.08)); }
+.settings-office-profiles__kinds small { color: var(--text-secondary); font-size: 11px; }
+.settings-office-profiles__main { min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.settings-office-profiles__profile-bar { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.settings-office-profiles__profile-bar select { font-size: 12.5px; padding: 4px 6px; border: 1px solid var(--border); border-radius: var(--radius-sm, 6px); background: var(--bg-input, transparent); color: var(--text-primary); }
+.settings-office-profiles__slots { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.settings-office-profiles__slots button { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; padding: 6px 8px; border: none; border-radius: var(--radius-sm, 6px); background: transparent; color: var(--text-primary); cursor: pointer; text-align: left; }
+.settings-office-profiles__slots button:hover, .settings-office-profiles__slots button.active { background: var(--bg-active, rgba(0,0,0,.06)); }
+.settings-office-profiles__slots small { color: var(--text-secondary); font-size: 11px; }
+.settings-office-profiles__editor { display: flex; flex-direction: column; gap: 6px; padding: 10px; border: 1px dashed var(--border); border-radius: var(--radius-sm, 6px); }
+.settings-office-profiles__editor textarea { font-family: inherit; font-size: 13px; line-height: 1.6; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm, 6px); background: var(--bg-input, transparent); color: var(--text-primary); resize: vertical; }
+.settings-office-profiles__actions { display: flex; gap: 8px; }
+.settings-office-profiles__danger { color: var(--danger, #b3261e); }
+.settings-office-profiles__notice { font-size: 12px; color: var(--text-secondary); margin: 0; }
+.settings-office-profiles__empty { font-size: 12px; color: var(--text-secondary); }
+
+/* ── Skill Studio(任务7)── */
+.skill-studio { margin-top: 10px; }
+.skill-studio__body { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.skill-studio__body textarea, .skill-studio__body input { font-family: inherit; font-size: 12.5px; line-height: 1.6; padding: 7px 9px; border: 1px solid var(--border); border-radius: var(--radius-sm, 6px); background: var(--bg-input, transparent); color: var(--text-primary); resize: vertical; }
+.skill-studio__sources { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.skill-studio__result { display: flex; flex-direction: column; gap: 6px; padding: 10px; border: 1px dashed var(--border); border-radius: var(--radius-sm, 6px); font-size: 12.5px; }
+.skill-studio__result ul { margin: 4px 0 0; padding-left: 18px; }
+.skill-studio__test-label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--text-secondary); }
+.skill-studio__test-answer { white-space: pre-wrap; font-size: 12px; max-height: 200px; overflow-y: auto; padding: 8px; background: var(--bg-secondary, transparent); border-radius: var(--radius-sm, 6px); }
+.skill-studio__notice { font-size: 12px; color: var(--text-secondary); margin: 0; }
+
+
+/* ── Chatbot 协作双栏（2026-09-05 刘总规格书：METIS 55–60% + Chatbot 40–45%）── */
+.topic-workspace__header-actions { display: inline-flex; align-items: center; gap: 6px; }
+
+.topic-collab {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* 协作模式下 METIS 侧让出 Chatbot 面板宽度（面板 flex 由内联样式控制） */
+.topic-collab > .topic-workspace {
+  flex: 1 1 0;
+  min-width: 0;
+  border-right: none;
+}

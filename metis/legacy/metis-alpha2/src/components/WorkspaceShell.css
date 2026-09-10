@@ -1,0 +1,68 @@
+/* WorkspaceShell（T7）：统一三栏响应式布局系统 */
+
+.workspace-shell {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden; /* Shell 级裁剪；内部各栏自己滚动（不做页面级横向滚动） */
+  background: var(--bg-page, #f4f6f8);
+}
+
+.workspace-shell__left,
+.workspace-shell__right {
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  background: var(--bg-card, #fff);
+}
+.workspace-shell__left { border-right: 1px solid var(--border-light, #e3e8ee); }
+.workspace-shell__right { border-left: 1px solid var(--border-light, #e3e8ee); }
+
+.workspace-shell__primary {
+  flex: 1 1 0;
+  min-width: 0; /* 关键：允许中央区收缩，子内容负责自己的 overflow */
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 折叠窄轨 */
+.workspace-shell__rail {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  align-self: stretch;
+  border: 0;
+  background: var(--bg-card, #fff);
+  color: var(--text-muted, #9298a1);
+  cursor: pointer;
+  font-size: 13px;
+}
+.workspace-shell__rail--left { border-right: 1px solid var(--border-light, #e3e8ee); }
+.workspace-shell__rail--right { border-left: 1px solid var(--border-light, #e3e8ee); }
+.workspace-shell__rail:hover { color: var(--primary, #2563eb); background: var(--bg-hover, #eef2f6); }
+
+/* 窄屏 drawer */
+.workspace-shell__drawer-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgb(0 0 0 / 32%);
+}
+.workspace-shell__drawer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: min(320px, 84vw);
+  overflow-y: auto;
+  background: var(--bg-card, #fff);
+  box-shadow: var(--shadow-2, 0 8px 28px rgb(15 20 25 / 18%));
+}
+.workspace-shell__drawer--left { left: 0; border-right: 1px solid var(--border-light, #e3e8ee); }
+.workspace-shell__drawer--right { right: 0; border-left: 1px solid var(--border-light, #e3e8ee); }
+
+/* 响应式基线：非常窄时左右 rail 变窄 */
+.workspace-shell[data-very-narrow] .workspace-shell__rail { width: 18px; }

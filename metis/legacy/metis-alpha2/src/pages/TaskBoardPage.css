@@ -1,0 +1,274 @@
+/**
+ * TaskBoardPage — kanban board layout.
+ * Follows the academic visual system: thin borders, restrained palette, no capsules.
+ */
+
+.kanban-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 16px 20px;
+  overflow: hidden;
+}
+
+.kanban-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.kanban-header h2 {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.kanban-filterbar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.kanban-error {
+  margin: 8px 0;
+  padding: 8px 12px;
+  background: var(--status-failed-bg);
+  color: var(--status-failed);
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+/* Board grid */
+.kanban-board {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  flex: 1;
+  min-height: 0;
+  overflow-x: auto;
+  padding-top: 10px;
+}
+
+/* Column */
+.kanban-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.kanban-column--dragover {
+  border-color: var(--primary);
+  background: var(--bg-active);
+}
+
+.kanban-column__header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-top: 3px solid transparent;
+  border-bottom: 1px solid var(--border);
+}
+
+.kanban-column__title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.kanban-column__count {
+  font-size: 11px;
+  color: var(--text-muted);
+  background: var(--bg-hover);
+  border-radius: var(--radius-sm, 2px);
+  padding: 1px 6px;
+}
+
+.kanban-column__add {
+  width: 24px;
+  height: 24px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+
+.kanban-column__add:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* Cards container */
+.kanban-column__cards {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.kanban-column__empty {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 16px 0;
+}
+
+/* Card */
+.kanban-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px 10px;
+  cursor: grab;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  user-select: none;
+}
+
+.kanban-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.kanban-card--selected {
+  border-color: var(--primary);
+  background: var(--bg-active);
+}
+
+.kanban-card--dragging {
+  opacity: 0.5;
+}
+
+.kanban-card__title {
+  font-size: 13px;
+  color: var(--text-primary);
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.kanban-card__meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 11px;
+}
+
+.kanban-card__priority {
+  font-weight: 600;
+}
+
+.kanban-card__age {
+  color: var(--text-muted);
+}
+
+/* New task inline form */
+.kanban-new-task {
+  padding: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.kanban-new-task input {
+  width: 100%;
+  font-size: 12px;
+}
+
+/* Detail panel */
+.kanban-detail {
+  position: fixed;
+  right: 20px;
+  top: 80px;
+  width: 320px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: var(--z-inpage, 40); /* L2：页内局部详情面板 */
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+}
+
+.kanban-detail__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.kanban-detail__header h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kanban-detail__body {
+  padding: 12px 16px;
+}
+
+.kanban-detail__row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+
+.kanban-detail__label {
+  color: var(--text-muted);
+  min-width: 60px;
+}
+
+.kanban-detail__value {
+  color: var(--text-primary);
+}
+
+.kanban-detail__actions {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 1200px) {
+  .kanban-board {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 800px) {
+  .kanban-board {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .kanban-detail {
+    position: absolute;
+    right: 10px;
+    width: calc(100% - 20px);
+  }
+}
+
+/* 步骤提示词编辑器（2026-08-29 刘总要求） */
+.kanban-prompt-editor { align-items: flex-start; }
+.kanban-prompt-editor textarea { border: 1px solid var(--border-light); border-radius: var(--radius); background: var(--bg-input); color: var(--text-primary); }

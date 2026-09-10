@@ -1,0 +1,17 @@
+﻿{
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "../dist-electron",
+    "rootDir": "..",
+    "declaration": false,
+    "sourceMap": true
+  },
+  "include": ["./**/*.ts", "../engine/**/*.ts", "../vendor/genoffice/**/*.ts", "../src/global.d.ts"],
+  "exclude": ["../node_modules", "../tests"]
+}

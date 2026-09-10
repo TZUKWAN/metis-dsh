@@ -1,0 +1,4 @@
+- insert:
+    - id: metis-literature-crossref
+      name: dsh-metis-literature-crossref
+      inject: ['metisLiterature']

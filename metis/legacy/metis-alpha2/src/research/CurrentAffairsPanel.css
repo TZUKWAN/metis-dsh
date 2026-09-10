@@ -1,0 +1,328 @@
+/* CurrentAffairsPanel — 时政研究工作流样式 */
+
+.ca-panel {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 20px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.ca-panel h2 {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.ca-panel-desc {
+  color: var(--text-secondary);
+  margin: 0 0 24px;
+  font-size: 13px;
+}
+
+/* Phase bar */
+.ca-phase-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.ca-phase-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ca-phase--executing .ca-phase-dot,
+.ca-phase-dot.ca-phase--executing { background: var(--accent-warm); }
+
+.ca-phase--approved .ca-phase-dot,
+.ca-phase-dot.ca-phase--approved { background: var(--status-completed); }
+
+.ca-phase--exported .ca-phase-dot,
+.ca-phase-dot.ca-phase--exported { background: var(--status-completed); }
+
+.ca-phase--error .ca-phase-dot,
+.ca-phase-dot.ca-phase--error { background: var(--status-failed); }
+
+.ca-phase--idle .ca-phase-dot,
+.ca-phase-dot.ca-phase--idle { background: var(--text-secondary); }
+
+/* Alert */
+.ca-alert {
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  background: var(--warning-bg);
+  border: 1px solid var(--warning-border);
+  border-radius: 6px;
+  color: var(--warning-text);
+  font-size: 13px;
+}
+
+/* Form */
+.ca-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ca-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ca-field label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.ca-field input,
+.ca-field textarea,
+.ca-field select {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 13px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: inherit;
+}
+
+.ca-field textarea {
+  resize: vertical;
+  min-height: 120px;
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.ca-fieldset {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 14px;
+  margin: 0;
+}
+
+.ca-fieldset legend {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0 6px;
+}
+
+/* Source form */
+.ca-source-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.ca-source-form select,
+.ca-source-form input {
+  min-width: 120px;
+  flex: 1;
+}
+
+/* Source list */
+.ca-source-list h3 {
+  font-size: 14px;
+  margin: 0 0 8px;
+}
+
+.ca-source-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+.ca-source-kind {
+  font-size: 11px;
+  background: var(--bg-secondary);
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.ca-source-title {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* JSON import */
+.ca-json-import {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.ca-json-import summary {
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+/* Buttons */
+.ca-btn {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.ca-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ca-btn--primary {
+  background: var(--accent);
+  color: var(--text-on-accent);
+  border-color: var(--accent);
+}
+
+.ca-btn--danger {
+  color: var(--status-failed);
+  border-color: var(--status-failed);
+}
+
+.ca-btn--sm {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.ca-btn--lg {
+  padding: 10px 20px;
+  font-size: 15px;
+}
+
+.ca-form-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+/* Preview */
+.ca-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ca-preview h3 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.ca-preview-section {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.ca-preview-section h4 {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0 0 6px;
+  color: var(--text-secondary);
+}
+
+.ca-preview-section pre {
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* Gate badge */
+.ca-gate-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.ca-gate--pass {
+  background: var(--status-completed-bg);
+  color: var(--status-completed);
+}
+
+.ca-gate--fail {
+  background: var(--status-failed-bg);
+  color: var(--status-failed);
+}
+
+.ca-gate-issues {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  font-size: 13px;
+}
+
+.ca-digest {
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* Narrow screen */
+@media (max-width: 600px) {
+  .ca-panel {
+    padding: 16px 12px;
+  }
+
+  .ca-source-form {
+    flex-direction: column;
+  }
+
+  .ca-source-form select,
+  .ca-source-form input {
+    width: 100%;
+  }
+
+  .ca-form-actions {
+    flex-direction: column;
+  }
+
+  .ca-btn--lg {
+    width: 100%;
+  }
+}
+
+/* forced-colors */
+@media (forced-colors: active) {
+  .ca-preview-section {
+    border: 1px solid ButtonText;
+  }
+  .ca-btn {
+    border: 1px solid ButtonText;
+  }
+}
+
+/* reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .ca-phase-dot {
+    animation: none;
+  }
+}

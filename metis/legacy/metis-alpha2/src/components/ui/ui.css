@@ -1,0 +1,621 @@
+/**
+ * METIS UI — shadcn/ui-inspired component styles.
+ *
+ * All values reference AcademicTheme.css custom properties.
+ * Do not hardcode colors, spacing, or radii here.
+ */
+
+/* ─── Button ───────────────────────────────────────── */
+
+.mui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  font-weight: var(--weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.mui-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mui-button--sm {
+  height: 28px;
+  padding: 0 10px;
+  font-size: var(--font-size-sm);
+}
+
+.mui-button--default {
+  height: 32px;
+  padding: 0 12px;
+}
+
+.mui-button--lg {
+  height: 36px;
+  padding: 0 16px;
+}
+
+.mui-button--icon {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+}
+
+.mui-button--primary {
+  background: var(--accent);
+  color: var(--text-on-accent);
+  border-color: var(--accent);
+}
+
+.mui-button--primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.mui-button--secondary {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+.mui-button--secondary:hover:not(:disabled) {
+  background: var(--bg-hover);
+  border-color: var(--border-light);
+}
+
+.mui-button--ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: transparent;
+}
+
+.mui-button--ghost:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.mui-button--danger {
+  background: var(--bg-card);
+  color: var(--status-failed);
+  border-color: var(--border);
+}
+
+.mui-button--danger:hover:not(:disabled) {
+  background: var(--status-failed-bg);
+  border-color: var(--status-failed);
+}
+
+/* ─── Input / Textarea / Select ────────────────────── */
+
+.mui-input,
+.mui-textarea,
+.mui-select {
+  display: flex;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height);
+  outline: 2px solid transparent;
+  outline-offset: -1px;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.mui-input,
+.mui-select {
+  height: 32px;
+  padding: 0 10px;
+}
+
+.mui-input::placeholder,
+.mui-textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.mui-input:focus-visible,
+.mui-textarea:focus-visible,
+.mui-select:focus-visible {
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring-shadow);
+}
+
+.mui-input:disabled,
+.mui-textarea:disabled,
+.mui-select:disabled {
+  background: var(--bg-input-disabled);
+  cursor: not-allowed;
+}
+
+.mui-textarea {
+  min-height: 64px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.mui-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23606772' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 28px;
+}
+
+.mui-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-1);
+}
+
+.mui-hint {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  margin-top: var(--space-1);
+}
+
+.mui-error {
+  border-color: var(--status-failed);
+}
+
+/* ─── Tabs ─────────────────────────────────────────── */
+
+.mui-tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  border-bottom: 1px solid var(--border);
+}
+
+.mui-tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 32px;
+  padding: 0 10px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.mui-tab:hover:not([aria-selected="true"]) {
+  color: var(--text-primary);
+}
+
+.mui-tab[aria-selected="true"] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* ─── Badge ────────────────────────────────────────── */
+
+.mui-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  padding: 0 7px;
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-xs);
+  font-weight: var(--weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.mui-badge--default {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+.mui-badge--primary {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid transparent;
+}
+
+.mui-badge--success {
+  background: var(--status-completed-bg);
+  color: var(--status-completed);
+  border: 1px solid transparent;
+}
+
+.mui-badge--warning {
+  background: var(--accent-warm-soft);
+  color: var(--accent-warm);
+  border: 1px solid transparent;
+}
+
+.mui-badge--danger {
+  background: var(--status-failed-bg);
+  color: var(--status-failed);
+  border: 1px solid transparent;
+}
+
+/* ─── Separator ────────────────────────────────────── */
+
+.mui-separator {
+  flex-shrink: 0;
+  background: var(--border);
+  border: none;
+}
+
+.mui-separator--horizontal {
+  width: 100%;
+  height: 1px;
+  margin: var(--space-3) 0;
+}
+
+.mui-separator--vertical {
+  width: 1px;
+  height: 100%;
+  margin: 0 var(--space-3);
+}
+
+/* ─── Skeleton ─────────────────────────────────────── */
+
+.mui-skeleton {
+  display: inline-block;
+  background: linear-gradient(90deg, var(--bg-hover) 25%, var(--bg-secondary) 50%, var(--bg-hover) 75%);
+  background-size: 200% 100%;
+  border-radius: var(--radius-sm);
+  animation: mui-skeleton-pulse 1.5s infinite linear;
+}
+
+@keyframes mui-skeleton-pulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ─── Dialog ───────────────────────────────────────── */
+
+.mui-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-modal-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  padding: var(--space-5);
+}
+
+.mui-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  max-height: calc(100vh - var(--space-6));
+  overflow-y: auto;
+  background: var(--bg-modal);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-modal);
+}
+
+.mui-dialog--sm { max-width: 360px; }
+.mui-dialog--lg { max-width: 720px; }
+
+.mui-dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.mui-dialog__title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--weight-heading);
+  color: var(--text-heading);
+}
+
+.mui-dialog__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.mui-dialog__close:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.mui-dialog__body {
+  padding: var(--space-4);
+}
+
+.mui-dialog__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--border-light);
+}
+
+/* ─── Sheet ────────────────────────────────────────── */
+
+.mui-sheet-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-modal-overlay);
+  z-index: var(--z-modal);
+}
+
+.mui-sheet {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 440px;
+  background: var(--bg-modal);
+  border-left: 1px solid var(--border);
+  box-shadow: var(--shadow-modal);
+  display: flex;
+  flex-direction: column;
+  z-index: var(--z-modal);
+}
+
+.mui-sheet__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.mui-sheet__title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--weight-heading);
+  color: var(--text-heading);
+}
+
+.mui-sheet__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-4);
+}
+
+.mui-sheet__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--border-light);
+}
+
+/* ─── Popover ──────────────────────────────────────── */
+
+.mui-popover {
+  position: relative;
+  display: inline-flex;
+}
+
+.mui-popover__content {
+  position: absolute;
+  z-index: var(--z-dropdown);
+  min-width: 180px;
+  padding: var(--space-2);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-dropdown);
+}
+
+.mui-popover__content--bottom-left { top: 100%; left: 0; margin-top: var(--space-1); }
+.mui-popover__content--bottom-right { top: 100%; right: 0; margin-top: var(--space-1); }
+.mui-popover__content--top-left { bottom: 100%; left: 0; margin-bottom: var(--space-1); }
+.mui-popover__content--top-right { bottom: 100%; right: 0; margin-bottom: var(--space-1); }
+
+/* ─── Tooltip ──────────────────────────────────────── */
+
+.mui-tooltip {
+  position: relative;
+  display: inline-flex;
+}
+
+.mui-tooltip__content {
+  position: absolute;
+  z-index: var(--z-dropdown);
+  padding: 4px 8px;
+  background: var(--text-heading);
+  color: var(--bg-card);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--weight-medium);
+  line-height: 1.4;
+  white-space: nowrap;
+  box-shadow: var(--shadow-tooltip);
+  pointer-events: none;
+}
+
+.mui-tooltip__content--bottom { top: 100%; left: 50%; transform: translateX(-50%); margin-top: var(--space-1); }
+.mui-tooltip__content--top { bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: var(--space-1); }
+.mui-tooltip__content--left { right: 100%; top: 50%; transform: translateY(-50%); margin-right: var(--space-1); }
+.mui-tooltip__content--right { left: 100%; top: 50%; transform: translateY(-50%); margin-left: var(--space-1); }
+
+/* ─── Checkbox / Switch / Radio ────────────────────── */
+
+.mui-checkbox {
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--bg-input);
+  appearance: none;
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.mui-checkbox:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.mui-switch {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  appearance: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--bg-secondary);
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.mui-switch::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: transform var(--transition-fast);
+}
+
+.mui-switch:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.mui-switch:checked::after {
+  transform: translateX(16px);
+}
+
+.mui-radio {
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--bg-input);
+  appearance: none;
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.mui-radio:checked {
+  border-color: var(--accent);
+  background: var(--accent);
+  box-shadow: inset 0 0 0 3px var(--bg-card);
+}
+
+/* ─── Command palette visual wrapper ───────────────── */
+
+.mui-command {
+  background: var(--bg-modal);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-modal);
+  overflow: hidden;
+}
+
+.mui-command__input {
+  width: 100%;
+  height: 44px;
+  padding: 0 var(--space-4);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-primary);
+  font-size: var(--font-size-base);
+  outline: none;
+}
+
+.mui-command__input::placeholder {
+  color: var(--text-muted);
+}
+
+.mui-command__list {
+  max-height: 360px;
+  overflow-y: auto;
+  padding: var(--space-2);
+}
+
+.mui-command__group-label {
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--font-size-xs);
+  font-weight: var(--weight-medium);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mui-command__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: 7px var(--space-3);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+  text-align: left;
+  cursor: pointer;
+}
+
+.mui-command__item:hover,
+.mui-command__item[aria-selected="true"] {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* ─── ScrollArea ───────────────────────────────────── */
+
+.mui-scroll-area {
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.mui-scroll-area::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.mui-scroll-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mui-scroll-area::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: var(--radius-pill);
+}
+
+.mui-scroll-area::-webkit-scrollbar-thumb:hover {
+  background: var(--border-light);
+}

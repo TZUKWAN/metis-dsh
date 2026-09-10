@@ -1,0 +1,6 @@
+packages:
+  - "plugins/*"
+  - "shared/*"
+
+overrides:
+  "@deepseek-ai/cosmokit": "file:../vendor/cosmokit"

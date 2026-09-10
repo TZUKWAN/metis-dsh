@@ -1,0 +1,736 @@
+/**
+ * ImportCreateDialog styles.
+ *
+ * Uses CSS variables from the shell design system and scoped research-accent
+ * tokens. Layout properties are written with logical attributes so the dialog
+ * works correctly in RTL without a separate stylesheet.
+ */
+
+.import-create-dialog {
+  --icd-accent: var(--accent);
+  --icd-accent-strong: var(--accent-hover);
+  --icd-accent-soft: color-mix(in srgb, var(--icd-accent) 11%, transparent);
+  --icd-paper: var(--bg-card);
+  --icd-canvas: var(--bg-main, var(--bg-secondary));
+  --icd-ink: var(--text-heading, var(--bg-code-block));
+  --icd-body: var(--text-body, var(--border));
+  --icd-muted: var(--text-muted, var(--text-muted));
+  --icd-border: var(--border-light, var(--border-light));
+  --icd-danger: var(--status-danger);
+  --icd-danger-bg: var(--bg-danger-hover, var(--bg-danger-hover));
+  --icd-success: var(--evidence-verified);
+  --icd-radius: 10px;
+  --icd-shadow: 0 18px 50px rgb(15 23 42 / 18%);
+
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal); /* L2 统一层级：导入/新建全局对话框 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  color: var(--icd-body);
+  font-family: inherit;
+}
+
+.import-create-dialog__overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-modal-overlay);
+  cursor: default;
+}
+
+.import-create-dialog__panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  inline-size: min(90vw, 720px);
+  max-block-size: min(90vh, 720px);
+  background: var(--icd-paper);
+  border: 1px solid var(--icd-border);
+  border-radius: var(--icd-radius);
+  box-shadow: var(--icd-shadow);
+  overflow: hidden;
+}
+
+.import-create-dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex: 0 0 auto;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--icd-border);
+}
+
+.import-create-dialog__title {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--icd-ink);
+  font-size: 15px;
+  font-weight: 680;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.import-create-dialog__body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden auto;
+  padding: 16px;
+}
+
+.import-create-dialog__step {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.import-create-dialog__hint {
+  margin: 0;
+  color: var(--icd-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* ── Start chooser ─────────────────────────────────────────── */
+
+.import-create-dialog__choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.import-create-dialog__choice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 80px;
+  padding: 14px;
+  text-align: start;
+  color: var(--icd-ink);
+  background: var(--icd-canvas);
+  border: 1px solid var(--icd-border);
+  border-radius: var(--icd-radius);
+  cursor: pointer;
+  transition: border-color 150ms ease, background 150ms ease, transform 120ms ease;
+}
+
+.import-create-dialog__choice:hover {
+  background: var(--icd-accent-soft);
+  border-color: color-mix(in srgb, var(--icd-accent) 40%, var(--icd-border));
+}
+
+.import-create-dialog__choice:focus-visible {
+  outline: 3px solid var(--focus-ring-color);
+  outline-offset: 2px;
+}
+
+.import-create-dialog__choice-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  color: var(--icd-accent-strong);
+  background: var(--icd-paper);
+  border: 1px solid color-mix(in srgb, var(--icd-accent) 24%, var(--icd-border));
+  border-radius: var(--radius-md);
+}
+
+.import-create-dialog__choice-text {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.import-create-dialog__choice-text strong {
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.import-create-dialog__choice-text small {
+  overflow: hidden;
+  color: var(--icd-muted);
+  font-size: 11px;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.import-create-dialog__choice > svg:last-child {
+  flex: 0 0 auto;
+  color: var(--icd-muted);
+}
+
+[dir='rtl'] .import-create-dialog__choice > svg:last-child {
+  transform: scaleX(-1);
+}
+
+/* ── Form fields ───────────────────────────────────────────── */
+
+.import-create-dialog__form {
+  gap: 12px;
+}
+
+.import-create-dialog__field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.import-create-dialog__field label {
+  color: var(--icd-muted);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+}
+
+.import-create-dialog__field input,
+.import-create-dialog__field textarea {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  color: var(--icd-ink);
+  background: var(--bg-input, var(--icd-paper));
+  border: 1px solid var(--icd-border);
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.import-create-dialog__field textarea {
+  resize: vertical;
+}
+
+.import-create-dialog__field input:focus-visible,
+.import-create-dialog__field textarea:focus-visible,
+.import-create-dialog__dropzone:focus-visible,
+.import-create-dialog__button:focus-visible,
+.import-create-dialog__icon-button:focus-visible {
+  outline: 3px solid var(--focus-ring-color);
+  outline-offset: 2px;
+}
+
+.import-create-dialog__field-error,
+.import-create-dialog__step-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 8px 10px;
+  color: var(--icd-danger);
+  background: var(--icd-danger-bg);
+  border: 1px solid color-mix(in srgb, var(--icd-danger) 24%, transparent);
+  border-radius: var(--radius-md);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.import-create-dialog__field-error svg,
+.import-create-dialog__step-error svg {
+  flex: 0 0 auto;
+  margin-block-start: 1px;
+}
+
+/* ── Drop zone ─────────────────────────────────────────────── */
+
+.import-create-dialog__dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 132px;
+  padding: 18px;
+  text-align: center;
+  color: var(--icd-muted);
+  background:
+    linear-gradient(135deg, var(--icd-accent-soft), transparent 56%),
+    var(--icd-canvas);
+  border: 2px dashed var(--icd-border);
+  border-radius: var(--icd-radius);
+  cursor: pointer;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+
+.import-create-dialog__dropzone:hover,
+.import-create-dialog__dropzone.is-active {
+  color: var(--icd-accent-strong);
+  background: var(--icd-accent-soft);
+  border-color: color-mix(in srgb, var(--icd-accent) 48%, var(--icd-border));
+}
+
+.import-create-dialog__dropzone > span {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.import-create-dialog__dropzone > small {
+  font-size: 11px;
+}
+
+.import-create-dialog__file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── File list ─────────────────────────────────────────────── */
+
+.import-create-dialog__file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+}
+
+.import-create-dialog__file-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.import-create-dialog__file-list-header strong {
+  color: var(--icd-ink);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.import-create-dialog__file-list-header span {
+  min-width: 20px;
+  padding: 1px 6px;
+  text-align: center;
+  color: var(--icd-muted);
+  background: var(--icd-canvas);
+  border-radius: var(--radius-md);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.import-create-dialog__file-list > ul {
+  display: grid;
+  gap: 6px;
+  max-height: 260px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden auto;
+  list-style: none;
+  scrollbar-width: thin;
+}
+
+.import-create-dialog__file-item {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 10px;
+  background: var(--icd-canvas);
+  border: 1px solid var(--icd-border);
+  border-radius: var(--radius-md);
+}
+
+.import-create-dialog__file-item.is-success {
+  border-color: color-mix(in srgb, var(--icd-success) 40%, var(--icd-border));
+}
+
+.import-create-dialog__file-item.is-error {
+  border-color: color-mix(in srgb, var(--icd-danger) 40%, var(--icd-border));
+}
+
+.import-create-dialog__file-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  color: var(--icd-accent-strong);
+  background: var(--icd-paper);
+  border: 1px solid color-mix(in srgb, var(--icd-accent) 22%, var(--icd-border));
+  border-radius: var(--radius-md);
+}
+
+.import-create-dialog__file-meta {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.import-create-dialog__file-name {
+  overflow: hidden;
+  color: var(--icd-ink);
+  font-size: 12px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.import-create-dialog__file-size {
+  color: var(--icd-muted);
+  font-size: 10px;
+}
+
+.import-create-dialog__file-status {
+  padding-inline-end: 4px;
+  color: var(--icd-muted);
+  font-size: 10px;
+  font-weight: 600;
+  text-align: end;
+  white-space: nowrap;
+}
+
+.import-create-dialog__file-item.is-success .import-create-dialog__file-status {
+  color: var(--icd-success);
+}
+
+.import-create-dialog__file-item.is-error .import-create-dialog__file-status {
+  color: var(--icd-danger);
+}
+
+.import-create-dialog__file-error {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  padding: 6px 8px;
+  color: var(--icd-danger);
+  background: var(--icd-danger-bg);
+  border-radius: 6px;
+  font-size: 10px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.import-create-dialog__file-error svg {
+  flex: 0 0 auto;
+  margin-block-start: 1px;
+}
+
+.import-create-dialog__progress-track {
+  grid-column: 1 / -1;
+  height: 6px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--icd-border) 80%, transparent);
+  border-radius: var(--radius-md);
+}
+
+.import-create-dialog__progress-fill {
+  height: 100%;
+  background: var(--icd-accent);
+  border-radius: inherit;
+  transition: width 160ms ease;
+}
+
+.import-create-dialog__empty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 12px;
+  color: var(--icd-muted);
+  background: var(--icd-canvas);
+  border: 1px dashed var(--icd-border);
+  border-radius: var(--radius-md);
+  font-size: 12px;
+}
+
+/* ── Buttons ───────────────────────────────────────────────── */
+
+.import-create-dialog__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-block-start: 4px;
+}
+
+.import-create-dialog__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 7px 12px;
+  color: var(--icd-ink);
+  background: var(--icd-paper);
+  border: 1px solid var(--icd-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 620;
+  line-height: 1.2;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.import-create-dialog__button:hover:not(:disabled) {
+  background: var(--icd-accent-soft);
+  border-color: color-mix(in srgb, var(--icd-accent) 36%, var(--icd-border));
+}
+
+.import-create-dialog__button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.import-create-dialog__button--primary {
+  color: var(--text-on-accent);
+  background: var(--icd-accent);
+  border-color: var(--icd-accent);
+}
+
+.import-create-dialog__button--primary:hover:not(:disabled) {
+  background: var(--icd-accent-strong);
+  border-color: var(--icd-accent-strong);
+}
+
+.import-create-dialog__icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  color: var(--icd-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: color 120ms ease, background 120ms ease, border-color 120ms ease;
+}
+
+.import-create-dialog__icon-button:hover:not(:disabled) {
+  color: var(--icd-ink);
+  background: var(--icd-canvas);
+  border-color: var(--icd-border);
+}
+
+.import-create-dialog__icon-button--danger:hover:not(:disabled) {
+  color: var(--icd-danger);
+  background: var(--icd-danger-bg);
+  border-color: color-mix(in srgb, var(--icd-danger) 24%, var(--icd-border));
+}
+
+.import-create-dialog__icon-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+/* ── Progress / Result steps ───────────────────────────────── */
+
+.import-create-dialog__step--progress {
+  align-items: center;
+  text-align: center;
+  padding-block: 18px;
+}
+
+.import-create-dialog__progress-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--icd-ink);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.import-create-dialog__progress-summary {
+  display: grid;
+  gap: 10px;
+  inline-size: 100%;
+  max-inline-size: 420px;
+}
+
+.import-create-dialog__progress-row {
+  display: grid;
+  gap: 6px;
+  text-align: start;
+}
+
+.import-create-dialog__progress-name {
+  overflow: hidden;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.import-create-dialog__result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  padding-block: 10px;
+}
+
+.import-create-dialog__result > svg {
+  flex: 0 0 auto;
+}
+
+.import-create-dialog__result--success > svg {
+  color: var(--icd-success);
+}
+
+.import-create-dialog__result--error > svg {
+  color: var(--icd-danger);
+}
+
+.import-create-dialog__result strong {
+  color: var(--icd-ink);
+  font-size: 14px;
+}
+
+.import-create-dialog__result p {
+  max-inline-size: 420px;
+  margin: 0;
+  color: var(--icd-muted);
+  font-size: 12px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.import-create-dialog__result-details {
+  max-inline-size: 420px;
+  max-block-size: 140px;
+  margin: 0;
+  padding: 10px 12px;
+  overflow: auto;
+  text-align: start;
+  color: var(--icd-danger);
+  background: var(--icd-danger-bg);
+  border: 1px solid color-mix(in srgb, var(--icd-danger) 22%, var(--icd-border));
+  border-radius: var(--radius-md);
+  font-size: 11px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.import-create-dialog__live-region {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── Loading spinner ───────────────────────────────────────── */
+
+.import-create-dialog__spin {
+  animation: import-create-dialog-spin 1s linear infinite;
+}
+
+@keyframes import-create-dialog-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ── Responsive bands ──────────────────────────────────────── */
+
+[data-responsive-band='narrow'] .import-create-dialog__choices {
+  grid-template-columns: 1fr;
+}
+
+[data-responsive-band='narrow'] .import-create-dialog__panel {
+  inline-size: 100%;
+  max-block-size: 100%;
+  border-radius: 0;
+}
+
+[data-responsive-band='narrow'] .import-create-dialog {
+  padding: 0;
+}
+
+[data-responsive-band='narrow'] .import-create-dialog__body {
+  padding: 12px;
+}
+
+[data-responsive-band='medium'] .import-create-dialog__panel {
+  inline-size: min(96vw, 560px);
+}
+
+[data-responsive-band='medium'] .import-create-dialog__choices {
+  grid-template-columns: 1fr;
+}
+
+/* ── Forced colors ─────────────────────────────────────────── */
+
+@media (forced-colors: active) {
+  .import-create-dialog__panel {
+    background: Canvas;
+    color: CanvasText;
+    border-color: CanvasText;
+  }
+
+  .import-create-dialog__overlay {
+    background: Canvas;
+    opacity: 0.7;
+  }
+
+  .import-create-dialog__choice,
+  .import-create-dialog__dropzone,
+  .import-create-dialog__file-item,
+  .import-create-dialog__field input,
+  .import-create-dialog__field textarea,
+  .import-create-dialog__empty,
+  .import-create-dialog__result-details {
+    background: Canvas;
+    border-color: CanvasText;
+    color: CanvasText;
+  }
+
+  .import-create-dialog__button {
+    background: ButtonFace;
+    color: ButtonText;
+    border-color: ButtonBorder;
+  }
+
+  .import-create-dialog__button--primary {
+    background: Highlight;
+    color: HighlightText;
+    border-color: Highlight;
+  }
+
+  .import-create-dialog__button:focus-visible,
+  .import-create-dialog__choice:focus-visible,
+  .import-create-dialog__dropzone:focus-visible,
+  .import-create-dialog__field input:focus-visible,
+  .import-create-dialog__field textarea:focus-visible,
+  .import-create-dialog__icon-button:focus-visible {
+    outline-color: Highlight;
+  }
+
+  .import-create-dialog__progress-fill {
+    background: Highlight;
+  }
+}
+
+/* ── Reduced motion ────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .import-create-dialog__choice,
+  .import-create-dialog__button,
+  .import-create-dialog__icon-button,
+  .import-create-dialog__dropzone,
+  .import-create-dialog__progress-fill {
+    transition: none;
+  }
+
+  .import-create-dialog__spin {
+    animation: none;
+  }
+}

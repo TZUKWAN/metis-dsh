@@ -1,0 +1,102 @@
+name: Quality gates
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Type-check and lint gate
+    runs-on: windows-2022
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Type-check
+        run: npm run typecheck
+      - name: Lint (no regression against legacy baseline)
+        run: node scripts/lint-gate.mjs
+
+  security-report:
+    # SECURITY / SUPPLY CHAIN REPORT — advisory only. Dependency CVEs do NOT
+    # block the engineering delivery gate (delivery policy): findings are
+    # reported for triage instead. Existing runtime/data-integrity protections
+    # are untouched.
+    name: Security advisory report (non-blocking)
+    runs-on: windows-2022
+    timeout-minutes: 10
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: npm audit (production dependencies)
+        run: npm audit --omit=dev
+
+  tests:
+    name: Tests (${{ matrix.group }})
+    runs-on: windows-2022
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - group: engine-library
+            paths: engine
+          - group: engine-integration-security
+            paths: tests/engine tests/evals tests/lib tests/utils tests/integration tests/security tests/docs
+          - group: frontend
+            paths: tests/frontend
+          - group: electron-and-e2e
+            paths: tests/electron tests/e2e tests/scripts
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - name: Resolve real TEMP path (CI runners expose 8.3 short TMP)
+        shell: pwsh
+        run: |
+          Add-Content $env:GITHUB_ENV "TMP=$((node -e "process.stdout.write(require('fs').realpathSync.native(require('os').tmpdir()))"))"
+          Add-Content $env:GITHUB_ENV "TEMP=$((node -e "process.stdout.write(require('fs').realpathSync.native(require('os').tmpdir()))"))"
+      - run: npm ci
+      - name: Rebuild SQLite for Node.js
+        run: npm run rebuild:node
+      - name: Run test group
+        run: npx vitest run ${{ matrix.paths }}
+
+  build:
+    name: Electron production build
+    needs: quality
+    runs-on: windows-2022
+    timeout-minutes: 25
+    env:
+      METIS_SKIP_GENOFFICE: '1'
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build
+        run: npm run build
