@@ -1,0 +1,4 @@
+- insert:
+    - id: metis-literature-ncpssd
+      name: dsh-metis-literature-ncpssd
+      inject: ['metisLiterature']

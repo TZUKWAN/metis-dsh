@@ -1,0 +1,220 @@
+/** ProjectHomeBanner — 项目主页横幅。 */
+
+.project-home {
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm, 2px);
+  background: var(--bg-card);
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+.project-home__main {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.project-home__stage {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.project-home__stage-label {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.project-home__stage-value {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 2px;
+  padding: 1px 8px;
+  flex-shrink: 0;
+}
+
+.project-home__rationale {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.project-home__rationale-chip {
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: var(--bg-input, transparent);
+  border: 1px solid var(--border-light);
+  border-radius: 2px;
+  padding: 1px 8px;
+}
+
+.project-home__stage-select {
+  width: auto;
+  font-size: 12.5px;
+  padding: 3px 24px 3px 8px;
+  font-family: var(--font-serif);
+}
+
+.project-home__stage-progress {
+  flex: 1;
+  height: 4px;
+  background: var(--border-light);
+  border-radius: 2px;
+  overflow: hidden;
+  min-width: 80px;
+}
+
+.project-home__stage-progress > span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width 240ms ease;
+}
+
+.project-home__stage-count {
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.project-home__scenario-summary {
+  min-width: 0;
+}
+
+.project-home__scenario-status {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.project-home__scenario-status--running { color: var(--accent); }
+.project-home__scenario-status--completed { color: var(--success); }
+.project-home__scenario-status--failed,
+.project-home__scenario-status--cancelled { color: var(--status-failed); }
+
+.project-home__scenario-steps {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  overflow-x: auto;
+  margin: 0;
+  padding: 1px 0 4px;
+  list-style: none;
+  scrollbar-width: thin;
+}
+
+.project-home__scenario-step {
+  display: grid;
+  grid-template-columns: auto minmax(84px, 1fr);
+  align-items: center;
+  column-gap: 5px;
+  min-width: 142px;
+  max-width: 214px;
+  padding: 5px 7px;
+  border: 1px solid var(--border-light);
+  border-radius: 3px;
+  color: var(--text-muted);
+  background: var(--bg-input, transparent);
+}
+
+.project-home__scenario-step-number {
+  grid-row: 1 / span 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.project-home__scenario-step-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.project-home__scenario-step-status {
+  font-size: 10px;
+  opacity: .82;
+}
+
+.project-home__scenario-step--completed,
+.project-home__scenario-step--skipped { color: var(--success); }
+.project-home__scenario-step--failed { color: var(--status-failed); }
+.project-home__scenario-step--blocked { color: var(--status-failed); opacity: .82; }
+.project-home__scenario-step--running {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--bg-card));
+}
+.project-home__scenario-step.is-current { box-shadow: 0 0 0 1px var(--accent); }
+
+.project-home__brief {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.project-home__checklist {
+  border-top: 1px solid var(--border-light);
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+.project-home__checklist ul {
+  list-style: none;
+  margin: 0 0 6px 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 4px 16px;
+}
+
+.project-home__checklist li {
+  font-size: 12px;
+  color: var(--text-primary);
+  padding-left: 16px;
+  position: relative;
+}
+
+.project-home__checklist li::before {
+  content: '☐';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+}
+
+.project-home__outputs {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin: 0 0 8px 0;
+}
+
+.project-home__checklist-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.project-home__notice {
+  font-size: 11.5px;
+  color: var(--success);
+}

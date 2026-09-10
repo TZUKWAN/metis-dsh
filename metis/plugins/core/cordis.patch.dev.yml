@@ -1,0 +1,7 @@
+# metis-core 开发态 overlay（用于原生 Web profile 的 --patch 加载）。
+# 插件以 TS 源码经 DSH 的 tsx 加载器直接运行（开发态）；
+# 分发态（pack/npm）走 dsh.bundle 声明，见 ../plugins/core/package.json。
+# Windows 注意：ESM loader 要求绝对路径为 file:// URL（裸 `D:/...` 会被当作协议）。
+- insert:
+    - id: metis-core
+      name: 'file:///D:/LATEXTEST/METIS4DSH/deepseek-harness/metis/plugins/core/src/index.ts'

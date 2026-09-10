@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-06T01:27:10.602Z",
+  "metrics": {
+    "db_seed_1000_papers": 164,
+    "db_open_and_list_1000": 7,
+    "session_500_append": 96,
+    "session_500_read": 0,
+    "outcomes_100_write_list": 53
+  }
+}

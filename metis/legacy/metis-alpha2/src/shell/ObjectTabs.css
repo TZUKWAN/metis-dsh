@@ -1,0 +1,583 @@
+/**
+ * ObjectTabs styles — closable, scrollable, reorderable tab bar.
+ *
+ * Design tokens from the research workspace palette (--research-accent).
+ * All layout uses CSS logical properties for RTL support.
+ * Supports forced-colors, prefers-reduced-motion, and container-responsive narrow band.
+ */
+
+/* ── Root container ── */
+
+.object-tabs {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  width: 100%;
+  height: 36px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-light, var(--border-light));
+  flex-shrink: 0;
+  container-type: inline-size;
+  isolation: isolate;
+}
+
+/* ── Error state ── */
+
+.object-tabs--error {
+  justify-content: center;
+}
+
+.object-tabs__error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  color: var(--accent);
+  font-size: 12px;
+}
+
+.object-tabs__error > svg {
+  flex-shrink: 0;
+  color: var(--accent);
+}
+
+.object-tabs__retry-btn {
+  padding: 2px 10px;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--accent);
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+
+.object-tabs__retry-btn:hover {
+  background: var(--accent);
+  color: var(--text-on-accent);
+}
+
+/* ── Loading state ── */
+
+.object-tabs--loading {
+  justify-content: center;
+}
+
+.object-tabs__loading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  color: var(--text-muted, var(--text-muted));
+  font-size: 12px;
+}
+
+.object-tabs__spinner {
+  animation: object-tabs-spin 0.85s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes object-tabs-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Empty state ── */
+
+.object-tabs--empty {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  min-height: 36px;
+}
+
+.object-tabs__empty-label {
+  color: var(--text-muted, var(--text-muted));
+  font-size: 12px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.object-tabs__empty-desc {
+  color: var(--text-faint);
+  font-size: 11px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.object-tabs__new-btn--empty {
+  margin-inline-start: auto;
+}
+
+/* ── Scroll arrows ── */
+
+.object-tabs__scroll-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: var(--z-inpage, 40); /* 页内局部层：标签条滚动箭头 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid var(--border-light, var(--border-light));
+  border-radius: 4px;
+  background: var(--bg-card);
+  color: var(--text-muted, var(--text-muted));
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: background 0.12s, color 0.12s;
+  flex-shrink: 0;
+}
+
+.object-tabs__scroll-arrow:hover {
+  background: var(--bg-hover);
+  color: var(--text-main, var(--border));
+}
+
+.object-tabs__scroll-arrow--left {
+  inset-inline-start: 2px;
+}
+
+.object-tabs__scroll-arrow--right {
+  inset-inline-end: 2px;
+}
+
+/* Reverse chevron direction in RTL */
+[dir='rtl'] .object-tabs__scroll-arrow--left > svg,
+[dir='rtl'] .object-tabs__scroll-arrow--right > svg {
+  transform: scaleX(-1);
+}
+
+/* ── Tab strip (scrollable) ── */
+
+.object-tabs__strip {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: auto;
+  padding-inline-start: 2px;
+  padding-inline-end: 2px;
+}
+
+.object-tabs__strip::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Tab wrapper (for drop placeholder adjacency) ── */
+
+.object-tabs__tab-wrapper {
+  display: flex;
+  align-items: stretch;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+/* ── Individual tab ── */
+
+.object-tabs__tab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  max-width: 200px;
+  padding-block: 0;
+  padding-inline: 10px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--text-muted, var(--text-muted));
+  font-size: 12px;
+  font-weight: 450;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.object-tabs__tab:hover {
+  color: var(--text-main, var(--border));
+  background: var(--bg-hover);
+}
+
+.object-tabs__tab:active {
+  background: var(--bg-active, var(--border-light));
+}
+
+.object-tabs__tab--active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 550;
+}
+
+.object-tabs__tab--active:hover {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+
+.object-tabs__tab--closing {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.object-tabs__tab--dirty .object-tabs__tab-label {
+  /* Dirty tab label in italic — subtle indication */
+  font-style: italic;
+}
+
+.object-tabs__tab--error {
+  color: var(--accent);
+}
+
+/* ── Tab icon ── */
+
+.object-tabs__tab-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: inherit;
+}
+
+.object-tabs__tab-icon > svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* ── Tab spinner ── */
+
+.object-tabs__tab-spinner {
+  animation: object-tabs-spin 0.85s linear infinite;
+  flex-shrink: 0;
+  color: var(--text-muted, var(--text-muted));
+}
+
+/* ── Tab error icon ── */
+
+.object-tabs__tab-error-icon {
+  flex-shrink: 0;
+  color: var(--accent);
+}
+
+/* ── Tab label ── */
+
+.object-tabs__tab-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* ── Dirty dot ── */
+
+.object-tabs__tab-dirty-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+/* ── Close button ── */
+
+.object-tabs__tab-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  cursor: pointer;
+  color: var(--text-muted, var(--text-muted));
+  transition: background 0.12s, color 0.12s;
+}
+
+.object-tabs__tab-close:hover,
+.object-tabs__tab-close:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-main, var(--border));
+}
+
+.object-tabs__tab--active .object-tabs__tab-close:hover,
+.object-tabs__tab--active .object-tabs__tab-close:focus-visible {
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  color: var(--accent);
+}
+
+/* ── Drop placeholder ── */
+
+.object-tabs__drop-placeholder {
+  width: 2px;
+  min-height: 28px;
+  align-self: center;
+  margin-inline: 1px;
+  background: var(--accent);
+  border-radius: 1px;
+  flex-shrink: 0;
+  animation: object-tabs-placeholder-pulse 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes object-tabs-placeholder-pulse {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── Fade overlays (when scrolled) ── */
+
+.object-tabs__fade {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 24px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.object-tabs__fade--left {
+  inset-inline-start: 0;
+  background: linear-gradient(
+    to right,
+    var(--bg-card) 10%,
+    transparent
+  );
+}
+
+.object-tabs__fade--right {
+  inset-inline-end: 0;
+  background: linear-gradient(
+    to left,
+    var(--bg-card) 10%,
+    transparent
+  );
+}
+
+.object-tabs__fade--with-new {
+  /* Account for the new-tab button width (~32-60px) */
+  inset-inline-end: 34px;
+}
+
+/* Reverse gradient direction in RTL */
+[dir='rtl'] .object-tabs__fade--left {
+  background: linear-gradient(
+    to left,
+    var(--bg-card) 10%,
+    transparent
+  );
+}
+
+[dir='rtl'] .object-tabs__fade--right {
+  background: linear-gradient(
+    to right,
+    var(--bg-card) 10%,
+    transparent
+  );
+}
+
+/* ── New tab button ── */
+
+.object-tabs__new-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-block: 0;
+  padding-inline: 12px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--text-muted, var(--text-muted));
+  font-size: 12px;
+  font-weight: 450;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.15s, background 0.15s;
+  white-space: nowrap;
+}
+
+.object-tabs__new-btn:hover {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+
+.object-tabs__new-btn:active {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+/* ── Focus-visible ── */
+
+.object-tabs__tab:focus-visible,
+.object-tabs__tab-close:focus-visible,
+.object-tabs__scroll-arrow:focus-visible,
+.object-tabs__new-btn:focus-visible,
+.object-tabs__retry-btn:focus-visible {
+  outline: 3px solid var(--focus-ring-color);
+  outline-offset: 1px;
+}
+
+.object-tabs__tab--active:focus-visible {
+  outline-color: var(--accent);
+}
+
+/* ── Narrow band (data-responsive-band="narrow") ── */
+
+[data-responsive-band='narrow'].object-tabs {
+  height: 32px;
+}
+
+[data-responsive-band='narrow'] .object-tabs__tab {
+  max-width: 120px;
+  padding-inline: 7px;
+  font-size: 11px;
+  gap: 3px;
+}
+
+[data-responsive-band='narrow'] .object-tabs__new-btn {
+  padding-inline: 8px;
+  font-size: 11px;
+}
+
+[data-responsive-band='narrow'] .object-tabs__new-btn > span {
+  display: none;
+}
+
+[data-responsive-band='narrow'] .object-tabs__tab-label {
+  font-size: 11px;
+}
+
+[data-responsive-band='narrow'] .object-tabs__tab-close {
+  width: 14px;
+  height: 14px;
+}
+
+[data-responsive-band='narrow'] .object-tabs__scroll-arrow {
+  width: 16px;
+  height: 16px;
+}
+
+[data-responsive-band='narrow'] .object-tabs__fade--with-new {
+  inset-inline-end: 28px;
+}
+
+[data-responsive-band='narrow'] .object-tabs__empty-label {
+  font-size: 11px;
+}
+
+[data-responsive-band='narrow'] .object-tabs__empty-desc {
+  display: none;
+}
+
+/* ── Forced colors ── */
+
+@media (forced-colors: active) {
+  .object-tabs {
+    border-color: CanvasText;
+  }
+
+  .object-tabs__tab {
+    border-bottom-color: transparent;
+  }
+
+  .object-tabs__tab--active {
+    color: HighlightText;
+    background: Highlight;
+    border-bottom-color: Highlight;
+    forced-color-adjust: none;
+  }
+
+  .object-tabs__tab:hover {
+    border-bottom-color: CanvasText;
+  }
+
+  .object-tabs__tab--active:hover {
+    border-bottom-color: Highlight;
+  }
+
+  .object-tabs__drop-placeholder {
+    background: Highlight;
+  }
+
+  .object-tabs__tab-dirty-dot {
+    background: LinkText;
+  }
+
+  .object-tabs__scroll-arrow,
+  .object-tabs__new-btn,
+  .object-tabs__retry-btn {
+    border-color: ButtonBorder;
+  }
+
+  .object-tabs__tab-close:hover,
+  .object-tabs__tab-close:focus-visible {
+    background: ButtonFace;
+    color: ButtonText;
+  }
+
+  .object-tabs__tab:focus-visible,
+  .object-tabs__tab-close:focus-visible,
+  .object-tabs__scroll-arrow:focus-visible,
+  .object-tabs__new-btn:focus-visible,
+  .object-tabs__retry-btn:focus-visible {
+    outline-color: Highlight;
+  }
+
+  .object-tabs__fade {
+    display: none;
+  }
+}
+
+/* ── Reduced motion ── */
+
+@media (prefers-reduced-motion: reduce) {
+  .object-tabs__tab,
+  .object-tabs__tab-close,
+  .object-tabs__scroll-arrow,
+  .object-tabs__new-btn,
+  .object-tabs__retry-btn {
+    transition: none;
+  }
+
+  .object-tabs__tab-spinner,
+  .object-tabs__spinner {
+    animation: none;
+  }
+
+  .object-tabs__drop-placeholder {
+    animation: none;
+    opacity: 0.85;
+  }
+}
+
+/* ── Horizontally overflowing label ── */
+
+.object-tabs__tab-label {
+  overflow-wrap: anywhere;
+}
+
+/* ── Touch-friendly tab close on narrow ── */
+
+@media (pointer: coarse) {
+  .object-tabs__tab-close {
+    width: 20px;
+    height: 20px;
+  }
+}

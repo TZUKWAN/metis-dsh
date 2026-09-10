@@ -1,0 +1,212 @@
+/* SubmissionsPage — 投稿驾驶舱。
+ * 2026-09-02 排版重构（依据 taste-skill / redesign-existing-projects / apple-design）：
+ * 卡片只用于真实层级（字段用行式定义列表，不用盒子堆砌）；层级靠
+ * 字重+字号+行高；时间戳 tabular-nums；空态构图化；章节节奏统一。 */
+.submissions-page { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 0; height: calc(100vh - 46px); background: transparent; }
+.submissions-list { border-right: 1px solid var(--border-light); display: flex; flex-direction: column; min-height: 0; background: var(--glass-surface); -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)); backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)); box-shadow: inset 1px 0 0 var(--glass-edge); }
+.submissions-list__header { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 10px; }
+.submissions-list__header h2 { margin: 0; font-size: 15px; font-weight: var(--weight-heading); letter-spacing: var(--tracking-heading); }
+.submissions-new { border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent); color: var(--accent); background: transparent; border-radius: 8px; padding: 5px 11px; cursor: pointer; font-weight: var(--weight-medium); font-size: 12px; transition: background var(--transition-fast), border-color var(--transition-fast); }
+.submissions-new:hover { background: var(--accent-soft); }
+.submissions-list__filters { padding: 0 16px 10px; display: flex; flex-direction: column; gap: 8px; }
+.submissions-filter { display: flex; gap: 2px; background: var(--bg-active); border-radius: 8px; padding: 2px; }
+.submissions-filter button { flex: 1; border: 0; background: transparent; padding: 5px 0; border-radius: 6px; cursor: pointer; color: var(--text-secondary); font-weight: var(--weight-medium); font-size: 12px; transition: color var(--transition-fast), background var(--transition-fast); }
+.submissions-filter button.active { background: var(--bg-card); color: var(--text-primary); box-shadow: 0 1px 3px rgb(0 0 0 / 10%); }
+.submissions-search { width: 100%; box-sizing: border-box; border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; font-size: 13px; transition: border-color var(--transition-fast); }
+.submissions-search:focus { border-color: var(--accent); outline: none; box-shadow: var(--glow-accent-soft); }
+.submissions-list__scroll { flex: 1; overflow-y: auto; padding: 4px 8px 12px; }
+.submissions-empty { color: var(--text-muted); font-size: 13px; }
+.submissions-case-item { display: flex; flex-direction: column; gap: 3px; width: 100%; text-align: left; border: 0; background: transparent; border-radius: 8px; padding: 9px 10px 9px 12px; cursor: pointer; position: relative; transition: background var(--transition-fast); }
+.submissions-case-item::before { content: ''; position: absolute; left: 0; top: 20%; bottom: 20%; width: 2px; border-radius: 1px; background: transparent; }
+.submissions-case-item:hover { background: var(--bg-hover); }
+.submissions-case-item.selected { background: var(--accent-soft); }
+.submissions-case-item.selected::before { background: var(--accent); }
+.submissions-case-item strong { font-size: 13px; font-weight: var(--weight-medium); color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.submissions-case-item span { font-size: 12px; color: var(--text-secondary); }
+.submissions-case-item small { font-size: 11px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+
+/* ── 详情主区：章节化节奏；内容列居中保持版面均衡 ─────────────── */
+.submissions-detail { overflow-y: auto; padding: 24px 32px 40px; }
+
+.submissions-notice { margin: 0 0 14px; padding: 8px 12px; border-radius: 8px; background: color-mix(in srgb, var(--status-completed) 10%, transparent); color: var(--status-completed); font-size: 13px; }
+.submissions-notice[role="alert"] { background: color-mix(in srgb, var(--status-error) 10%, transparent); color: var(--status-error); }
+
+/* 页头：大标题 + 状态行，层级靠字重与字距。 */
+.submissions-detail__head { margin: 0 0 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border-light); }
+.submissions-detail__head h2 { margin: 0 0 6px; font-size: 21px; font-weight: var(--weight-heading); letter-spacing: var(--tracking-display); line-height: var(--leading-display); }
+.submissions-detail__head p { margin: 0; color: var(--text-secondary); font-size: 13px; letter-spacing: var(--tracking-label); }
+
+/* 阶段进度：胶囊行，当前态用强调色，完成的用强调点。 */
+.submissions-stages { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 22px; }
+.submissions-stage { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; padding: 4px 11px; border-radius: 999px; border: 1px solid var(--border-light); color: var(--text-muted); }
+.submissions-stage::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.55; }
+.submissions-stage.done { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 32%, transparent); background: var(--accent-soft); }
+.submissions-stage.done::before { opacity: 1; }
+.submissions-stage.current { color: var(--text-on-accent); background: var(--accent-gradient); border-color: transparent; font-weight: var(--weight-medium); box-shadow: var(--glow-accent-soft); }
+
+/* 字段：行式定义列表去卡片感——两组分列，行间分隔线。 */
+.submissions-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 36px; margin: 0 0 24px; padding: 4px 0; }
+.submissions-facts div { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 7px 0; border-bottom: 1px solid var(--border-light); }
+.submissions-facts div:nth-last-child(-n+2) { border-bottom: 0; }
+.submissions-facts dt { font-size: 12px; color: var(--text-muted); flex-shrink: 0; }
+.submissions-facts dd { margin: 0; font-size: 13px; color: var(--text-primary); text-align: right; word-break: break-all; font-variant-numeric: tabular-nums; }
+
+/* 推进操作：下拉与主按钮同行，主按钮走全局渐变语言。 */
+.submissions-advance { display: flex; align-items: flex-end; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+.submissions-advance label { display: flex; flex-direction: column; gap: 5px; font-size: 12px; color: var(--text-secondary); }
+.submissions-advance select { min-width: 240px; border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; transition: border-color var(--transition-fast); }
+.submissions-advance select:focus { border-color: var(--accent); outline: none; box-shadow: var(--glow-accent-soft); }
+
+.submissions-primary { background: var(--accent-gradient); color: var(--text-on-accent); border: 0; border-radius: 8px; padding: 7px 15px; cursor: pointer; font-weight: var(--weight-medium); font-size: 13px; box-shadow: var(--glow-accent-soft); transition: box-shadow var(--transition-fast), transform var(--transition-fast); }
+.submissions-primary:hover:not(:disabled) { box-shadow: var(--glow-accent); }
+.submissions-primary:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+.submissions-secondary { background: transparent; border: 1px solid var(--border); border-radius: 8px; padding: 6px 13px; cursor: pointer; color: var(--text-primary); font-size: 13px; transition: border-color var(--transition-fast), background var(--transition-fast); }
+.submissions-secondary:hover { border-color: color-mix(in srgb, var(--accent) 45%, transparent); background: var(--accent-soft); }
+
+/* 备注：label 在上（taste-skill §4.6），textarea 全宽、保存按钮紧随其下。 */
+.submissions-notes { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary); }
+.submissions-notes textarea { border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px; font: inherit; font-size: 13px; line-height: 1.55; resize: vertical; min-height: 64px; transition: border-color var(--transition-fast); }
+.submissions-notes textarea:focus { border-color: var(--accent); outline: none; box-shadow: var(--glow-accent-soft); }
+.submissions-notes + .submissions-secondary { margin-bottom: 24px; }
+
+/* 操作记录：真时间线——竖线+圆点，时间 tabular-nums，来源徽章化。 */
+.submissions-events-title { font-size: 13px; font-weight: var(--weight-heading); letter-spacing: var(--tracking-heading); color: var(--text-secondary); margin: 0 0 12px; }
+.submissions-timeline { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.submissions-timeline li { position: relative; display: flex; gap: 12px; align-items: baseline; padding: 7px 0 7px 20px; }
+.submissions-timeline li + li { border-top: 1px solid var(--border-light); }
+.submissions-timeline li::before { content: ''; position: absolute; left: 3px; top: 14px; width: 6px; height: 6px; border-radius: 50%; background: var(--text-muted); opacity: 0.6; }
+.submissions-timeline li:first-child::before { background: var(--accent); opacity: 1; box-shadow: 0 0 6px color-mix(in srgb, var(--accent) 45%, transparent); }
+.submissions-timeline__time { font-size: 11.5px; color: var(--text-muted); white-space: nowrap; font-variant-numeric: tabular-nums; min-width: 148px; }
+.submissions-timeline__desc { font-size: 13px; color: var(--text-primary); flex: 1; }
+.submissions-timeline__source { font-size: 10.5px; letter-spacing: 0.04em; padding: 1px 8px; border-radius: 999px; background: var(--bg-active); color: var(--text-secondary); }
+
+.submissions-empty-state { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-top: 15vh; color: var(--text-secondary); }
+.submissions-create-mode { display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin: 0 0 12px; }
+.submissions-create-mode label { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.submissions-create-hint { margin: 0; font-size: 12px; color: var(--text-muted); }
+
+/* ── 期刊研究（P1）：折叠分组，条目行式化去盒子堆砌 ────────────── */
+.submissions-journal { margin: 0 0 8px; }
+.submissions-journal details { border: 1px solid var(--border); border-radius: 12px; padding: 2px 16px 14px; background: var(--bg-card-glass); }
+.submissions-journal summary { cursor: pointer; padding: 11px 0; display: flex; align-items: center; }
+.submissions-journal summary h3 { display: inline; margin: 0; font-size: 14px; letter-spacing: var(--tracking-heading); }
+.submissions-journal__actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 16px; }
+.submissions-journal__group { margin: 0 0 18px; }
+.submissions-journal__group h4 { margin: 0 0 8px; font-size: 12.5px; font-weight: var(--weight-heading); letter-spacing: var(--tracking-label); color: var(--text-secondary); }
+.submissions-journal__item { padding: 9px 2px; margin: 0; border: 0; border-bottom: 1px solid var(--border-light); border-radius: 0; }
+.submissions-journal__group .submissions-journal__item:last-child { border-bottom: 0; }
+.submissions-journal__item p { margin: 4px 0; font-size: 13px; line-height: 1.55; color: var(--text-primary); }
+.submissions-journal__item small { color: var(--text-muted); }
+.submissions-journal__meta { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: baseline; font-size: 12px; color: var(--text-secondary); margin: 2px 0; }
+.submissions-journal__meta:empty { display: none; }
+.submissions-journal__evidence summary { font-size: 12px; color: var(--accent); cursor: pointer; }
+.submissions-journal__evidence blockquote { margin: 6px 0; padding: 6px 10px; border-left: 2px solid color-mix(in srgb, var(--accent) 40%, transparent); font-size: 12px; color: var(--text-secondary); white-space: pre-wrap; }
+.submissions-journal__diff ul, .submissions-journal__corpus ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.submissions-journal__corpus li { display: flex; gap: 10px; align-items: baseline; font-size: 13px; }
+.submissions-journal__corpus li small { color: var(--text-muted); font-variant-numeric: tabular-nums; }
+
+/* 构图化空态：虚线容器 + 居中文案（redesign skill: composed empty state）。 */
+.submissions-detail .submissions-empty,
+.submissions-journal .submissions-empty {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  border: 1px dashed var(--border); border-radius: 10px;
+  padding: 14px 16px; margin: 8px 0; color: var(--text-muted); background: transparent;
+}
+
+.submissions-badge { font-size: 11px; padding: 2px 9px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--accent); }
+.submissions-badge.warn { background: color-mix(in srgb, var(--status-error) 10%, transparent); color: var(--status-error); }
+.submissions-tier { font-size: 11px; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--border-light); color: var(--text-muted); }
+.submissions-tier.ok { color: var(--status-completed); border-color: color-mix(in srgb, var(--status-completed) 40%, transparent); }
+.submissions-tier.bad { color: var(--status-error); border-color: color-mix(in srgb, var(--status-error) 40%, transparent); }
+.submissions-diagnosis, .submissions-plan { border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin: 14px 0 0; background: var(--bg-card-glass); }
+.submissions-diagnosis h3, .submissions-plan h3 { margin: 0 0 8px; font-size: 14px; }
+.submissions-plan__select { display: flex; gap: 8px; align-items: center; font-size: 13px; }
+/* ── P2 投稿检查与材料包 ── */
+.submissions-preflight ul, .submissions-package-files ul, .submissions-cover-letter ul { list-style: none; margin: 6px 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.submissions-preflight__item { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; font-size: 13px; }
+.submissions-preflight__item small { width: 100%; color: var(--text-secondary); }
+.submissions-package { border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin: 14px 0 0; background: var(--bg-card-glass); }
+.submissions-package h3 { margin: 14px 0 8px; font-size: 14px; }
+.submissions-package-files li { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 13px; }
+.submissions-package-attach { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; margin: 10px 0; font-size: 13px; }
+.submissions-package-attach label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--text-secondary); }
+.submissions-package-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.submissions-cover-letter { margin-top: 8px; font-size: 13px; }
+/* ── P3/P4 最终提交确认与返修工作台 ── */
+.submissions-final-submit { border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin: 14px 0 0; display: flex; flex-direction: column; gap: 8px; font-size: 13px; background: var(--bg-card-glass); }
+.submissions-final-submit h3 { margin: 0 0 4px; font-size: 14px; }
+.submissions-final-submit label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--text-secondary); }
+.submissions-final-submit input[type="text"], .submissions-final-submit input:not([type]), .submissions-final-submit select { padding: 7px 10px; border: 1px solid var(--border); border-radius: 8px; }
+.submissions-confirm-statement { flex-direction: row !important; align-items: center; gap: 8px !important; }
+.submissions-revision { margin-top: 14px; }
+.submissions-revision textarea, .submissions-response-edit textarea { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 13px; margin-top: 6px; }
+.submissions-revision details > summary { cursor: pointer; font-size: 13px; color: var(--accent); }
+.submissions-response-edit button { margin-top: 6px; }
+
+/* ── P3 投稿通信（邮件）── */
+.submissions-mail { border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin: 14px 0 0; background: var(--bg-card-glass); }
+.submissions-mail h3 { margin: 0 0 8px; font-size: 14px; }
+.submissions-mail__toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-bottom: 10px; }
+.submissions-mail__toolbar label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--text-secondary); }
+.submissions-mail__toolbar select { min-width: 220px; border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; }
+.submissions-mail__subtitle { margin: 14px 0 6px; font-size: 13px; color: var(--text-primary); }
+.submissions-mail__list { list-style: none; margin: 6px 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.submissions-mail__item { border: 1px solid var(--border-light); border-radius: 10px; padding: 9px 12px; }
+.submissions-mail__item p { margin: 4px 0; font-size: 13px; color: var(--text-primary); }
+.submissions-mail__item button { margin-top: 6px; }
+.submissions-mail__compose label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
+.submissions-mail__compose textarea { border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font: inherit; font-size: 13px; resize: vertical; }
+.submissions-mail__preview { border: 1px dashed var(--border); border-radius: 10px; padding: 8px 12px; margin: 10px 0; }
+.submissions-mail__preview p { margin: 4px 0; }
+
+/* ── P3 投稿门户（半自动填单）── */
+.submissions-portal { border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin: 14px 0 0; background: var(--bg-card-glass); }
+.submissions-portal h3 { margin: 0 0 8px; font-size: 14px; }
+.submissions-portal__toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 10px; }
+.submissions-portal__toolbar input { flex: 1; min-width: 260px; }
+.submissions-portal__session { border: 1px solid var(--border-light); border-radius: 10px; padding: 8px 12px; margin-bottom: 10px; }
+.submissions-portal__session p { margin: 4px 0; font-size: 13px; color: var(--text-primary); word-break: break-all; }
+.submissions-portal__plan { margin-top: 10px; }
+.submissions-portal__list { list-style: none; margin: 6px 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.submissions-portal__item { border: 1px solid var(--border-light); border-radius: 10px; padding: 8px 12px; }
+.submissions-portal__item p { margin: 4px 0; font-size: 13px; color: var(--text-primary); }
+.submissions-portal__check { display: flex; align-items: center; gap: 8px; }
+.submissions-portal__value { word-break: break-all; }
+.submissions-portal__results { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.submissions-portal__results li { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; font-size: 13px; border-left: 2px solid var(--border-light); padding: 4px 0 4px 12px; }
+.submissions-portal__results li small { color: var(--text-muted); }
+
+/* ── 返修工作台（三栏：意见树 / 意见详情与回复 / 返修动作）── */
+.submissions-revision__grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(260px, 1.4fr) minmax(180px, 0.8fr);
+  gap: 14px;
+  align-items: start;
+}
+.submissions-revision__col { min-width: 0; }
+.submissions-revision__tree ul { list-style: none; margin: 0; padding: 0; }
+.submissions-comment-link {
+  display: block; width: 100%; text-align: left; cursor: pointer;
+  background: none; border: 1px solid transparent; border-radius: 8px;
+  padding: 4px 6px; font: inherit; color: inherit;
+}
+.submissions-comment-link:hover { background: var(--bg-hover); }
+.submissions-comment-link.active { border-color: currentColor; }
+.submissions-comment-snippet { display: block; opacity: 0.72; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.submissions-deadline { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-weight: 600; }
+.submissions-retarget { margin: 12px 0; padding: 10px 12px; border: 1px dashed var(--border); border-radius: 10px; }
+@media (max-width: 960px) {
+  .submissions-revision__grid { grid-template-columns: 1fr; }
+  .submissions-facts { grid-template-columns: 1fr; }
+  .submissions-facts div:nth-last-child(2) { border-bottom: 1px solid var(--border-light); }
+}
+.submissions-criteria{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 12px;margin:8px 0 2px}
+.submissions-criteria__item{margin:0;color:var(--text-primary)}
+.submissions-create-mode > label:has(> select){display:flex;flex-direction:column;gap:4px}
+
+/* 内容列居中：置于文件末尾，避免被子元素的 margin 简写覆盖。 */
+.submissions-detail > * { max-width: 960px; margin-left: auto; margin-right: auto; }
+
+/* button 是 inline-block，margin auto 不居中；转为块级自适应宽度。 */
+.submissions-detail > .submissions-secondary,
+.submissions-detail > .submissions-primary { display: block; width: fit-content; }

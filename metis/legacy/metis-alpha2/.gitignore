@@ -1,0 +1,10 @@
+# 构建产物（不上传 GitHub）
+release2/
+release3/
+release4/
+dist/
+dist-electron/
+node_modules/
+logs/
+backups/
+test-results/

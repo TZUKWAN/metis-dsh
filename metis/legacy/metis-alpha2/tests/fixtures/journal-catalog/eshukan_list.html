@@ -1,0 +1,1133 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv="x-ua-compatible" content="ie=8" />
+    <style type="text/css">
+        <!--
+        #lovexin12, #lovexin14 {
+            width: 113px;
+            height: 250px;
+            border: 0px solid #ddd;
+        }
+        -->
+        /*警告信息_配合strong和p使用*/
+        .alert {
+            font-size: 14px;
+            margin-bottom: 5px;
+            padding: 5px 35px;
+            padding-right: 25px;
+            border: 1px solid transparent;
+            line-height: 25px;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+            border-radius: 4px;
+            display: block;
+            position: relative;
+        }
+
+            .alert:before {
+                left: 10px;
+                top: 7px;
+                position: absolute;
+            }
+
+            .alert a {
+                color: #379bec;
+            }
+
+                .alert a:hover {
+                    color: red !important;
+                    text-decoration: underline;
+                }
+
+            .alert p {
+                text-indent: 2em;
+            }
+
+            .alert .close {
+                display: none;
+                font-style: normal;
+                top: 5px;
+                right: 10px;
+                position: absolute;
+            }
+
+                .alert .close:hover {
+                    color: red;
+                    cursor: pointer;
+                }
+
+                .alert .close:before {
+                    content: "×";
+                    font-weight: bold;
+                }
+
+            .alert:hover .close {
+                display: block;
+            }
+
+            .alert.error {
+                color: #b94a48;
+                background: #f2dede;
+                border-color: #eed3d7;
+            }
+
+                .alert.error:before {
+                    content: "×";
+                    font: bold 22px/22px helvetica;
+                }
+
+            .alert.info {
+                color: #3a87ad;
+                background: #d9edf7;
+                border-color: #bce8f1;
+            }
+
+                .alert.info:before {
+                    content: "i";
+                    font: bold 12px/18px "宋体";
+                    background: #72B8DA;
+                    color: #d9edf7;
+                    left: 8px;
+                    top: 8px;
+                    text-align: center;
+                    width: 18px;
+                    height: 18px;
+                    border-radius: 50%;
+                }
+
+            .alert.success {
+                color: #468847;
+                background: #dff0d8;
+                border-color: #d6e9c6;
+            }
+
+                .alert.success:before {
+                    content: "√";
+                    font: bold 16px/24px '微软雅黑';
+                }
+
+            .alert.warning {
+                background: #F5C3C1;
+                color: #BD0704;
+                border-color: #EFA2A0;
+            }
+
+                .alert.warning:before {
+                    content: "！";
+                    text-indent: 6px;
+                    font: normal 12px/18px '宋体';
+                    background: #b94a48;
+                    color: #f5b3b0;
+                    left: 8px;
+                    top: 9px;
+                    text-align: center;
+                    width: 18px;
+                    height: 18px;
+                    border-radius: 50%;
+                }
+
+        .switch {
+            width: 670px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+            .switch a {
+                display: inline-block;
+                height: 25px;
+                line-height: 25px;
+                width: 100px;
+                border: solid 1px #3a87ad;
+                border-radius: 3px;
+                margin-right: 45px;
+                color: #fff;
+                background-color: #379bec
+            }
+
+                .switch a.cur {
+                    color: #fff;
+                    background-color: #f40;
+                    border-color: #fc6129
+                }
+
+                .switch a:hover {
+                    color: #fff;
+                    background-color: #f40;
+                    border-color: #fc6129
+                }
+                #maskDiv{opacity:0.6;}
+    </style>
+    <script language="JavaScript" type="text/javascript">
+        function removeElement(id) {
+            document.getElementById(id).style.display = "none";
+        }
+        lastScrollY = 0;
+        function heartBeat() {
+            var diffY;
+            if (document.documentElement && document.documentElement.scrollTop)
+                diffY = document.documentElement.scrollTop;
+            else if (document.body)
+                diffY = document.body.scrollTop;
+            else {/*Netscape stuff*/ }
+            //(diffY);
+            percent = .1 * (diffY - lastScrollY);
+            if (percent > 0) percent = Math.ceil(percent);
+            else
+                percent = Math.floor(percent);
+            document.getElementById("lovexin12").style.top = parseInt(document.getElementById("lovexin12").style.top) + percent + "px";
+            //document.getElementById("lovexin14").style.top = parseInt(document.getElementById("lovexin12").style.top) + percent + "px";
+            lastScrollY = lastScrollY + percent;
+            //(lastScrollY);
+        }
+        suspendcode12 = "<DIV id=\"lovexin12\" style='left:2px;POSITION:absolute;TOP:120px;'><IFRAME WIDTH=\"113\" HEIGHT=\"264\" MARGINWIDTH=\"0\" MARGINHEIGHT=\"0\" HSPACE=\"0\" VSPACE=\"0\" FRAMEBORDER=\"0\" SCROLLING=\"no\" BORDERCOLOR=\"#000000\" SRC=\"/leftad.aspx\"></IFRAME><p style='cursor:hand;text-align: right;margin-bottom: 4px;' onclick=\"removeElement('lovexin12')\">关闭</p></div>"
+        //suspendcode14 = "<DIV id=\"lovexin14\" style='right:2px;POSITION:absolute;TOP:120px;'><IFRAME WIDTH=\"113\" HEIGHT=\"180\" MARGINWIDTH=\"0\" MARGINHEIGHT=\"0\" HSPACE=\"0\" VSPACE=\"0\" FRAMEBORDER=\"0\" SCROLLING=\"no\" BORDERCOLOR=\"#000000\" SRC=\"/rightad.htm\"></IFRAME></div>"
+        document.write(suspendcode12);
+        //document.write(suspendcode14);
+        window.setInterval("heartBeat()", 1);
+    </script>
+    <title>
+	自然科学综合期刊_投稿邮箱_杂志_编辑部_审稿_投稿须知
+</title><meta name="viewport" content="width=device-width" /><link href="style/basic.css" rel="stylesheet" type="text/css" /><link href="style/links.css" rel="stylesheet" type="text/css" /><link href="style/main.css" rel="stylesheet" type="text/css" /><link href="/static/css/NoAd.css" rel="stylesheet" />
+    <meta name="keywords" content="自然科学综合类期刊,万维书刊网" />
+    <meta name="description" content="自然科学综合类期刊" />
+    <script src="/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/js/group.js"></script>
+    <script src="/js/layui/layui.js"></script>
+    <link href="/js/layui/css/layui.css" rel="stylesheet" />
+    <script type="text/javascript">
+        $(document.body).ready(function () {
+            var from = '';
+        if (from.length > 0 || from == "sci") {
+            jQuery("#link").remove();
+            jQuery("#main").width(900);
+            jQuery("#m_t_c_b").width(900);
+            jQuery(".switch").width(870);
+            jQuery("#m_t_c_b ul li").width(435);
+        } else {
+            jQuery("#link").show();
+        }
+    });
+    </script>
+</head>
+<body>
+    <script type="text/javascript">
+        function CheckAll() {
+            for (var i = 0; i < document.form1.elements.length; i++) {
+                var e = document.form1.elements[i];
+                if (e.name != "checkall") {
+                    e.checked = document.form1.checkall.checked;
+                }
+            }
+        }
+    </script>
+    <form name="form1" method="post" action="./secondchannel.aspx?typeid=12" id="form1">
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="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" />
+
+
+<script src="/ScriptResource.axd?d=nnHyWnZ5bTPuYszCeiYmK9XVWx3xwk2rKBmxA4qMhY9Ts9ZojIRSMNKGqrgp38ufVOxn-5NezNAqfO57XJ5qvFlFsW-HSmiySg0rXE5N9BDej0vHEfdVjkAY7vU4l1lcpOH9KLnYuJatBzzFS5hE6y9bR0bT8KlbdTXhsVw8hRc1&amp;t=ffffffffbec1863d" type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+if (typeof(Sys) === 'undefined') throw new Error('ASP.NET Ajax 客户端框架未能加载。');
+//]]>
+</script>
+
+<script src="/WebService.asmx/jsdebug" type="text/javascript"></script>
+<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="3EF43F15" />
+        
+        <script type="text/javascript" src="/js/mootools.js"></script>
+        <script type="text/javascript" src="/js/mootools-more.js"></script>
+        <script type="text/javascript" src="/js/common.js"></script>
+        <script type="text/javascript">
+            var currentElement, currentId;
+            var revertUserBoard = function () {
+                //获取所有select控件
+                var allselect = document.getElementsByTagName("select");
+                var i = 0;
+
+                //设置所有select控件无效，变暗
+                for (i = 0; i < allselect.length; i++) {
+                    if (allselect[i].id != "Select1") {
+                        allselect[i].disabled = true;
+                        allselect[i].style.background = "#aaa";
+                    }
+                }
+
+                currentId = $('Hidden2').value;
+                creatmaskdiv();
+                enableMaskDiv();
+                //        document.getElementById("Top1_DropDownList1").style.display="none";
+                //        document.getElementById("Top1_DropDownList2").style.display="none";
+                WebService.islogin(OnSuccessloginCallBack);
+            }
+            var submitRevert = function () {
+                var typeid = $('Select1').value;
+                var username = $('Hidden1').value;
+                var jid = $('Hidden2').value;
+                //WebService.insertsc(typeid,username,jid,OnSuccesshlCallBack);
+            }
+            var OnSuccessloginCallBack = function (result) {
+                
+                if (result == "1") {
+                    $('login').style.display = "block";
+                    $('nologin').style.display = "none";
+                    $('emaillist') && $(('emaillist').style.display = "none");
+
+                }
+                else {
+                    $('login').style.display = "none";
+                    $('nologin').style.display = "block";
+                    $('emaillist') && $(('emaillist').style.display = "none");
+                }
+            }
+            var OnSuccesshlCallBack = function (result) {
+                if (result == "1") {
+                    alert("收藏成功！");
+                    location.href("displayj.aspx?jid=" + currentId);
+                }
+                else {
+                    alert("该期刊已被收藏，无需重复收藏！");
+                    location.href("displayj.aspx?jid=" + currentId);
+                }
+
+            }
+            var displayemail = function () {
+                //获取所有select控件
+                var allselect = document.getElementsByTagName("select");
+                var i = 0;
+
+                //设置所有select控件无效，变暗
+                for (i = 0; i < allselect.length; i++) {
+                    if (allselect[i].id != "Select1") {
+                        allselect[i].disabled = true;
+                        allselect[i].style.background = "#aaa";
+                    }
+                }
+                currentId = $('Hidden2').value;
+                creatmaskdiv();
+                enableMaskDiv();
+                $('login').style.display = "none";
+                $('nologin').style.display = "none";
+                $('emaillist') && $(('emaillist').style.display = "block")
+            }
+        </script>
+
+        <div id="box">
+            
+<script type="text/javascript" src="/js/top.js"></script>
+<style type="text/css">
+    .yonghu a { padding-left:6px; text-decoration: none; padding-right:6px;}
+    #loginStatus{color:#fff;}
+</style>
+<!--header-->
+<script type="text/javascript">
+    function checklogin() {
+        if (document.getElementById("Top1_Text1").value == "") {
+            alert("请输入用户名");
+            return false;
+        }
+        if (document.getElementById("Top1_Text2").value == "") {
+            alert("请输入密码");
+            return false;
+        }
+    }
+    function SetHome(obj, vrl) {
+        try {
+            obj.style.behavior = 'url(#default#homepage)'; obj.setHomePage(vrl);
+        }
+        catch (e) {
+            if (window.netscape) {
+                try {
+                    netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+                }
+                catch (e) {
+                    alert("抱歉！您的浏览器不支持直接设为首页。请在浏览器地址栏输入“about:config”并回车然后将[signed.applets.codebase_principal_support]设置为“true”，点击“加入收藏”后忽略安全提示，即可设置成功。");
+                }
+                var prefs = Components.classes['@mozilla.org/preferences-service;1'].getService(Components.interfaces.nsIPrefBranch);
+                prefs.setCharPref('browser.startup.homepage', vrl);
+            }
+        }
+    }
+
+    loadUserInfo();
+    function loadUserInfo() {
+        fetch("/ashx/BaseHandler.ashx", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: "Action=UserInfo",
+            cache: "no-store" // 类似 jQuery 的 cache: false
+        })
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('loginStatus').innerHTML = html;
+        })
+        .catch(error => console.error("请求失败:", error));
+        //$.ajax({
+        //    type: "post",
+        //    url: "/ashx/BaseHandler.ashx",
+        //    data: "Action=UserInfo",
+        //    cache: false,
+        //    success: function (html) {
+        //        $('#loginStatus').html(html);
+        //    }
+        //});
+    }
+</script>
+<div class="top">
+    <div class="yonghu">
+        <ul>
+            <li style="width: 630px; color: #fff; height: 25px; text-align: left;">&nbsp;&nbsp;&nbsp;&nbsp;服务教育科研，促进学术发展！&nbsp;&nbsp;&nbsp;&nbsp;<span id="loginStatus"></span></li>
+            <li style="float: right; width: 160px; line-height: 25px;">
+                <a href="javascript:;" onclick="setHomepage()" style="padding-top: 4px; margin-right:20px;">设为首页</a> 
+                <a href="javascript:;" onclick="addToFavorites()" style="padding-top: 4px;">收藏本站</a> 
+                
+ 
+                
+            </li>
+        </ul>
+    </div>
+    <div class="logo">
+        <img src="/images/head.gif" alt="万维书刊—免费投稿网、期刊大全、投稿地址大全，论文投稿发表更容易!" />
+    </div>
+    <div class="Navigation" id="Navigation">
+        <ul>
+            <li style="width: 90px; text-align: left; padding-left: 10px; font-weight: bold;">投稿好助手！ </li>
+            <li style="width: 800px; color: #fff; font-size: 12.5px; text-align: left;">
+                          <a href="/">网站首页</a>|
+                        <a href="/jtypelist.aspx" target="_blank">期刊大全</a>|
+                        <a href="/dplist.aspx" target="_blank">期刊点评</a>|
+                        <a href="/sci/SciCate1.aspx" target="_blank">SCI/E期刊</a>|
+                        <a href="/sci/scidplist.aspx" target="_blank">SCI/E点评</a>|
+                        <a href="/sci/SciCate1.aspx?jtype=792" target="_blank">SSCI期刊</a>|
+                        <a href="/sci/scidplist.aspx?jtype=792" target="_blank">SSCI期刊点评</a>|
+                        <a href="/sci/SciCate1.aspx?jtype=795" target="_blank">AHCI期刊</a>|
+                        <a href="/sci/scidplist.aspx?jtype=795" target="_blank">AHCI期刊点评</a>|
+                        <a href="/ConferenceCollection/" target="_blank">学术会议</a>|
+                        <a href="/HelpCenter.aspx" target="_blank">帮助中心</a>
+                        <a href="/Editor/Index.aspx" target="_blank" style="font-size:0px;">编辑QQ征稿</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<!--header-->
+
+<div id="searchbar" style="clear: both">
+    <ul>
+        <li class="search" style="padding-left: 20px;">
+            <img src="/images/sy_39.gif" alt="搜索" title="搜索" /></li>
+        <li style="font-weight: 600; color: #CA0205;">搜索：</li>
+        <li class="contrl">
+            <select name="Top1$search$DropDownList1" id="Top1_search_DropDownList1">
+	<option selected="selected" value="0">搜刊名/刊号</option>
+	<option value="2">搜期刊动态</option>
+	<option value="3">搜文苑文章</option>
+	<option value="4">搜搜社会实践</option>
+
+</select>
+            <input name="Top1$search$TextBox1" type="text" maxlength="200" id="Top1_search_TextBox1" placeholder="多个关键词用空格隔开" />
+        </li>
+        <li class="btn">
+            <input type="image" name="Top1$search$ImageButton1" id="Top1_search_ImageButton1" src="/images/sy_33.gif" border="0" /></li>
+        <li>
+            <a href="/SuperSearch.aspx" style="margin-top:-3px; padding: 0 12px; line-height: 23px; float: left; border-radius: 3px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.2); color: #fff; background: #006dcc; background-image: linear-gradient(#08c,#04c); border-color: #04c #04c #002a80;">高级搜索</a>
+            <a href="/sci/sciSearh.aspx" style="padding: 0 12px;line-height: 23px;display:inline-block;top: -3px;margin-left:8px; position: relative;border-radius: 3px;box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);color: #fff;background: #f40;background-image: linear-gradient(#dc521c,#cc4200);border-color: #04c #04c #002a80;">SCI/E搜索</a>
+            <span style="margin-left:5px; line-height:14px; display:inline-block; color:red;border:1px solid #f40; padding:1px;border-radius:3px;">推荐</span>
+        </li>
+    </ul>
+</div>
+
+<!--searchbar-->
+<script type="text/javascript">
+
+    String.prototype.GetValue = function (para) {
+        var reg = new RegExp("(^|&)" + para + "=([^&]*)(&|$)");
+        var r = this.substr(this.indexOf("\?") + 1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+    var str = location.href;
+    function qhtab(a) {
+        if (a == "1") {
+            document.getElementById("tw1").className = "thistab";
+            document.getElementById("tabcon1").style.display = 'block';
+            document.getElementById("tw2").className = "";
+            document.getElementById("tabcon2").style.display = 'none';
+            document.getElementById("tw3").className = "";
+            document.getElementById("tabcon3").style.display = 'none';
+        }
+        else if (a == "2") {
+            document.getElementById("tw1").className = "";
+            document.getElementById("tabcon1").style.display = 'none';
+            document.getElementById("tw2").className = "thistab";
+            document.getElementById("tabcon2").style.display = 'block';
+            document.getElementById("tw3").className = "";
+            document.getElementById("tabcon3").style.display = 'none';
+        }
+        else if (a == "3") {
+            document.getElementById("tw1").className = "";
+            document.getElementById("tabcon1").style.display = 'none';
+            document.getElementById("tw2").className = "";
+            document.getElementById("tabcon2").style.display = 'none';
+            document.getElementById("tw3").className = "thistab";
+            document.getElementById("tabcon3").style.display = 'block';
+        }
+    }
+</script>
+<script type="text/javascript" src="/js/miaov.js"></script>
+<div class="float_layer" id="miaov_float_layer">
+    <h2>
+    <strong style="color: #fff;">投稿问答</strong><a style="text-align: right; font-size: 12px; margin-left: 60px; color: #fff;"
+        id="btn_min" href="javascript:;">最小化</a>&nbsp;&nbsp;<a id="btn_close" style="font-size: 12px; color: #fff;"
+            href="javascript:;">关闭</a>
+    </h2>
+    <div class="content1">
+        <p style="margin:5px;color:blue;border-bottom: #999999 1px dashed;">投稿有问题？问问网友吧！</p>
+        <div class="wrap">
+            <p><span style='color:blue;'>·</span><a href="/wd/displaywd.aspx?zid=529562" title='财经金融类的期刊，哪个见刊快？' target="_blank">财经金融类的期刊，哪个见刊快？</a> <span style='color:#bbb;'>0回答</span></p><p><span style='color:blue;'>·</span><a href="/wd/displaywd.aspx?zid=529561" title='科教导刊投稿' target="_blank">科教导刊投稿</a> <span style='color:#bbb;'>2回答</span></p><p><span style='color:blue;'>·</span><a href="/wd/displaywd.aspx?zid=529560" title='想问下各位，市场营销/经管方向普刊，希望见刊速度较快、版面费性价比高，有哪些比较稳妥的期刊推荐？优先带CN刊号、知网收录，麻烦分享下经验，谢谢大家！' target="_blank">想问下各位，市场营销/经管方向普刊，...</a> <span style='color:#bbb;'>1回答</span></p><p><span style='color:blue;'>·</span><a href="/wd/displaywd.aspx?zid=529559" title='授权码怎么获得' target="_blank">授权码怎么获得</a> <span style='color:#bbb;'>1回答</span></p>
+        </div>
+        <p>
+            <a target="_blank" href="/wd/addwd.aspx">
+                <img src="/fdimg/tw.gif" style="border: 0px;" alt="我要提问" title="我要提问" /></a>
+        </p>
+    </div>
+</div>
+<!--顶部长条广告 BEGIN-->
+
+            <div class="panel ad" style="margin-top: 5px;">
+                <a class="r" href="WebVerify.aspx?id=374" target="_blank">认证信息</a>
+                <h2>广告</h2>
+                <div class="bd">
+                    <a href="https://www.fabiao.com" rel="external nofollow" target="_blank">
+                        <img src="/upfiles/ggpic/20190706182024041.jpg" style="width: 887px; height: 89px;" alt="大横幅" title="大横幅" />
+                    </a>
+                </div>
+            </div>
+
+<!--顶部长条广告 END-->
+            <div style="clear: both"></div>
+            
+            <p class="hdaohang">您的位置：<span><a href='/'>万维书刊网</a></span>>><span><a href="jtypelist.aspx">期刊大全</a></span>>><span><a href='secondchannel.aspx?typeid=12&jtype='>自然科学综合</a></span></p>
+            
+            <div id="link" style="margin: 0px; padding: 0px; display: none;">
+                <!--显示平级或父级类别-->
+                <div class="links">
+                    <div class="title">
+                        <div class="title_t">相关分类</div>
+                        <div class="title_o"><a href="#">更多>></a></div>
+                        <div class="content">
+                            <ul style="padding-top: 5px; padding-left: 15px;">
+                                <li class='kan' style='clear:both; width:150px;'><a style='color: #ff0000;font-weight: bold;' href='secondchannel.aspx?typeid=12'><img src='images/sy_67.gif' alt='相关分类' style='border:none; margin-right:10px;' />自然科学综合</a></li><li class='kan' style='clear:both; width:150px;'><a href='secondchannel.aspx?typeid=13'><img src='images/sy_67.gif' alt='相关分类' style='border:none; margin-right:10px;' />自然科学</a></li><li class='kan' style='clear:both; width:150px;'><a href='secondchannel.aspx?typeid=14'><img src='images/sy_67.gif' alt='相关分类' style='border:none; margin-right:10px;' />农业科学综合</a></li><li class='kan' style='clear:both; width:150px;'><a href='secondchannel.aspx?typeid=15'><img src='images/sy_67.gif' alt='相关分类' style='border:none; margin-right:10px;' />农业科学</a></li><li class='kan' style='clear:both; width:150px;'><a href='secondchannel.aspx?typeid=16'><img src='images/sy_67.gif' alt='相关分类' style='border:none; margin-right:10px;' />政法外交综合</a></li><li class='kan' style='clear:both; width:150px;'><a href='secondchannel.aspx?typeid=17'><img src='images/sy_67.gif' alt='相关分类' style='border:none; margin-right:10px;' />政法外交</a></li><li class='kan' style='clear:both; width:150px;'><a href='secondchannel.aspx?typeid=18'><img src='images/sy_67.gif' alt='相关分类' style='border:none; margin-right:10px;' />社会科学综合</a></li><li class='kan' style='clear:both; width:150px;'><a href='secondchannel.aspx?typeid=19'><img src='images/sy_67.gif' alt='相关分类' style='border:none; margin-right:10px;' />社会科学</a></li><li class='kan' style='clear:both; width:150px;'><a href='secondchannel.aspx?typeid=20'><img src='images/sy_67.gif' alt='相关分类' style='border:none; margin-right:10px;' />医药卫生综合</a></li><li class='kan' style='clear:both; width:150px;'><a href='secondchannel.aspx?typeid=21'><img src='images/sy_67.gif' alt='相关分类' style='border:none; margin-right:10px;' />医卫科学</a></li><li class='kan' style='clear:both; width:150px;'><a href='secondchannel.aspx?typeid=22'><img src='images/sy_67.gif' alt='相关分类' style='border:none; margin-right:10px;' />工程科技综合</a></li><li class='kan' style='clear:both; width:150px;'><a href='secondchannel.aspx?typeid=23'><img src='images/sy_67.gif' alt='相关分类' style='border:none; margin-right:10px;' />工程科技</a></li><li class='kan' style='clear:both; width:150px;'><a href='secondchannel.aspx?typeid=24'><img src='images/sy_67.gif' alt='相关分类' style='border:none; margin-right:10px;' />财经管理综合</a></li><li class='kan' style='clear:both; width:150px;'><a href='secondchannel.aspx?typeid=25'><img src='images/sy_67.gif' alt='相关分类' style='border:none; margin-right:10px;' />财政经济</a></li><li class='kan' style='clear:both; width:150px;'><a href='secondchannel.aspx?typeid=26'><img src='images/sy_67.gif' alt='相关分类' style='border:none; margin-right:10px;' />文化艺术</a></li><li class='kan' style='clear:both; width:150px;'><a href='secondchannel.aspx?typeid=27'><img src='images/sy_67.gif' alt='相关分类' style='border:none; margin-right:10px;' />教育科研</a></li><li class='kan' style='clear:both; width:150px;'><a href='secondchannel.aspx?typeid=222'><img src='images/sy_67.gif' alt='相关分类' style='border:none; margin-right:10px;' />停刊刊物</a></li><li class='kan' style='clear:both; width:150px;'><a href='secondchannel.aspx?typeid=238'><img src='images/sy_67.gif' alt='相关分类' style='border:none; margin-right:10px;' />内刊刊物</a></li><li class='kan' style='clear:both; width:150px;'><a href='secondchannel.aspx?typeid=312'><img src='images/sy_67.gif' alt='相关分类' style='border:none; margin-right:10px;' />SCI/E期刊大全</a></li><li class='kan' style='clear:both; width:150px;'><a href='secondchannel.aspx?typeid=765'><img src='images/sy_67.gif' alt='相关分类' style='border:none; margin-right:10px;' />集刊大全</a></li><li class='kan' style='clear:both; width:150px;'><a href='secondchannel.aspx?typeid=776'><img src='images/sy_67.gif' alt='相关分类' style='border:none; margin-right:10px;' />国内SCI期刊</a></li><li class='kan' style='clear:both; width:150px;'><a href='secondchannel.aspx?typeid=915'><img src='images/sy_67.gif' alt='相关分类' style='border:none; margin-right:10px;' />中国国际期刊</a></li>
+                            </ul>
+                            <div style="clear: both"></div>
+                        </div>
+                    </div>
+                </div>
+                <!--出版周期分-->
+                <div class="links">
+                    <div class="title">
+                        <div class="title_t">出版周期分类</div>
+                        <div class="title_o"><a href="#">更多>></a></div>
+                        <div class="content">
+                            <ul style="padding-top: 5px; padding-left: 15px;">
+                                <li class='kan'><a href='/jhexin.aspx?zqid=1'><img src='/images/sy_67.gif' alt='周刊' style='border:none; margin-right:10px;' />周刊</a></li><li class='kan'><a href='/jhexin.aspx?zqid=2'><img src='/images/sy_67.gif' alt='旬刊' style='border:none; margin-right:10px;' />旬刊</a></li><li class='kan'><a href='/jhexin.aspx?zqid=3'><img src='/images/sy_67.gif' alt='半月刊' style='border:none; margin-right:10px;' />半月刊</a></li><li class='kan'><a href='/jhexin.aspx?zqid=4'><img src='/images/sy_67.gif' alt='月刊' style='border:none; margin-right:10px;' />月刊</a></li><li class='kan'><a href='/jhexin.aspx?zqid=5'><img src='/images/sy_67.gif' alt='双月刊' style='border:none; margin-right:10px;' />双月刊</a></li><li class='kan'><a href='/jhexin.aspx?zqid=6'><img src='/images/sy_67.gif' alt='季刊' style='border:none; margin-right:10px;' />季刊</a></li><li class='kan'><a href='/jhexin.aspx?zqid=7'><img src='/images/sy_67.gif' alt='半年刊' style='border:none; margin-right:10px;' />半年刊</a></li><li class='kan'><a href='/jhexin.aspx?zqid=8'><img src='/images/sy_67.gif' alt='年刊' style='border:none; margin-right:10px;' />年刊</a></li><li class='kan'><a href='/jhexin.aspx?zqid=10'><img src='/images/sy_67.gif' alt='日报' style='border:none; margin-right:10px;' />日报</a></li><li class='kan'><a href='/jhexin.aspx?zqid=11'><img src='/images/sy_67.gif' alt='早报' style='border:none; margin-right:10px;' />早报</a></li><li class='kan'><a href='/jhexin.aspx?zqid=12'><img src='/images/sy_67.gif' alt='晚报' style='border:none; margin-right:10px;' />晚报</a></li><li class='kan'><a href='/jhexin.aspx?zqid=13'><img src='/images/sy_67.gif' alt='周报' style='border:none; margin-right:10px;' />周报</a></li><li class='kan'><a href='/jhexin.aspx?zqid=14'><img src='/images/sy_67.gif' alt='周二报' style='border:none; margin-right:10px;' />周二报</a></li><li class='kan'><a href='/jhexin.aspx?zqid=15'><img src='/images/sy_67.gif' alt='周三报' style='border:none; margin-right:10px;' />周三报</a></li><li class='kan'><a href='/jhexin.aspx?zqid=16'><img src='/images/sy_67.gif' alt='周四报' style='border:none; margin-right:10px;' />周四报</a></li><li class='kan'><a href='/jhexin.aspx?zqid=17'><img src='/images/sy_67.gif' alt='周五报' style='border:none; margin-right:10px;' />周五报</a></li><li class='kan'><a href='/jhexin.aspx?zqid=18'><img src='/images/sy_67.gif' alt='周六报' style='border:none; margin-right:10px;' />周六报</a></li><li class='kan'><a href='/jhexin.aspx?zqid=19'><img src='/images/sy_67.gif' alt='周日报' style='border:none; margin-right:10px;' />周日报</a></li><li class='kan'><a href='/jhexin.aspx?zqid=20'><img src='/images/sy_67.gif' alt='其他报' style='border:none; margin-right:10px;' />其他报</a></li><li class='kan'><a href='/jhexin.aspx?zqid=21'><img src='/images/sy_67.gif' alt='周二刊' style='border:none; margin-right:10px;' />周二刊</a></li><li class='kan'><a href='/jhexin.aspx?zqid=22'><img src='/images/sy_67.gif' alt='出版社' style='border:none; margin-right:10px;' />出版社</a></li><li class='kan'><a href='/jhexin.aspx?zqid=23'><img src='/images/sy_67.gif' alt='不定期' style='border:none; margin-right:10px;' />不定期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=24'><img src='/images/sy_67.gif' alt='年3期' style='border:none; margin-right:10px;' />年3期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=25'><img src='/images/sy_67.gif' alt='年5期' style='border:none; margin-right:10px;' />年5期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=26'><img src='/images/sy_67.gif' alt='年7期' style='border:none; margin-right:10px;' />年7期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=27'><img src='/images/sy_67.gif' alt='年8期' style='border:none; margin-right:10px;' />年8期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=28'><img src='/images/sy_67.gif' alt='年9期' style='border:none; margin-right:10px;' />年9期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=29'><img src='/images/sy_67.gif' alt='年10期' style='border:none; margin-right:10px;' />年10期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=30'><img src='/images/sy_67.gif' alt='年11期' style='border:none; margin-right:10px;' />年11期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=31'><img src='/images/sy_67.gif' alt='两年刊' style='border:none; margin-right:10px;' />两年刊</a></li><li class='kan'><a href='/jhexin.aspx?zqid=32'><img src='/images/sy_67.gif' alt='其它' style='border:none; margin-right:10px;' />其它</a></li><li class='kan'><a href='/jhexin.aspx?zqid=33'><img src='/images/sy_67.gif' alt='年14期' style='border:none; margin-right:10px;' />年14期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=34'><img src='/images/sy_67.gif' alt='年15期' style='border:none; margin-right:10px;' />年15期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=35'><img src='/images/sy_67.gif' alt='年16期' style='border:none; margin-right:10px;' />年16期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=36'><img src='/images/sy_67.gif' alt='年17期' style='border:none; margin-right:10px;' />年17期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=37'><img src='/images/sy_67.gif' alt='年20期' style='border:none; margin-right:10px;' />年20期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=38'><img src='/images/sy_67.gif' alt='年21期' style='border:none; margin-right:10px;' />年21期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=39'><img src='/images/sy_67.gif' alt='年22期' style='border:none; margin-right:10px;' />年22期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=40'><img src='/images/sy_67.gif' alt='年24期' style='border:none; margin-right:10px;' />年24期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=41'><img src='/images/sy_67.gif' alt='年28期' style='border:none; margin-right:10px;' />年28期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=42'><img src='/images/sy_67.gif' alt='年30期' style='border:none; margin-right:10px;' />年30期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=43'><img src='/images/sy_67.gif' alt='年32期' style='border:none; margin-right:10px;' />年32期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=44'><img src='/images/sy_67.gif' alt='年48期' style='border:none; margin-right:10px;' />年48期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=46'><img src='/images/sy_67.gif' alt='年42期' style='border:none; margin-right:10px;' />年42期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=47'><img src='/images/sy_67.gif' alt='年50期' style='border:none; margin-right:10px;' />年50期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=51'><img src='/images/sy_67.gif' alt='年13期' style='border:none; margin-right:10px;' />年13期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=52'><img src='/images/sy_67.gif' alt='年25期' style='border:none; margin-right:10px;' />年25期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=53'><img src='/images/sy_67.gif' alt='年18期' style='border:none; margin-right:10px;' />年18期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=54'><img src='/images/sy_67.gif' alt='年26期' style='border:none; margin-right:10px;' />年26期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=55'><img src='/images/sy_67.gif' alt='年19期' style='border:none; margin-right:10px;' />年19期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=56'><img src='/images/sy_67.gif' alt='年46期' style='border:none; margin-right:10px;' />年46期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=57'><img src='/images/sy_67.gif' alt='年23期' style='border:none; margin-right:10px;' />年23期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=58'><img src='/images/sy_67.gif' alt='年72期' style='border:none; margin-right:10px;' />年72期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=59'><img src='/images/sy_67.gif' alt='年100期' style='border:none; margin-right:10px;' />年100期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=60'><img src='/images/sy_67.gif' alt='年40期' style='border:none; margin-right:10px;' />年40期</a></li><li class='kan'><a href='/jhexin.aspx?zqid=70'><img src='/images/sy_67.gif' alt='年60期' style='border:none; margin-right:10px;' />年60期</a></li>
+                            </ul>
+                            <div style="clear: both"></div>
+                        </div>
+                    </div>
+                </div>
+                <!--出版周期分-->
+                <div class="links">
+                    <div class="title">
+                        <div class="title_t">首字母分类</div>
+                        <div class="title_o"><a href="#">更多>></a></div>
+                        <div class="content">
+                            <ul style="padding-top: 5px; padding-left: 15px;">
+                                <li class="litters"><a href="jlist.aspx?firstchar=A">A</a></li>
+                                <li class="litters">|</li>
+                                <li class="litters"><a href="jlist.aspx?firstchar=B">B</a></li>
+                                <li class="litters">|</li>
+                                <li class="litters"><a href="jlist.aspx?firstchar=C">C</a></li>
+                                <li class="litters">|</li>
+                                <li class="litters"><a href="jlist.aspx?firstchar=D">D</a></li>
+                                <li class="litters">|</li>
+                                <li class="litters"><a href="jlist.aspx?firstchar=E">E</a></li>
+                                <li class="litters">|</li>
+                                <li class="litters"><a href="jlist.aspx?firstchar=F">F</a></li>
+                                <li class="litters">|</li>
+                                <li class="litters" style="width: 30px"><a href="jlist.aspx?firstchar=G">G</a></li>
+                                <li class="litters"><a href="jlist.aspx?firstchar=H">H</a></li>
+                                <li class="litters">|</li>
+                                <li class="litters"><a href="jlist.aspx?firstchar=I">I</a></li>
+                                <li class="litters">|</li>
+                                <li class="litters"><a href="jlist.aspx?firstchar=J">J</a></li>
+                                <li class="litters">|</li>
+                                <li class="litters"><a href="jlist.aspx?firstchar=K">K</a></li>
+                                <li class="litters">|</li>
+                                <li class="litters"><a href="jlist.aspx?firstchar=L">L</a></li>
+                                <li class="litters">|</li>
+                                <li class="litters"><a href="jlist.aspx?firstchar=M">M</a></li>
+                                <li class="litters">|</li>
+                                <li class="litters" style="width: 30px"><a href="jlist.aspx?firstchar=N">N</a></li>
+                                <li class="litters"><a href="jlist.aspx?firstchar=O">O</a></li>
+                                <li class="litters">|</li>
+                                <li class="litters"><a href="jlist.aspx?firstchar=P">P</a></li>
+                                <li class="litters">|</li>
+                                <li class="litters"><a href="jlist.aspx?firstchar=Q">Q</a></li>
+                                <li class="litters">|</li>
+                                <li class="litters"><a href="jlist.aspx?firstchar=R">R</a></li>
+                                <li class="litters">|</li>
+                                <li class="litters"><a href="jlist.aspx?firstchar=S">S</a></li>
+                                <li class="litters">|</li>
+                                <li class="litters"><a href="jlist.aspx?firstchar=T">T</a></li>
+                                <li class="litters">|</li>
+                                <li class="litters" style="width: 30px"><a href="jlist.aspx?firstchar=U">U</a></li>
+                                <li class="litters"><a target="_blank" href="jlist.aspx?firstchar=V">V</a></li>
+                                <li class="litters">|</li>
+                                <li class="litters"><a href="jlist.aspx?firstchar=W">W</a></li>
+                                <li class="litters">|</li>
+                                <li class="litters"><a href="jlist.aspx?firstchar=X">X</a></li>
+                                <li class="litters">|</li>
+                                <li class="litters"><a href="jlist.aspx?firstchar=Y">Y</a></li>
+                                <li class="litters">|</li>
+                                <li class="litters"><a href="jlist.aspx?firstchar=Z">Z</a></li>
+                                <li class="litters">|</li>
+                            </ul>
+                            <div style="clear: both"></div>
+                        </div>
+                    </div>
+                </div>
+                <!--字母分-->
+            </div>
+            <div id="main">
+                <div class='secondtypelist'><p id='currentselect'><a href='secondchannel.aspx?typeid=28&jtype='>本科学报（自科）</a></p><p><a href='secondchannel.aspx?typeid=29&jtype='>自然科学总论</a></p><p><a href='secondchannel.aspx?typeid=244&jtype='>专科学报（自科）</a></p><p><a href='secondchannel.aspx?typeid=280&jtype='>985学报</a></p><p><a href='secondchannel.aspx?typeid=281&jtype='>211学报</a></p></div>
+                <div id='m_t_c_b' style=''>
+                    <ul style='padding-top: 5px; padding-left: 15px;'></ul>
+                    <div class="alert warning" style="margin: 10px;">
+                        <a href="/SuperSearch.aspx">高级搜索</a>提供更为精准的杂志搜索功能，极力推荐<a href="/SuperSearch.aspx">使用</a>！
+                    </div>
+                    <div class="switch" style="display:none">
+                        <div class="clear_h10"></div>
+                        <div class="clear_hr_dot"></div>
+                    </div>
+                    <div class="clear_h10"></div>
+                    <ul>
+                        <li><span style="width: 65px;">
+                            <input onclick="CheckAll()" type="checkbox" name="checkall" />全选</span></li>
+                        <li>
+                            <input id="Button2" type="button" value="收藏所选期刊" onclick="revertUserBoard()" style="height: 25px; line-height: 25px; padding-left: 10px; padding-right: 10px;" />
+                            
+                        </li>
+
+                    </ul>
+                    <ul>
+
+                        
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl00$Checkbox1" type="checkbox" id="Repeater2_ctl00_Checkbox1" />
+                                        <input name="Repeater2$ctl00$id" type="hidden" id="Repeater2_ctl00_id" value="25" />
+                                    </span>
+                                    <a target="_blank" title='重庆师范大学学报（自然科学版）' href='displayj.aspx?jid=25&jtype='>重庆师范大学学报（自然科学版）</a> <span style="color:#FD9900;">官网投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">中文核心（2023年版）, 科技核心（2025学术卷）, RCCSE(中文核心A)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl01$Checkbox1" type="checkbox" id="Repeater2_ctl01_Checkbox1" />
+                                        <input name="Repeater2$ctl01$id" type="hidden" id="Repeater2_ctl01_id" value="26" />
+                                    </span>
+                                    <a target="_blank" title='重庆科技大学学报（自然科学版）（原：重庆科技学院学报（自然科学版））（不收版面费审稿费）' href='displayj.aspx?jid=26&jtype='>重庆科技大学学报（自然科学版）（原：…</a> 勤云系统投稿
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">RCCSE(中文B+)(2023第七版), CACJ-扩展（武大应用型评价2025版）, 高质量科技期刊（T3-2025）, </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl02$Checkbox1" type="checkbox" id="Repeater2_ctl02_Checkbox1" />
+                                        <input name="Repeater2$ctl02$id" type="hidden" id="Repeater2_ctl02_id" value="27" />
+                                    </span>
+                                    <a target="_blank" title='重庆工商大学学报（自然科学版）（不收版面费审稿费）' href='displayj.aspx?jid=27&jtype='>重庆工商大学学报（自然科学版）（不收…</a> <span style="color:#FD9900;">官网投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">RCCSE(中文B+)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl03$Checkbox1" type="checkbox" id="Repeater2_ctl03_Checkbox1" />
+                                        <input name="Repeater2$ctl03$id" type="hidden" id="Repeater2_ctl03_id" value="28" />
+                                    </span>
+                                    <a target="_blank" title='重庆大学学报' href='displayj.aspx?jid=28&jtype='>重庆大学学报</a> <span style="color:#FD9900;">官网投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">中文核心（2023年版）, CSCD核心（2025-2026）, 科技核心（2025学术卷）, RCCSE(中文核心A)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl04$Checkbox1" type="checkbox" id="Repeater2_ctl04_Checkbox1" />
+                                        <input name="Repeater2$ctl04$id" type="hidden" id="Repeater2_ctl04_id" value="29" />
+                                    </span>
+                                    <a target="_blank" title='中央民族大学学报（自然科学版）（不收版面费审稿费）' href='displayj.aspx?jid=29&jtype='>中央民族大学学报（自然科学版）（不收…</a> <span style="color:#FD9900;">知网系统投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">RCCSE(中文核心A-)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl05$Checkbox1" type="checkbox" id="Repeater2_ctl05_Checkbox1" />
+                                        <input name="Repeater2$ctl05$id" type="hidden" id="Repeater2_ctl05_id" value="30" />
+                                    </span>
+                                    <a target="_blank" title='中山大学学报（自然科学版中英文）' href='displayj.aspx?jid=30&jtype='>中山大学学报（自然科学版中英文）</a> 方正电子系统投稿
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">中文核心（2023年版）, CSCD核心（2025-2026）, 科技核心（2025学术卷）, RCCSE(中文核心A)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl06$Checkbox1" type="checkbox" id="Repeater2_ctl06_Checkbox1" />
+                                        <input name="Repeater2$ctl06$id" type="hidden" id="Repeater2_ctl06_id" value="31" />
+                                    </span>
+                                    <a target="_blank" title='中南民族大学学报（自然科学版）（不收版面费审稿费）' href='displayj.aspx?jid=31&jtype='>中南民族大学学报（自然科学版）（不收…</a> <span style="color:#FD9900;">知网系统投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">RCCSE(中文核心A)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl07$Checkbox1" type="checkbox" id="Repeater2_ctl07_Checkbox1" />
+                                        <input name="Repeater2$ctl07$id" type="hidden" id="Repeater2_ctl07_id" value="32" />
+                                    </span>
+                                    <a target="_blank" title='中南大学学报（自然科学版）' href='displayj.aspx?jid=32&jtype='>中南大学学报（自然科学版）</a> 玛格泰克系统投稿
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">中文核心（2023年版）, CSCD核心（2025-2026）, 科技核心（2025学术卷）, RCCSE(中文权威A+)(2023第七版), 高质量科技期刊（T1-2025）, 高质量科技期刊（T3-2025）, EI 中国期刊, </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl08$Checkbox1" type="checkbox" id="Repeater2_ctl08_Checkbox1" />
+                                        <input name="Repeater2$ctl08$id" type="hidden" id="Repeater2_ctl08_id" value="33" />
+                                    </span>
+                                    <a target="_blank" title='中国人民公安大学学报（自然科学版）' href='displayj.aspx?jid=33&jtype='>中国人民公安大学学报（自然科学版）</a> <span style="color:#FD9900;">知网系统投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">RCCSE(中文B+)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl09$Checkbox1" type="checkbox" id="Repeater2_ctl09_Checkbox1" />
+                                        <input name="Repeater2$ctl09$id" type="hidden" id="Repeater2_ctl09_id" value="34" />
+                                    </span>
+                                    <a target="_blank" title='中国科学技术大学学报（英文）（Journal of University of Science and Technology of China，JUSTC）' href='displayj.aspx?jid=34&jtype='>中国科学技术大学学报（英文）（Journa…</a> <span style="color:#FD9900;">官网投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">中文核心（2023年版）, CSCD扩展（2025-2026）, 科技核心（2025学术卷）, RCCSE(中文核心A-)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl10$Checkbox1" type="checkbox" id="Repeater2_ctl10_Checkbox1" />
+                                        <input name="Repeater2$ctl10$id" type="hidden" id="Repeater2_ctl10_id" value="35" />
+                                    </span>
+                                    <a target="_blank" title='中国海洋大学学报（自然科学版）（原：山东海洋学院学报）' href='displayj.aspx?jid=35&jtype='>中国海洋大学学报（自然科学版）（原：…</a> <span style="color:#FD9900;">知网系统投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">中文核心（2023年版）, CSCD核心（2025-2026）, 科技核心（2025学术卷）, RCCSE(中文核心A)(2023第七版), 高质量科技期刊（T2-2025）, 第二批认定学术期刊,</span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl11$Checkbox1" type="checkbox" id="Repeater2_ctl11_Checkbox1" />
+                                        <input name="Repeater2$ctl11$id" type="hidden" id="Repeater2_ctl11_id" value="36" />
+                                    </span>
+                                    <a target="_blank" title='中国海洋大学学报（英文版）（Journal of Ocean University of China）' href='displayj.aspx?jid=36&jtype='>中国海洋大学学报（英文版）（Journal …</a> <span style="color:#FD9900;">官网投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">CSCD核心（2025-2026）, 科技核心（2025学术卷）, 高质量科技期刊（T1-2025）, 高质量科技期刊（T2-2025）, SCIE核心（20260817更新）, 第二批认定学术期刊,</span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl12$Checkbox1" type="checkbox" id="Repeater2_ctl12_Checkbox1" />
+                                        <input name="Repeater2$ctl12$id" type="hidden" id="Repeater2_ctl12_id" value="38" />
+                                    </span>
+                                    <a target="_blank" title='郑州大学学报（理学版）' href='displayj.aspx?jid=38&jtype='>郑州大学学报（理学版）</a> <span style="color:#FD9900;">知网系统投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">中文核心（2023年版）, 科技核心（2025学术卷）, RCCSE(中文核心A)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl13$Checkbox1" type="checkbox" id="Repeater2_ctl13_Checkbox1" />
+                                        <input name="Repeater2$ctl13$id" type="hidden" id="Repeater2_ctl13_id" value="39" />
+                                    </span>
+                                    <a target="_blank" title='浙江万里学院学报' href='displayj.aspx?jid=39&jtype='>浙江万里学院学报</a> <span style="color:#FD9900;">官网投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">RCCSE(中文B+)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl14$Checkbox1" type="checkbox" id="Repeater2_ctl14_Checkbox1" />
+                                        <input name="Repeater2$ctl14$id" type="hidden" id="Repeater2_ctl14_id" value="40" />
+                                    </span>
+                                    <a target="_blank" title='浙江师范大学学报（自然科学版）' href='displayj.aspx?jid=40&jtype='>浙江师范大学学报（自然科学版）</a> Email附<span style="color:Blue;">打印稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">RCCSE(中文核心A-)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl15$Checkbox1" type="checkbox" id="Repeater2_ctl15_Checkbox1" />
+                                        <input name="Repeater2$ctl15$id" type="hidden" id="Repeater2_ctl15_id" value="41" />
+                                    </span>
+                                    <a target="_blank" title='浙江理工大学学报（自然科学版）' href='displayj.aspx?jid=41&jtype='>浙江理工大学学报（自然科学版）</a> 三才系统投稿
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">RCCSE(中文B+)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl16$Checkbox1" type="checkbox" id="Repeater2_ctl16_Checkbox1" />
+                                        <input name="Repeater2$ctl16$id" type="hidden" id="Repeater2_ctl16_id" value="42" />
+                                    </span>
+                                    <a target="_blank" title='浙江科技大学学报（原：浙江科技学院学报）' href='displayj.aspx?jid=42&jtype='>浙江科技大学学报（原：浙江科技学院学…</a> 三才系统投稿
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">RCCSE(中文B+)(2023第七版), CACJ-扩展（武大应用型评价2025版）, </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl17$Checkbox1" type="checkbox" id="Repeater2_ctl17_Checkbox1" />
+                                        <input name="Repeater2$ctl17$id" type="hidden" id="Repeater2_ctl17_id" value="43" />
+                                    </span>
+                                    <a target="_blank" title='浙江海洋大学学报（自然科学版）（原：浙江海洋学院学报（自然科学版））' href='displayj.aspx?jid=43&jtype='>浙江海洋大学学报（自然科学版）（原：…</a> <span style="color:#FD9900;">知网系统投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">高质量科技期刊（T2-2025）, 高质量科技期刊（T3-2025）, </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl18$Checkbox1" type="checkbox" id="Repeater2_ctl18_Checkbox1" />
+                                        <input name="Repeater2$ctl18$id" type="hidden" id="Repeater2_ctl18_id" value="44" />
+                                    </span>
+                                    <a target="_blank" title='浙江大学学报（理学版）' href='displayj.aspx?jid=44&jtype='>浙江大学学报（理学版）</a> 玛格泰克系统投稿
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">中文核心（2023年版）, CSCD核心（2025-2026）, 科技核心（2025学术卷）, RCCSE(中文核心A)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl19$Checkbox1" type="checkbox" id="Repeater2_ctl19_Checkbox1" />
+                                        <input name="Repeater2$ctl19$id" type="hidden" id="Repeater2_ctl19_id" value="47" />
+                                    </span>
+                                    <a target="_blank" title='闽南师范大学学报（自然科学版）（原：漳州师范学院学报.自然科学版）（不收版面费审稿费）' href='displayj.aspx?jid=47&jtype='>闽南师范大学学报（自然科学版）（原：…</a> <span style="color:#FD9900;">知网系统投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">RCCSE(中文B+)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl20$Checkbox1" type="checkbox" id="Repeater2_ctl20_Checkbox1" />
+                                        <input name="Repeater2$ctl20$id" type="hidden" id="Repeater2_ctl20_id" value="48" />
+                                    </span>
+                                    <a target="_blank" title='云南师范大学学报（自然科学版）（不收版面费审稿费）' href='displayj.aspx?jid=48&jtype='>云南师范大学学报（自然科学版）（不收…</a> 玛格泰克系统投稿
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">科技核心（2025学术卷）, RCCSE(中文核心A-)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl21$Checkbox1" type="checkbox" id="Repeater2_ctl21_Checkbox1" />
+                                        <input name="Repeater2$ctl21$id" type="hidden" id="Repeater2_ctl21_id" value="49" />
+                                    </span>
+                                    <a target="_blank" title='云南民族大学学报（自然科学版）（不收版面费审稿费）' href='displayj.aspx?jid=49&jtype='>云南民族大学学报（自然科学版）（不收…</a> <span style="color:#FD9900;">知网系统投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">科技核心（2025学术卷）, RCCSE(中文核心A-)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl22$Checkbox1" type="checkbox" id="Repeater2_ctl22_Checkbox1" />
+                                        <input name="Repeater2$ctl22$id" type="hidden" id="Repeater2_ctl22_id" value="50" />
+                                    </span>
+                                    <a target="_blank" title='云南大学学报（自然科学版）' href='displayj.aspx?jid=50&jtype='>云南大学学报（自然科学版）</a> 玛格泰克系统投稿
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">中文核心（2023年版）, CSCD扩展（2025-2026）, 科技核心（2025学术卷）, RCCSE(中文核心A)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl23$Checkbox1" type="checkbox" id="Repeater2_ctl23_Checkbox1" />
+                                        <input name="Repeater2$ctl23$id" type="hidden" id="Repeater2_ctl23_id" value="53" />
+                                    </span>
+                                    <a target="_blank" title='扬州大学学报（自然科学版）（不收版面费审稿费）' href='displayj.aspx?jid=53&jtype='>扬州大学学报（自然科学版）（不收版面…</a> 三才系统投稿
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">RCCSE(中文B+)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl24$Checkbox1" type="checkbox" id="Repeater2_ctl24_Checkbox1" />
+                                        <input name="Repeater2$ctl24$id" type="hidden" id="Repeater2_ctl24_id" value="54" />
+                                    </span>
+                                    <a target="_blank" title='延边大学学报（自然科学版）' href='displayj.aspx?jid=54&jtype='>延边大学学报（自然科学版）</a> <span style="color:#FD9900;">知网系统投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden"></span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl25$Checkbox1" type="checkbox" id="Repeater2_ctl25_Checkbox1" />
+                                        <input name="Repeater2$ctl25$id" type="hidden" id="Repeater2_ctl25_id" value="55" />
+                                    </span>
+                                    <a target="_blank" title='延安大学学报（自然科学版）' href='displayj.aspx?jid=55&jtype='>延安大学学报（自然科学版）</a> 方正电子系统投稿
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">RCCSE(中文B+)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl26$Checkbox1" type="checkbox" id="Repeater2_ctl26_Checkbox1" />
+                                        <input name="Repeater2$ctl26$id" type="hidden" id="Repeater2_ctl26_id" value="56" />
+                                    </span>
+                                    <a target="_blank" title='烟台大学学报（自然科学与工程版）（不收版面费审稿费）' href='displayj.aspx?jid=56&jtype='>烟台大学学报（自然科学与工程版）（不…</a> <span style="color:#FD9900;">知网系统投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">RCCSE(中文核心A-)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl27$Checkbox1" type="checkbox" id="Repeater2_ctl27_Checkbox1" />
+                                        <input name="Repeater2$ctl27$id" type="hidden" id="Repeater2_ctl27_id" value="57" />
+                                    </span>
+                                    <a target="_blank" title='江苏师范大学学报（自然科学版）（原：徐州师范大学学报（自然科学版））（不收版面费）' href='displayj.aspx?jid=57&jtype='>江苏师范大学学报（自然科学版）（原：…</a> <span style="color:#FD9900;">知网系统投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">RCCSE(中文B+)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl28$Checkbox1" type="checkbox" id="Repeater2_ctl28_Checkbox1" />
+                                        <input name="Repeater2$ctl28$id" type="hidden" id="Repeater2_ctl28_id" value="58" />
+                                    </span>
+                                    <a target="_blank" title='信阳师范大学学报（自然科学版）（原：信阳师范学院学报（自然科学版））' href='displayj.aspx?jid=58&jtype='>信阳师范大学学报（自然科学版）（原：…</a> <span style="color:#FD9900;">知网系统投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">科技核心（2025学术卷）, RCCSE(中文核心A)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl29$Checkbox1" type="checkbox" id="Repeater2_ctl29_Checkbox1" />
+                                        <input name="Repeater2$ctl29$id" type="hidden" id="Repeater2_ctl29_id" value="59" />
+                                    </span>
+                                    <a target="_blank" title='新乡学院学报（原：新乡学院学报（自然科学版））（教授博士以上不收版面费）' href='displayj.aspx?jid=59&jtype='>新乡学院学报（原：新乡学院学报（自然…</a> <span style="color:Green;">Email投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">AMI入库（2022版）, 第二批认定学术期刊,</span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl30$Checkbox1" type="checkbox" id="Repeater2_ctl30_Checkbox1" />
+                                        <input name="Repeater2$ctl30$id" type="hidden" id="Repeater2_ctl30_id" value="60" />
+                                    </span>
+                                    <a target="_blank" title='新疆师范大学学报（自然科学版）' href='displayj.aspx?jid=60&jtype='>新疆师范大学学报（自然科学版）</a> <span style="color:Green;">Email投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">RCCSE(中文B+)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl31$Checkbox1" type="checkbox" id="Repeater2_ctl31_Checkbox1" />
+                                        <input name="Repeater2$ctl31$id" type="hidden" id="Repeater2_ctl31_id" value="61" />
+                                    </span>
+                                    <a target="_blank" title='新疆师范大学学报（自然科学版）（维文版）' href='displayj.aspx?jid=61&jtype='>新疆师范大学学报（自然科学版）（维文…</a> 
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden"></span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl32$Checkbox1" type="checkbox" id="Repeater2_ctl32_Checkbox1" />
+                                        <input name="Repeater2$ctl32$id" type="hidden" id="Repeater2_ctl32_id" value="62" />
+                                    </span>
+                                    <a target="_blank" title='新疆大学学报（自然科学版）（中英文）（不收版面费审稿费）' href='displayj.aspx?jid=62&jtype='>新疆大学学报（自然科学版）（中英文）…</a> 方正电子系统投稿
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">科技核心（2025学术卷）, RCCSE(中文核心A-)(2023第七版), CACJ-扩展（武大应用型评价2025版）, 高质量科技期刊（T3-2025）, </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl33$Checkbox1" type="checkbox" id="Repeater2_ctl33_Checkbox1" />
+                                        <input name="Repeater2$ctl33$id" type="hidden" id="Repeater2_ctl33_id" value="64" />
+                                    </span>
+                                    <a target="_blank" title='湘潭大学学报（自然科学版）（不收版面费审稿费）' href='displayj.aspx?jid=64&jtype='>湘潭大学学报（自然科学版）（不收版面…</a> <span style="color:#FD9900;">知网系统投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">科技核心（2025学术卷）, RCCSE(中文B+)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl34$Checkbox1" type="checkbox" id="Repeater2_ctl34_Checkbox1" />
+                                        <input name="Repeater2$ctl34$id" type="hidden" id="Repeater2_ctl34_id" value="65" />
+                                    </span>
+                                    <a target="_blank" title='厦门理工学院学报（不收版面费审稿费）' href='displayj.aspx?jid=65&jtype='>厦门理工学院学报（不收版面费审稿费）…</a> 方正电子系统投稿
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden"></span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl35$Checkbox1" type="checkbox" id="Repeater2_ctl35_Checkbox1" />
+                                        <input name="Repeater2$ctl35$id" type="hidden" id="Repeater2_ctl35_id" value="66" />
+                                    </span>
+                                    <a target="_blank" title='厦门大学学报（自然科学版）' href='displayj.aspx?jid=66&jtype='>厦门大学学报（自然科学版）</a> 三才系统投稿
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">中文核心（2023年版）, CSCD扩展（2025-2026）, 科技核心（2025学术卷）, RCCSE(中文核心A)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl36$Checkbox1" type="checkbox" id="Repeater2_ctl36_Checkbox1" />
+                                        <input name="Repeater2$ctl36$id" type="hidden" id="Repeater2_ctl36_id" value="68" />
+                                    </span>
+                                    <a target="_blank" title='西南民族大学学报（自然科学版）（不收版面费审稿费）' href='displayj.aspx?jid=68&jtype='>西南民族大学学报（自然科学版）（不收…</a> <span style="color:#FD9900;">知网系统投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">科技核心（2025学术卷）, RCCSE(中文核心A-)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl37$Checkbox1" type="checkbox" id="Repeater2_ctl37_Checkbox1" />
+                                        <input name="Repeater2$ctl37$id" type="hidden" id="Repeater2_ctl37_id" value="69" />
+                                    </span>
+                                    <a target="_blank" title='西南科技大学学报' href='displayj.aspx?jid=69&jtype='>西南科技大学学报</a> <span style="color:#FD9900;">知网系统投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">RCCSE(中文B+)(2023第七版), 高质量科技期刊（T3-2025）, </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl38$Checkbox1" type="checkbox" id="Repeater2_ctl38_Checkbox1" />
+                                        <input name="Repeater2$ctl38$id" type="hidden" id="Repeater2_ctl38_id" value="70" />
+                                    </span>
+                                    <a target="_blank" title='西华师范大学学报（自然科学版）（不收版面费审稿费）' href='displayj.aspx?jid=70&jtype='>西华师范大学学报（自然科学版）（不收…</a> <span style="color:#FD9900;">知网系统投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">RCCSE(中文B+)(2023第七版), </span>
+                                </li>
+                            
+                                <li class='bu' style="border-bottom: dashed 1px #000; height: 40px">
+                                    <span style="width: 65px;">
+                                        <input name="Repeater2$ctl39$Checkbox1" type="checkbox" id="Repeater2_ctl39_Checkbox1" />
+                                        <input name="Repeater2$ctl39$id" type="hidden" id="Repeater2_ctl39_id" value="71" />
+                                    </span>
+                                    <a target="_blank" title='西华大学学报（自然科学版）（不收版面费审稿费）' href='displayj.aspx?jid=71&jtype='>西华大学学报（自然科学版）（不收版面…</a> <span style="color:#FD9900;">知网系统投稿</span>
+                                    <br />
+                                    <span style="width: 100%; color: Orange; overflow: hidden">科技核心（2025学术卷）, RCCSE(中文核心A-)(2023第七版), </span>
+                                </li>
+                            
+                    </ul>
+                    <ul><li style='width:500px;'>首页 上一页&nbsp;1<a href=secondchannel.aspx?pg=2&keywords=&typeid=28&etypeid=0&jtype=0>[2]</a><a href=secondchannel.aspx?pg=3&keywords=&typeid=28&etypeid=0&jtype=0>[3]</a><a href=secondchannel.aspx?pg=4&keywords=&typeid=28&etypeid=0&jtype=0>[4]</a><a href=secondchannel.aspx?pg=5&keywords=&typeid=28&etypeid=0&jtype=0>[5]</a><a href=secondchannel.aspx?pg=2&keywords=&typeid=28&etypeid=0&jtype=0>下一页</a><a href=secondchannel.aspx?pg=7&keywords=&typeid=28&etypeid=0&jtype=0>尾页</a></li></ul>
+                </div>
+                <div style="font-size: 14px; color: Red; clear: both; margin-bottom: 10px; line-height: 30px;">
+                    万维投稿交流群现有社科群、自科群、文学群等。加入请点击：<a href="http://www.eshukan.com/displaynews.aspx?nid=351" target="_blank">万维QQ群说明</a><br />
+                </div>
+            </div>
+            
+<div id="bottom" style="margin-top: 10px; width: 900px; margin: 0px auto; clear: both;">
+    
+    <!--sengine-->
+    <div id="footer">
+        <ul>
+            <li><a href="/displaynews.aspx?nid=23">关于本站</a></li>
+            <li>|</li>
+            <li><a href="/HelpCenter.aspx">帮助中心</a></li>
+            
+            <li>|</li>
+            <li><a href="/displaynews.aspx?nid=25">欢迎合作</a></li>
+            
+            
+            <li>|</li>
+            <li><a href="/displaynews.aspx?nid=26">版权所有</a></li>
+            <li>|</li>
+            <li><a href="/displaynews.aspx?nid=155">免责声明</a></li>
+            <li>|</li>
+            <li><a href="/puser_disms.aspx?nav=8&senderUid=1606" target="_blank">用户反馈</a></li>
+            
+            <li>|</li>
+            <li><a href="/newslist.aspx?ntypeid=12">期刊知识</a></li>
+            <li>|</li>
+            <li><a href="/oahome.aspx?etype=1">开放阅读</a></li>
+        </ul>
+    </div>
+    <div id="version">
+        <ul>
+            <li>
+                <p>
+	<span style="color:#337FE5;"><a href="http://www.eshukan.com/displaynews.aspx?nid=351"><span style="color:#337FE5;">万维QQ投稿交流群</span></a>&nbsp; &nbsp;</span> <a href="/Volunteer.aspx" target="_blank"><span style="color:#337FE5;">招募志愿者</span></a> 
+</p>
+<p>
+	版权所有&nbsp;<a href="mailto:Copyright@2009-2015">Copyright@2009-2015</a>|&nbsp;<a target="_blank" href="https://beian.miit.gov.cn/"><span style="color:#333333;font-family:微软雅黑, &quot;font-size:14px;background-color:#FFFFFF;">豫ICP备2021036211号</span></a> 
+</p>
+<p>
+	&nbsp;纯自助论文投稿平台&nbsp;&nbsp; &nbsp;E-mail：1121090112@qq.com；eshukan@163.com
+</p>
+<p>
+	<br />
+</p>
+                
+                <script type="text/javascript">
+                    var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+                    document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F3b573c36c9420e79162ace1d7d1011fc' type='text/javascript'%3E%3C/script%3E"));
+                </script>
+                
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+<script type="text/javascript" charset="utf-8" src="/js/10095500.js?v=2.2" rel="nofollow"></script>
+
+
+        </div>
+        <div id="topDiv" style="display: none; position: absolute; top: 200px; left: 200px; z-index: 1001; width: 440px; height: 220px; background-color: #FEF8E7;">
+            <div id="draghandle" style="height: 20px; background-color: #D46708; padding-right: 20px; text-align: right; padding-top: 5px"><a href="javascript:void(0)" onclick="closeMask()">[关闭]</a></div>
+            <div id="login" style="width: 420px; display: none; padding-left: 10px; padding-right: 10px; line-height: 22px; font-size: 14px;">
+                <p style="width: 420px; text-align: center; color: Red; font-size: 14px; padding-top: 10px;">
+                    请选择目录：<select name="Select1" id="Select1">
+	<option value="0">我的收藏夹</option>
+	<option value="58469">http://www.example.com</option>
+	<option value="57958">http://www.example.com</option>
+	<option value="57408">http://www.example.com</option>
+	<option value="56859">http://www.example.com</option>
+	<option value="54379">http://www.example.com</option>
+	<option value="49045">http://www.example.com</option>
+	<option value="31325">http://www.vulnweb.com</option>
+	<option value="30932">http://www.vulnweb.com</option>
+	<option value="29523">刘颖alwaysonline</option>
+	<option value="26732">1</option>
+	<option value="26624">1</option>
+	<option value="26530">1</option>
+	<option value="26425">1</option>
+	<option value="26319">1</option>
+	<option value="26229">1</option>
+	<option value="26151">1</option>
+	<option value="26019">1</option>
+	<option value="25930">1</option>
+	<option value="25819">1</option>
+	<option value="25716">1</option>
+	<option value="21237">农业科技通讯</option>
+</select>
+                    <a href="puser_scmulu.aspx">增加目录</a>
+                </p>
+                <br />
+                <p>
+                    <input type="submit" name="Button1" value="提交" id="Button1" />
+                </p>
+                <input id="Hidden1" type="hidden" value="" /><input id="Hidden2" type="hidden" value="11" />
+            </div>
+            <div id="nologin" style="width: 420px; display: none; padding-left: 10px; padding-right: 10px; line-height: 22px; font-size: 14px;">
+                <p style="width: 420px; text-align: left; color: Red; font-size: 14px; padding-top: 10px;">温馨提示：</p>
+                <p>抱歉，由于您没有登录，暂时无法点开此链接，点击这里<a href="userlogin.aspx" style="color: Green;">登录</a>或<a style="color: Green;" href="userreg.aspx">注册</a></p>
+            </div>
+        </div>
+    </form>
+</body>
+</html>

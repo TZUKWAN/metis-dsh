@@ -1,0 +1,4 @@
+- insert:
+    - id: metis-literature-openalex
+      name: dsh-metis-literature-openalex
+      inject: ['metisLiterature']

@@ -1,0 +1,10 @@
+{
+  "name": "10k-text-deltas",
+  "textDeltas": 10000,
+  "reasoningDeltas": 0,
+  "textChunk": "字",
+  "reasoningChunk": "",
+  "markdown": false,
+  "stopAtDelta": null,
+  "expectFinalAnswer": "10K 文本增量流的最终完整答案"
+}

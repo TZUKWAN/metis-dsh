@@ -1,0 +1,115 @@
+/** JobsIndicator — 后台作业进度指示。 */
+
+.jobs-indicator {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.jobs-indicator__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  appearance: none;
+  border: 1px solid var(--border-light);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 11.5px;
+  padding: 3px 10px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.jobs-indicator__trigger:hover { border-color: var(--border); color: var(--text-primary); }
+
+.jobs-indicator__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+
+.jobs-indicator__dot--running {
+  background: var(--accent);
+  animation: jobs-indicator-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes jobs-indicator-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.jobs-indicator__panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 340px;
+  max-height: 320px;
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
+  z-index: var(--z-dropdown, 80);
+  padding: 6px;
+}
+
+.jobs-indicator__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.jobs-indicator__item {
+  border: 1px solid var(--border-light);
+  border-radius: 2px;
+  padding: 6px 8px;
+  font-size: 11.5px;
+}
+
+.jobs-indicator__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jobs-indicator__label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+
+.jobs-indicator__status {
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+.jobs-indicator__item--done .jobs-indicator__status { color: var(--success); }
+.jobs-indicator__item--failed .jobs-indicator__status { color: var(--status-danger); }
+
+.jobs-indicator__progress {
+  margin-top: 5px;
+  height: 3px;
+  background: var(--border-light);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.jobs-indicator__progress > span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width 300ms ease;
+}
+
+.jobs-indicator__error {
+  margin-top: 4px;
+  color: var(--status-danger);
+  font-size: 10.5px;
+  overflow-wrap: anywhere;
+}

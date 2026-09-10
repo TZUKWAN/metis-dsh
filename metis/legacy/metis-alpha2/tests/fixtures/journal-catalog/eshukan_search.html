@@ -1,0 +1,247 @@
+
+<!doctype html public "-//w3c//dtd xhtml 1.0 transitional//en" "http://www.w3.org/tr/xhtml1/dtd/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv="X-UA-Compatible" content="IE=8" /><meta name="viewport" content="width=device-width" /><link href="/style/basic.css" rel="stylesheet" type="text/css" /><link href="/style/links.css" rel="stylesheet" type="text/css" /><link href="/style/main.css?v=3.6" rel="stylesheet" type="text/css" /><link href="/css/common.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="/js/plugin/jquery-1.8.3.min.js"></script>
+    <script  type="text/javascript" src="/js/plugin/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/js/top.js"></script>
+    
+    
+
+
+    <style type="text/css">
+        .yonghu a { padding-left:6px; text-decoration: none; padding-right:6px;}
+        #loginStatus{color:#fff;}
+    </style>
+<title>
+
+</title></head>
+<body>
+    <!--header-->
+    <script type="text/javascript">
+        function checklogin() {
+            if (document.getElementById("Top1_Text1").value == "") {
+                alert("请输入用户名");
+                return false;
+            }
+            if (document.getElementById("Top1_Text2").value == "") {
+                alert("请输入密码");
+                return false;
+            }
+        }
+        function SetHome(obj, vrl) {
+            try {
+                obj.style.behavior = 'url(#default#homepage)'; obj.setHomePage(vrl);
+            }
+            catch (e) {
+                if (window.netscape) {
+                    try {
+                        netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+                    }
+                    catch (e) {
+                        alert('抱歉！您的浏览器不支持直接设为首页。请在浏览器地址栏输入“about:config”并回车然后将[signed.applets.codebase_principal_support]设置为“true”，点击“加入收藏”后忽略安全提示，即可设置成功。');
+                    }
+                    var prefs = Components.classes['@mozilla.org/preferences-service;1'].getService(Components.interfaces.nsIPrefBranch);
+                    prefs.setCharPref('browser.startup.homepage', vrl);
+                }
+            }
+        }
+
+        loadUserInfo();
+        function loadUserInfo() {
+            $.ajax({
+                type: "post",
+                url: "/ashx/BaseHandler.ashx",
+                data: "Action=UserInfo",
+                cache: false,
+                success: function (html) {
+                    $('#loginStatus').html(html);
+                }
+            });
+        }
+    </script>
+    
+    <div id="box">
+        <div class="top" style="margin: 0px auto">
+            <div class="yonghu">
+                <ul>
+                    <li style="width: 630px; color: #fff; height: 25px; text-align: left;">&nbsp;&nbsp;&nbsp;&nbsp;服务教育科研，促进学术发展！&nbsp;&nbsp;&nbsp;&nbsp;<span id="loginStatus"></span></li>
+                    <li style="float: right; width: 160px; line-height: 25px;">
+                        <a href="javascript:;" onclick="setHomepage()" style="padding-top: 4px; margin-right:20px;">设为首页</a> 
+                        <a href="javascript:;" onclick="addToFavorites()" style="padding-top: 4px;">收藏本站</a> 
+                         
+                        
+                    </li>
+                </ul>
+            </div>
+            <div class="logo">
+                <img src="/images/head.gif" alt="万维书刊—免费投稿网、期刊大全、投稿地址大全，论文投稿发表更容易!" title="万维书刊—免费投稿网、期刊大全、投稿地址大全，论文投稿发表更容易!" />
+            </div>
+            <div class="Navigation">
+                <ul>
+                    <li style="width: 90px; text-align: left; padding-left: 10px; font-weight: bold;">投稿好助手！ </li>
+                    <li style="width: 800px; white-space: nowrap; color: #fff; font-size: 12.5px; text-align: left;">
+                        <a href="/">网站首页</a>|
+                        <a href="/jtypelist.aspx" target="_blank">期刊大全</a>|
+                        <a href="/dplist.aspx" target="_blank">期刊点评</a>|
+                        <a href="/sci/SciCate1.aspx" target="_blank">SCI/E期刊</a>|
+                        <a href="/sci/scidplist.aspx" target="_blank">SCI/E点评</a>|
+                        <a href="/sci/SciCate1.aspx?jtype=792" target="_blank">SSCI期刊</a>|
+                        <a href="/sci/scidplist.aspx?jtype=792" target="_blank">SSCI期刊点评</a>|
+                        <a href="/sci/SciCate1.aspx?jtype=795" target="_blank">AHCI期刊</a>|
+                        <a href="/sci/scidplist.aspx?jtype=795" target="_blank">AHCI期刊点评</a>|
+                        <a href="/ConferenceCollection/" target="_blank">学术会议</a>|
+                        <a href="/HelpCenter.aspx" target="_blank">帮助中心</a>
+                        <a href="/Editor/Index.aspx" target="_blank" style="font-size:0px;">编辑QQ征稿</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!--header-->
+        <script type="text/javascript">
+            String.prototype.GetValue = function (para) {
+                var reg = new RegExp("(^|&)" + para + "=([^&]*)(&|$)");
+                var r = this.substr(this.indexOf("\?") + 1).match(reg);
+                if (r != null) return unescape(r[2]); return null;
+            }
+            var str = location.href;
+            function qhtab(a) {
+                if (a == "1") {
+                    document.getElementById("tw1").className = "thistab";
+                    document.getElementById("tabcon1").style.display = 'block';
+                    document.getElementById("tw2").className = "";
+                    document.getElementById("tabcon2").style.display = 'none';
+                    document.getElementById("tw3").className = "";
+                    document.getElementById("tabcon3").style.display = 'none';
+                }
+                else if (a == "2") {
+                    document.getElementById("tw1").className = "";
+                    document.getElementById("tabcon1").style.display = 'none';
+                    document.getElementById("tw2").className = "thistab";
+                    document.getElementById("tabcon2").style.display = 'block';
+                    document.getElementById("tw3").className = "";
+                    document.getElementById("tabcon3").style.display = 'none';
+                }
+                else if (a == "3") {
+                    document.getElementById("tw1").className = "";
+                    document.getElementById("tabcon1").style.display = 'none';
+                    document.getElementById("tw2").className = "";
+                    document.getElementById("tabcon2").style.display = 'none';
+                    document.getElementById("tw3").className = "thistab";
+                    document.getElementById("tabcon3").style.display = 'block';
+                }
+            }
+        </script>
+        <script type="text/javascript" src="/js/miaov.js"></script>
+        <div class="float_layer" id="miaov_float_layer">
+            <h2>
+                <strong style="color: #fff;">投稿问答</strong><a style="text-align: right; font-size: 12px; margin-left: 60px; color: #fff;"
+                    id="btn_min" href="javascript:;">最小化</a>&nbsp;&nbsp;<a id="btn_close" style="font-size: 12px; color: #fff;"
+                        href="javascript:;">关闭</a> </h2>
+            <div class="content1">
+                <p style="margin:5px;color:blue;border-bottom: #999999 1px dashed;">投稿有问题？问问网友吧！</p>
+                <div class="wrap">
+                    <p><span style='color:blue;'>·</span><a href="/wd/displaywd.aspx?zid=529562" title='财经金融类的期刊，哪个见刊快？' target="_blank">财经金融类的期刊，哪个见刊快？</a> <span style='color:#bbb;'>0回答</span></p><p><span style='color:blue;'>·</span><a href="/wd/displaywd.aspx?zid=529561" title='科教导刊投稿' target="_blank">科教导刊投稿</a> <span style='color:#bbb;'>2回答</span></p><p><span style='color:blue;'>·</span><a href="/wd/displaywd.aspx?zid=529560" title='想问下各位，市场营销/经管方向普刊，希望见刊速度较快、版面费性价比高，有哪些比较稳妥的期刊推荐？优先带CN刊号、知网收录，麻烦分享下经验，谢谢大家！' target="_blank">想问下各位，市场营销/经管方向普刊，...</a> <span style='color:#bbb;'>1回答</span></p><p><span style='color:blue;'>·</span><a href="/wd/displaywd.aspx?zid=529559" title='授权码怎么获得' target="_blank">授权码怎么获得</a> <span style='color:#bbb;'>1回答</span></p>
+                </div>
+                <p>
+                    <a target="_blank" href="/wd/addwd.aspx">
+                        <img src="/fdimg/tw.gif" alt="提问" style="border: 0px;" /></a>
+                </p>
+            </div>
+        </div>
+        
+    
+<div id="search">
+    <select>
+        <option value="0" selected="selected">搜刊名/刊号</option>
+        <optgroup label="搜其它">
+            <option value="2">搜学期刊动态</option>
+            <option value="3">搜文苑文章</option>
+            <option value="4">搜社会实践</option>
+            <option value="6">学术资讯</option>
+        </optgroup>
+    </select>
+    <input type="text" class="text" value="" placeholder="多个关键词用空格隔开" maxlength="200" />
+    <input type="button" class="btn" value="万维搜索" />
+    <a href="/SuperSearch.aspx" style="padding: 0 12px; line-height: 23px; display: inline-block; top: -1px; position: relative; border-radius: 3px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.2); color: #fff; background: #006dcc; background-image: linear-gradient(#08c,#04c); border-color: #04c #04c #002a80;">高级搜索</a>
+    <a href="/sci/sciSearh.aspx" style="padding: 0 12px; line-height: 23px; display: inline-block; top: -1px; position: relative; border-radius: 3px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.2); color: #fff; background: #f40; background-image: linear-gradient(#dc521c,#cc4200); border-color: #04c #04c #002a80;">SCI/E搜索</a>
+    <span style="margin-left: 5px; line-height: 14px; display: inline-block; color: red; border: 1px solid #f40; padding: 1px; border-radius: 3px;">推荐</span>
+    <div class="marquee" style="float: right; margin: 3px 10px 0 0;">今日更新期刊信息<b>95</b>条，本周累计更新<b>205</b>条，本年累计更新<b>14879</b>条。</div>
+</div>
+<div style="margin: 5px auto; display: none;">
+    <img src="/images/app.jpg" alt="万维书刊APP下载" />
+</div>
+<script src="/js/ascx/search.js" type="text/javascript"></script>
+<script src="/static/Jquery/Marquee/jquery.marquee.min.js" type="text/javascript"></script>
+<script type="text/javascript">jQuery(".marquee").marquee();</script>
+    
+    
+    <div class="jtpyetitle" style="height: auto; overflow: hidden;">
+        <p class="titlename" style="text-align: left; width: 700px;">
+            的搜索结果：
+        </p>
+        <p>共搜索到<span>0</span>条记录</p>
+    </div>
+    <div id="allclass" style="margin-bottom: 10px;">
+        
+    </div>
+    <div class='pages'>
+<a href='https://www.eshukan.com/SuperSearchList.aspx?keyword=麻醉&wenZhong=-1&isXueshu=-1&kanQi=0&classify=0&area=0&level=0&heXin=0&puKan=0&first=0&college=0&yxyz=0&hornor=0&contentIncluded=0&doubleAnonymous=0&comment=0&gaoFei=0&banMianFei=0&banMianFeiArea=0&shenGaoTime=-1&fabiaoPQ=-1&wordCount=0&repeatRate=0&hasKJJ=-1&onlineFirst=-1&hot=-1&method=0&page=1'>首页</a><a href='https://www.eshukan.com/SuperSearchList.aspx?keyword=麻醉&wenZhong=-1&isXueshu=-1&kanQi=0&classify=0&area=0&level=0&heXin=0&puKan=0&first=0&college=0&yxyz=0&hornor=0&contentIncluded=0&doubleAnonymous=0&comment=0&gaoFei=0&banMianFei=0&banMianFeiArea=0&shenGaoTime=-1&fabiaoPQ=-1&wordCount=0&repeatRate=0&hasKJJ=-1&onlineFirst=-1&hot=-1&method=0&page=2'><<</a><a href='https://www.eshukan.com/SuperSearchList.aspx?keyword=麻醉&wenZhong=-1&isXueshu=-1&kanQi=0&classify=0&area=0&level=0&heXin=0&puKan=0&first=0&college=0&yxyz=0&hornor=0&contentIncluded=0&doubleAnonymous=0&comment=0&gaoFei=0&banMianFei=0&banMianFeiArea=0&shenGaoTime=-1&fabiaoPQ=-1&wordCount=0&repeatRate=0&hasKJJ=-1&onlineFirst=-1&hot=-1&method=0&page=1'>1</a><a href='https://www.eshukan.com/SuperSearchList.aspx?keyword=麻醉&wenZhong=-1&isXueshu=-1&kanQi=0&classify=0&area=0&level=0&heXin=0&puKan=0&first=0&college=0&yxyz=0&hornor=0&contentIncluded=0&doubleAnonymous=0&comment=0&gaoFei=0&banMianFei=0&banMianFeiArea=0&shenGaoTime=-1&fabiaoPQ=-1&wordCount=0&repeatRate=0&hasKJJ=-1&onlineFirst=-1&hot=-1&method=0&page=2'>2</a><span class='current'>3</span><span class='disable'>>></span><span class='disable'>尾页</span><span class='count'>共3页</span><input type='text' id='jump' value='3' class='ttb gray'/> <span class='current' onclick="var page=document.getElementById('jump').value;window.location.href='https://www.eshukan.com/SuperSearchList.aspx?keyword=麻醉&wenZhong=-1&isXueshu=-1&kanQi=0&classify=0&area=0&level=0&heXin=0&puKan=0&first=0&college=0&yxyz=0&hornor=0&contentIncluded=0&doubleAnonymous=0&comment=0&gaoFei=0&banMianFei=0&banMianFeiArea=0&shenGaoTime=-1&fabiaoPQ=-1&wordCount=0&repeatRate=0&hasKJJ=-1&onlineFirst=-1&hot=-1&method=0&page='+page">跳页</span><span class='rows'>共48条记录</span>
+</div>
+
+
+        
+<div id="bottom" style="margin-top: 10px; width: 900px; margin: 0px auto; clear: both;">
+    
+    <!--sengine-->
+    <div id="footer">
+        <ul>
+            <li><a href="/displaynews.aspx?nid=23">关于本站</a></li>
+            <li>|</li>
+            <li><a href="/HelpCenter.aspx">帮助中心</a></li>
+            
+            <li>|</li>
+            <li><a href="/displaynews.aspx?nid=25">欢迎合作</a></li>
+            
+            
+            <li>|</li>
+            <li><a href="/displaynews.aspx?nid=26">版权所有</a></li>
+            <li>|</li>
+            <li><a href="/displaynews.aspx?nid=155">免责声明</a></li>
+            <li>|</li>
+            <li><a href="/puser_disms.aspx?nav=8&senderUid=1606" target="_blank">用户反馈</a></li>
+            <li>|</li>
+            <li><a href="/newslist.aspx?ntypeid=12">期刊知识</a></li>
+            <li>|</li>
+            <li><a href="/oahome.aspx?etype=1">开放阅读</a></li>
+        </ul>
+    </div>
+    <div id="version">
+        <ul>
+            <li>
+                <p>
+	<span style="color:#337FE5;"><a href="http://www.eshukan.com/displaynews.aspx?nid=351"><span style="color:#337FE5;">万维QQ投稿交流群</span></a>&nbsp; &nbsp;</span> <a href="/Volunteer.aspx" target="_blank"><span style="color:#337FE5;">招募志愿者</span></a> 
+</p>
+<p>
+	版权所有&nbsp;<a href="mailto:Copyright@2009-2015">Copyright@2009-2015</a>|&nbsp;<a target="_blank" href="https://beian.miit.gov.cn/"><span style="color:#333333;font-family:微软雅黑, &quot;font-size:14px;background-color:#FFFFFF;">豫ICP备2021036211号</span></a> 
+</p>
+<p>
+	&nbsp;纯自助论文投稿平台&nbsp;&nbsp; &nbsp;E-mail：1121090112@qq.com；eshukan@163.com
+</p>
+<p>
+	<br />
+</p>
+                
+                <script type="text/javascript">
+                    var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+                    document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F3b573c36c9420e79162ace1d7d1011fc' type='text/javascript'%3E%3C/script%3E"));
+                </script>
+                
+            </li>
+        </ul>
+    </div>
+</div>
+<script type="text/javascript" charset="utf-8" src="/js/10095500.js?v=2.2" rel="nofollow"></script>
+    </div>
+</body>
+</html>

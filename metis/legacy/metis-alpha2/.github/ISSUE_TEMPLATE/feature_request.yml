@@ -1,0 +1,25 @@
+name: Feature request
+description: Propose a research workflow or product improvement
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Research problem
+      description: What research task is difficult today, and for whom?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: Describe the user-visible result without prescribing an implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Examples or references
+      description: Remove private data and credentials before sharing examples.

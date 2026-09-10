@@ -1,0 +1,62 @@
+name: Bug report
+description: Report a reproducible problem in Metis
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        Do not include API keys, private papers, user databases, confidential research
+        content, or unredacted local paths. Security issues must be reported privately.
+  - type: input
+    id: version
+    attributes:
+      label: Metis version
+      placeholder: 0.1.0-alpha.2
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      placeholder: Windows 11 24H2
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the observed behavior and its impact.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      placeholder: |
+        1. Open ...
+        2. Select ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Redacted logs or screenshots
+      description: Attach only evidence that contains no credentials or private data.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Safety check
+      options:
+        - label: I removed credentials and private research data from this report.
+          required: true
+        - label: This is not a security vulnerability.
+          required: true

@@ -1,0 +1,60 @@
+name: Nightly reliability
+
+# Task 5 §4: high-cost stress / lifecycle / performance gates run nightly (and
+# on demand) — never on every PR. Artifacts (reports, screenshots, logs) are
+# uploaded for audit.
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: nightly-reliability-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  nightly:
+    name: Nightly reliability gate
+    runs-on: windows-2022
+    timeout-minutes: 90
+    env:
+      METIS_UPDATE_CHANNEL: alpha
+      METIS_SKIP_GENOFFICE: '1'
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - name: Resolve real TEMP path (CI runners expose 8.3 short TMP)
+        shell: pwsh
+        run: |
+          Add-Content $env:GITHUB_ENV "TMP=$((node -e "process.stdout.write(require('fs').realpathSync.native(require('os').tmpdir()))"))"
+          Add-Content $env:GITHUB_ENV "TEMP=$((node -e "process.stdout.write(require('fs').realpathSync.native(require('os').tmpdir()))"))"
+      - run: npm ci
+      - name: Rebuild SQLite for Node.js
+        run: npm run rebuild:node
+      - name: Tier 1 sanity before expensive work
+        run: npm run verify:reliability
+      - name: Production build (needed for desktop-tier gates)
+        run: npm run build:electron
+      - name: Tier 3 nightly reliability gate
+        run: npm run verify:reliability:nightly
+      - name: Upload reliability evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-reliability-evidence
+          path: |
+            logs/reliability-gate-report.json
+            logs/reliability-gate/
+            logs/layout-acceptance-current/
+            logs/crash-relaunch-*.json
+            logs/child-process-leak-gate-*.json
+            logs/perf-baseline*.json
+          if-no-files-found: warn
+          retention-days: 14

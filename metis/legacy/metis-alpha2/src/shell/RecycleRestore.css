@@ -1,0 +1,841 @@
+/**
+ * RecycleRestore styles.
+ *
+ * Self-contained design tokens that fall back to the research/academic theme
+ * and then to generic CSS variables. Uses logical properties for RTL, supports
+ * forced-colors and prefers-reduced-motion, and adapts via data-responsive-band.
+ */
+
+.recycle-restore {
+  --rr-accent: var(--accent);
+  --rr-accent-strong: var(--accent-hover);
+  --rr-accent-soft: var(--accent-soft);
+  --rr-paper: var(--bg-card);
+  --rr-canvas: var(--bg-main);
+  --rr-ink: var(--text-body);
+  --rr-muted: var(--text-secondary);
+  --rr-faint: var(--text-muted);
+  --rr-border: var(--border-light);
+  --rr-danger: var(--evidence-refuted);
+  --rr-success: var(--evidence-verified);
+  --rr-focus: var(--focus-ring-color);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  color: var(--rr-ink);
+  background: var(--rr-paper);
+  font-family: inherit;
+  container-type: inline-size;
+}
+
+/* ── Header ── */
+.recycle-restore__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 54px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--rr-border);
+  background: var(--rr-paper);
+  flex-shrink: 0;
+}
+
+.recycle-restore__heading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+.recycle-restore__heading-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  color: var(--rr-accent-strong);
+  background: var(--rr-accent-soft);
+  border: 1px solid color-mix(in srgb, var(--rr-accent) 24%, var(--rr-border));
+  border-radius: var(--radius-md);
+}
+
+.recycle-restore__heading-copy {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+
+.recycle-restore__heading-copy strong {
+  overflow: hidden;
+  color: var(--rr-ink);
+  font-size: 13px;
+  font-weight: 680;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recycle-restore__heading-copy span {
+  overflow: hidden;
+  color: var(--rr-faint);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.055em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Search ── */
+.recycle-restore__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 12px 9px;
+  padding: 0 9px;
+  color: var(--rr-faint);
+  background: color-mix(in srgb, var(--rr-canvas) 62%, var(--rr-paper));
+  border: 1px solid var(--rr-border);
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.recycle-restore__search > svg {
+  flex-shrink: 0;
+}
+
+.recycle-restore__search input {
+  width: 100%;
+  min-width: 0;
+  min-height: 33px;
+  padding: 0;
+  color: var(--rr-ink);
+  background: transparent;
+  border: 0;
+  outline: 0;
+  font: inherit;
+  font-size: 11px;
+}
+
+.recycle-restore__search input::placeholder {
+  color: var(--rr-faint);
+}
+
+.recycle-restore__search-clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  color: var(--rr-faint);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .recycle-restore__search-clear:hover {
+    color: var(--text-primary);
+    background: var(--bg-hover);
+  }
+}
+
+.recycle-restore__search-clear:active { transform: scale(0.95); }
+
+/* ── Banners: recovery / error ── */
+.recycle-restore__recovery,
+.recycle-restore__error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 12px 9px;
+  padding: 8px 9px;
+  border-radius: var(--radius-md);
+  font-size: 10px;
+  line-height: 1.45;
+  flex-shrink: 0;
+}
+
+.recycle-restore__recovery {
+  color: var(--rr-success);
+  background: color-mix(in srgb, var(--rr-success) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--rr-success) 24%, transparent);
+}
+
+.recycle-restore__error {
+  color: var(--rr-danger);
+  background: var(--bg-danger-hover, var(--bg-danger-hover));
+  border: 1px solid color-mix(in srgb, var(--rr-danger) 26%, transparent);
+}
+
+.recycle-restore__error > svg {
+  flex-shrink: 0;
+  margin-block-start: 1px;
+}
+
+.recycle-restore__error-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.recycle-restore__error-copy strong {
+  font-weight: 650;
+}
+
+.recycle-restore__error-copy span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recycle-restore__error-actions,
+.recycle-restore__recovery-dismiss {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.recycle-restore__error-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  color: inherit;
+  background: transparent;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 10px;
+}
+
+.recycle-restore__error-actions button:hover {
+  background: color-mix(in srgb, currentColor 10%, transparent);
+}
+
+.recycle-restore__recovery-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.recycle-restore__recovery-dismiss {
+  padding: 2px 8px;
+  color: inherit;
+  background: transparent;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 10px;
+}
+
+.recycle-restore__recovery-dismiss:hover {
+  background: color-mix(in srgb, currentColor 10%, transparent);
+}
+
+/* ── Select-all bar ── */
+.recycle-restore__select-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--rr-border);
+  background: color-mix(in srgb, var(--rr-canvas) 55%, var(--rr-paper));
+  flex-shrink: 0;
+}
+
+.recycle-restore__select-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--rr-ink);
+  font-size: 11px;
+  font-weight: 620;
+  cursor: pointer;
+}
+
+.recycle-restore__count {
+  color: var(--rr-faint);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* ── Custom accessible checkbox ── */
+.recycle-restore__checkbox {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.recycle-restore__checkbox:focus-visible + .recycle-restore__checkbox-icon {
+  outline: 3px solid var(--rr-focus);
+  outline-offset: 2px;
+}
+
+.recycle-restore__checkbox-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  color: var(--rr-faint);
+  flex-shrink: 0;
+}
+
+.recycle-restore__checkbox:checked + .recycle-restore__checkbox-icon {
+  color: var(--rr-accent-strong);
+}
+
+/* ── Scrollable list ── */
+.recycle-restore__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden auto;
+  scrollbar-width: thin;
+}
+
+.recycle-restore__list {
+  margin: 0;
+  padding: 0 12px 12px;
+  list-style: none;
+}
+
+/* ── Timeline group ── */
+.recycle-restore__group {
+  padding-inline-start: 14px;
+  border-inline-start: 2px solid var(--rr-accent-soft);
+}
+
+.recycle-restore__group-label {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0 6px;
+  color: var(--rr-accent-strong);
+  background: var(--rr-paper);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.recycle-restore__group-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ── Item row ── */
+.recycle-restore__item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--rr-border) 72%, transparent);
+}
+
+.recycle-restore__item:last-child {
+  border-bottom: 0;
+}
+
+.recycle-restore__checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  padding-block-start: 2px;
+  cursor: pointer;
+}
+
+.recycle-restore__content {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.recycle-restore__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+.recycle-restore__type {
+  flex-shrink: 0;
+  max-width: 100%;
+  padding: 1px 6px;
+  overflow: hidden;
+  color: var(--rr-accent-strong);
+  background: var(--rr-accent-soft);
+  border-radius: var(--radius-md);
+  font-size: 9px;
+  font-weight: 680;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recycle-restore__time {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  color: var(--rr-faint);
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.recycle-restore__title-text {
+  overflow: hidden;
+  color: var(--rr-ink);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recycle-restore__meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  color: var(--rr-faint);
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.recycle-restore__meta span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recycle-restore__metadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  min-width: 0;
+}
+
+.recycle-restore__metadata-item {
+  display: inline-flex;
+  gap: 3px;
+  max-width: 100%;
+  color: var(--rr-muted);
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+.recycle-restore__metadata-key {
+  flex-shrink: 0;
+  color: var(--rr-faint);
+}
+
+.recycle-restore__metadata-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.recycle-restore__item-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-block-start: 2px;
+}
+
+/* ── Buttons ── */
+.recycle-restore__icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  color: var(--rr-muted);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+  flex-shrink: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .recycle-restore__icon-btn:hover:not(:disabled) {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+}
+
+.recycle-restore__icon-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.recycle-restore__icon-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .recycle-restore__icon-btn--restore:hover:not(:disabled) {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+
+  .recycle-restore__icon-btn--danger:hover:not(:disabled) {
+    color: var(--status-danger);
+    background: color-mix(in srgb, var(--status-danger) 8%, transparent);
+  }
+}
+
+.recycle-restore__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 30px;
+  padding: 5px 10px;
+  color: var(--rr-ink);
+  background: var(--rr-paper);
+  border: 1px solid var(--rr-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 620;
+  line-height: 1.2;
+  transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+  white-space: nowrap;
+}
+
+.recycle-restore__btn:hover:not(:disabled) {
+  background: var(--rr-accent-soft);
+  border-color: color-mix(in srgb, var(--rr-accent) 36%, var(--rr-border));
+}
+
+.recycle-restore__btn:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.recycle-restore__btn--primary {
+  color: var(--text-on-accent);
+  background: var(--rr-accent);
+  border-color: var(--rr-accent);
+}
+
+.recycle-restore__btn--primary:hover:not(:disabled) {
+  background: var(--rr-accent-strong);
+  border-color: var(--rr-accent-strong);
+}
+
+.recycle-restore__btn--quiet {
+  background: transparent;
+  border-color: transparent;
+  color: var(--rr-muted);
+}
+
+.recycle-restore__btn--quiet:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--rr-border) 50%, transparent);
+  color: var(--rr-ink);
+}
+
+.recycle-restore__btn--restore {
+  color: var(--rr-success);
+  border-color: color-mix(in srgb, var(--rr-success) 34%, var(--rr-border));
+}
+
+.recycle-restore__btn--restore:hover:not(:disabled) {
+  color: var(--rr-success);
+  background: color-mix(in srgb, var(--rr-success) 10%, transparent);
+}
+
+.recycle-restore__btn--danger {
+  color: var(--text-on-accent);
+  background: var(--rr-danger);
+  border-color: var(--rr-danger);
+}
+
+.recycle-restore__btn--danger:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--rr-danger) 82%, black);
+  border-color: color-mix(in srgb, var(--rr-danger) 82%, black);
+}
+
+/* ── Loading state ── */
+.recycle-restore__loading {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 18px 12px;
+  color: var(--rr-faint);
+  font-size: 11px;
+}
+
+.recycle-restore__spin {
+  animation: recycle-restore-spin 850ms linear infinite;
+}
+
+@keyframes recycle-restore-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Empty state ── */
+.recycle-restore__empty {
+  display: grid;
+  justify-items: center;
+  gap: 7px;
+  padding: 38px 18px;
+  text-align: center;
+  color: var(--rr-faint);
+  background: var(--rr-paper);
+  border: 1px dashed var(--rr-border);
+  border-radius: var(--radius-md);
+  margin: 12px;
+}
+
+.recycle-restore__empty strong {
+  color: var(--rr-ink);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.recycle-restore__empty p {
+  max-width: 28ch;
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+/* ── Action bar ── */
+.recycle-restore__action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--rr-border);
+  background: var(--rr-canvas);
+  flex-shrink: 0;
+}
+
+.recycle-restore__action-count {
+  color: var(--rr-accent-strong);
+  font-size: 12px;
+  font-weight: 650;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.recycle-restore__action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* ── Confirmation dialog ── */
+.recycle-restore__confirm-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-inpage, 40); /* 页内局部层：回收站组件内确认遮罩（宿主 shell-workspace-overlay 已在 --z-modal 档） */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: var(--bg-modal-overlay);
+}
+
+.recycle-restore__confirm {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  width: min(100%, 320px);
+  padding: 18px;
+  text-align: center;
+  background: var(--rr-paper);
+  border: 1px solid var(--rr-border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 12px 32px rgb(15 23 42 / 18%);
+}
+
+.recycle-restore__confirm-icon {
+  color: var(--rr-accent);
+}
+
+.recycle-restore__confirm-title {
+  color: var(--rr-ink);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.recycle-restore__confirm-message {
+  margin: 0;
+  color: var(--rr-muted);
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.recycle-restore__confirm-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-block-start: 4px;
+}
+
+/* ── Focus visibility ── */
+.recycle-restore__icon-btn:focus-visible,
+.recycle-restore__btn:focus-visible,
+.recycle-restore__search input:focus-visible,
+.recycle-restore__search-clear:focus-visible,
+.recycle-restore__error-actions button:focus-visible,
+.recycle-restore__recovery-dismiss:focus-visible {
+  outline: 3px solid var(--rr-focus);
+  outline-offset: 2px;
+}
+
+/* ── Narrow responsive band ── */
+.recycle-restore[data-responsive-band='narrow'] .recycle-restore__header {
+  flex-wrap: wrap;
+}
+
+.recycle-restore[data-responsive-band='narrow'] .recycle-restore__search {
+  margin-inline: 8px;
+}
+
+.recycle-restore[data-responsive-band='narrow'] .recycle-restore__select-bar {
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.recycle-restore[data-responsive-band='narrow'] .recycle-restore__item-actions {
+  flex-direction: column;
+}
+
+.recycle-restore[data-responsive-band='narrow'] .recycle-restore__action-bar {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.recycle-restore[data-responsive-band='narrow'] .recycle-restore__action-buttons {
+  justify-content: stretch;
+}
+
+.recycle-restore[data-responsive-band='narrow'] .recycle-restore__action-buttons .recycle-restore__btn {
+  flex: 1;
+}
+
+.recycle-restore[data-responsive-band='narrow'] .recycle-restore__confirm {
+  width: 100%;
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .recycle-restore__icon-btn,
+  .recycle-restore__btn,
+  .recycle-restore__search-clear {
+    transition: none;
+  }
+
+  .recycle-restore__spin {
+    animation: none;
+  }
+}
+
+/* ── Forced colors mode ── */
+@media (forced-colors: active) {
+  .recycle-restore,
+  .recycle-restore__header,
+  .recycle-restore__search,
+  .recycle-restore__select-bar,
+  .recycle-restore__item,
+  .recycle-restore__action-bar,
+  .recycle-restore__confirm,
+  .recycle-restore__empty {
+    border-color: CanvasText;
+  }
+
+  .recycle-restore__icon-btn,
+  .recycle-restore__btn,
+  .recycle-restore__search-clear {
+    border-color: ButtonBorder;
+    color: ButtonText;
+    background: ButtonFace;
+  }
+
+  .recycle-restore__icon-btn:hover:not(:disabled),
+  .recycle-restore__btn:hover:not(:disabled),
+  .recycle-restore__search-clear:hover {
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .recycle-restore__btn--primary,
+  .recycle-restore__btn--danger {
+    color: ButtonText;
+    background: ButtonFace;
+  }
+
+  .recycle-restore__type {
+    background: Highlight;
+    color: HighlightText;
+    border: 1px solid CanvasText;
+  }
+
+  .recycle-restore__error {
+    border-color: CanvasText;
+    color: CanvasText;
+    background: Canvas;
+  }
+
+  .recycle-restore__recovery {
+    border-color: CanvasText;
+    color: CanvasText;
+    background: Canvas;
+  }
+
+  .recycle-restore__confirm-overlay {
+    background: Canvas;
+    opacity: 0.85;
+  }
+
+  .recycle-restore__confirm-icon {
+    color: CanvasText;
+  }
+
+  .recycle-restore__spin {
+    animation: none;
+  }
+}

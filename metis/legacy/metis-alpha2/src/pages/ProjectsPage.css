@@ -1,0 +1,20 @@
+
+/* 项目参考材料库（2026-09-01）：资料页签顶部面板 + 文献库纵向排布 */
+.projects-page__materials {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  /* 父容器 .projects-page__content 是 overflow:hidden 的普通块，
+     必须显式给定高度，本容器才能真正成为滚动区。 */
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+/* 资料页签内 LibraryPage 不再自身滚动：高度随内容展开，统一由外层
+   .projects-page__materials 滚动，避免嵌套滚动导致「我的文献」列表翻不动。 */
+.projects-page__materials .library-page {
+  border-top: 1px solid var(--border-light, #e3e8ee);
+  height: auto;
+  overflow: visible;
+}

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "description": "Mirror of electron/UpdateChannelPolicy.ts UPDATE_TRUST_POLICY (runtime source of truth). Consumed by release tooling and sync-checked by tests/electron/UpdateChannelPolicy.test.ts. When a Windows code-signing certificate is provisioned: set expectedSignerSubject here AND in the TS constant, configure electron-builder signing env (CSC_LINK / CSC_KEY_PASSWORD), and flip build/release-policy.json windows.requireAuthenticode to true.",
+  "publishTarget": {
+    "provider": "github",
+    "owner": "TZUKWAN",
+    "repo": "metis-in-social-science"
+  },
+  "channels": {
+    "dev": {
+      "autoDownload": false,
+      "requireSignature": false,
+      "allowUnsignedInstall": true,
+      "discloseUnsigned": false,
+      "trustLabel": "DEV ONLY — in-app updates disabled"
+    },
+    "alpha": {
+      "autoDownload": true,
+      "requireSignature": false,
+      "allowUnsignedInstall": true,
+      "discloseUnsigned": true,
+      "trustLabel": "UNSIGNED ALPHA — NOT RELEASE SAFE"
+    },
+    "stable": {
+      "autoDownload": false,
+      "requireSignature": true,
+      "allowUnsignedInstall": false,
+      "discloseUnsigned": true,
+      "trustLabel": "STABLE — SIGNATURE REQUIRED (RELEASE SAFE)"
+    }
+  },
+  "expectedSignerSubject": null
+}

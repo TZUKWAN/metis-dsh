@@ -1,0 +1,127 @@
+/** NotesPanel — 研究笔记面板。 */
+
+.notes-panel {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-modal-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.notes-panel__card {
+  width: 680px;
+  max-width: 92vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm, 2px);
+  padding: 18px 20px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.32);
+}
+
+.notes-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.notes-panel__header h2 {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  margin: 0;
+}
+
+.notes-panel__toolbar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.notes-panel__filter {
+  width: auto;
+  font-size: 12px;
+  padding: 3px 24px 3px 8px;
+}
+
+.notes-panel__form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.notes-panel__content {
+  font-family: inherit;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.notes-panel__empty {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  padding: 30px 0;
+}
+
+.notes-panel__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.notes-panel__item {
+  border: 1px solid var(--border-light);
+  border-radius: 2px;
+  padding: 9px 12px;
+}
+
+.notes-panel__item-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.notes-panel__type {
+  font-size: 10.5px;
+  border: 1px solid var(--border-light);
+  border-radius: 2px;
+  padding: 0 6px;
+  line-height: 18px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.notes-panel__type--literature { color: var(--accent); border-color: var(--accent); }
+.notes-panel__type--theory { color: var(--chart-6); border-color: var(--chart-6); }
+.notes-panel__type--method { color: var(--chart-4); border-color: var(--chart-4); }
+
+.notes-panel__title {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.notes-panel__date {
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.notes-panel__content-preview {
+  margin: 5px 0 0 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}

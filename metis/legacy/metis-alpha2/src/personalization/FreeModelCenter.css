@@ -1,0 +1,58 @@
+.free-model-center { display: flex; flex-direction: column; gap: 14px; padding: 16px; overflow-y: auto; }
+.free-model-warning { display: flex; gap: 10px; padding: 12px 14px; border: 1px solid color-mix(in srgb, var(--status-failed) 45%, transparent); border-radius: 4px; background: color-mix(in srgb, var(--status-failed) 8%, var(--bg-card)); color: var(--text-primary); }
+.free-model-warning svg { flex: none; margin-top: 2px; color: var(--status-failed); }
+.free-model-warning strong { display: block; margin-bottom: 4px; font-size: 13px; color: var(--status-failed); }
+.free-model-warning p { margin: 0; font-size: 12px; line-height: 1.6; }
+.free-model-notice { margin: 0; padding: 8px 14px; color: var(--text-secondary); font-size: 12px; background: color-mix(in srgb, var(--primary) 6%, transparent); border-radius: 3px; }
+.free-model-section { padding: 12px 14px; border: 1px solid var(--border-light); border-radius: 4px; background: var(--bg-card); }
+.free-model-section h3 { margin: 0 0 6px; font-size: 13px; color: var(--text-primary); }
+.free-model-hint { margin: 0 0 10px; color: var(--text-muted); font-size: 11.5px; line-height: 1.55; }
+.free-model-empty { margin: 6px 0; color: var(--text-muted); font-size: 12px; }
+.free-model-list { list-style: none; display: flex; flex-direction: column; gap: 6px; margin: 0 0 10px; padding: 0; }
+.free-model-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 8px; align-items: center; padding: 7px 9px; border: 1px solid var(--border-light); border-radius: 4px; background: var(--bg-card); }
+.free-model-list li.disabled { opacity: .55; }
+.free-model-row-main { min-width: 0; }
+.free-model-row-main strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12.5px; color: var(--text-primary); }
+.free-model-row-main small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-muted); font-size: 11px; }
+.free-model-row-ops { display: flex; gap: 5px; }
+.free-model-row-ops button { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--text-secondary); font-size: 12px; font-weight: 500; cursor: pointer; transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out); }
+@media (hover: hover) and (pointer: fine) {
+  .free-model-row-ops button:hover:not(:disabled) { background: var(--bg-hover); color: var(--text-primary); }
+}
+.free-model-row-ops button:active:not(:disabled) { transform: scale(0.95); }
+.free-model-test-result { grid-column: 1 / -1; color: var(--text-muted); font-size: 10.5px; }
+.free-model-section-header { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+.free-model-section-header small { color: var(--text-muted); font-size: 11px; }
+.free-model-primary { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border: 1px solid color-mix(in srgb, var(--primary) 40%, transparent); border-radius: 3px; background: color-mix(in srgb, var(--primary) 8%, var(--bg-card)); color: var(--primary); font-size: 12px; cursor: pointer; }
+.free-model-add-form { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.free-model-add-form input, .free-model-add-form select { min-width: 0; padding: 5px 8px; border: 1px solid var(--border-light); border-radius: 3px; background: var(--bg-input); color: var(--text-primary); font-size: 12px; }
+.spin { animation: free-model-spin 1s linear infinite; }
+@keyframes free-model-spin { to { transform: rotate(360deg); } }
+
+/* 鍏嶈垂API浜岀骇绐楀彛锛?026-08-23锛?*/
+.provider-free-api-modal { width: min(860px, calc(100vw - 48px)); max-height: calc(100vh - 64px); display: flex; flex-direction: column; padding: 0; }
+.provider-free-api-modal__header { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--border-light); }
+.provider-free-api-modal__header strong { font-size: 15px; color: var(--text-primary); }
+.provider-free-api-modal__header small { display: block; margin-top: 2px; color: var(--text-muted); font-size: 11px; }
+.provider-free-api-modal__header button { display: grid; place-items: center; width: 28px; height: 28px; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--text-secondary); cursor: pointer; transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out); }
+@media (hover: hover) and (pointer: fine) {
+  .provider-free-api-modal__header button:hover { background: var(--bg-hover); color: var(--text-primary); }
+}
+.provider-free-api-modal__header button:active { transform: scale(0.95); }
+.provider-free-api-modal__body { flex: 1; min-height: 0; overflow-y: auto; padding: 6px 4px 4px; }
+
+/* 自动注册站点状态徽章（2026-08-24）*/
+.free-model-chip { display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; border: 1px solid var(--border-light); color: var(--text-secondary); white-space: nowrap; }
+.free-model-chip.phase-available { color: var(--status-completed); border-color: color-mix(in srgb, var(--status-completed) 45%, transparent); background: color-mix(in srgb, var(--status-completed) 10%, transparent); }
+.free-model-chip.phase-failed { color: var(--status-failed); border-color: color-mix(in srgb, var(--status-failed) 45%, transparent); background: color-mix(in srgb, var(--status-failed) 9%, transparent); }
+.free-model-chip.phase-skipped { color: var(--status-skimmed-text); border-color: color-mix(in srgb, var(--status-skimmed-text) 45%, transparent); background: color-mix(in srgb, var(--status-skimmed-text) 10%, transparent); }
+.free-model-chip.phase-pending { color: var(--text-muted); }
+.free-model-chip.phase-probing,
+.free-model-chip.phase-sending_code,
+.free-model-chip.phase-waiting_code,
+.free-model-chip.phase-registering,
+.free-model-chip.phase-logging_in,
+.free-model-chip.phase-creating_token,
+.free-model-chip.phase-listing_models { color: var(--primary); border-color: color-mix(in srgb, var(--primary) 40%, transparent); background: color-mix(in srgb, var(--primary) 7%, transparent); }
+.free-model-list li[data-phase='available'] { border-color: color-mix(in srgb, var(--status-completed) 35%, transparent); }
+.free-model-list li[data-phase='failed'] { border-color: color-mix(in srgb, var(--status-failed) 30%, transparent); }

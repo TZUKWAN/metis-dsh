@@ -1,0 +1,163 @@
+/** SubmissionsPanel — 投稿跟踪面板。复用 MethodsPanel 的视觉基调。 */
+
+.submissions-panel {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay, 89);
+  background: var(--bg-modal-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.submissions-panel__card {
+  width: 640px;
+  max-width: 92vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm, 2px);
+  padding: 18px 20px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.32);
+}
+
+.submissions-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.submissions-panel__header h2 {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  margin: 0;
+}
+
+.submissions-panel__empty {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 26px 0;
+}
+
+.submissions-panel__form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.submissions-panel__form .settings-input { flex: 1; }
+
+.submissions-panel__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.submissions-panel__item {
+  border: 1px solid var(--border-light);
+  border-radius: 2px;
+  padding: 10px 12px;
+}
+
+.submissions-panel__item-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.submissions-panel__title {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-serif);
+  font-size: 13.5px;
+  color: var(--text-primary);
+}
+
+.submissions-panel__status {
+  width: auto;
+  font-size: 12px;
+  padding: 2px 22px 2px 8px;
+}
+
+.submissions-panel__meta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.submissions-panel__comments {
+  list-style: none;
+  margin: 8px 0 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.submissions-panel__comment {
+  border-left: 2px solid var(--border);
+  padding: 4px 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.submissions-panel__comment--resolved {
+  border-left-color: var(--success);
+  color: var(--text-primary);
+}
+
+.submissions-panel__comment p { margin: 0 0 4px 0; }
+
+.submissions-panel__comment-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.submissions-panel__note {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.submissions-panel__add-comment {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.submissions-panel__add-comment .settings-input { flex: 1; }
+
+.submissions-panel__letter {
+  margin-top: 14px;
+  border-top: 1px solid var(--border-light);
+  padding-top: 10px;
+}
+
+.submissions-panel__letter h3 {
+  font-size: 13px;
+  margin: 0 0 6px 0;
+}
+
+.submissions-panel__letter pre {
+  font-family: inherit;
+  font-size: 12px;
+  white-space: pre-wrap;
+  color: var(--text-primary);
+  background: var(--bg-input, transparent);
+  border: 1px solid var(--border-light);
+  border-radius: 2px;
+  padding: 10px;
+  max-height: 240px;
+  overflow-y: auto;
+}

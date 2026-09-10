@@ -1,0 +1,152 @@
+/**
+ * METIS — Aurora Glass 环境光与玻璃材质层。
+ *
+ * 2026-09-02 刘总定调"克制高级版"：光斑极淡、若隐若现；真实 backdrop 模糊
+ * 只出现在壳层（顶栏/侧栏/检查器）与浮层（弹窗），内容卡片保持实色以守住
+ * WCAG 契约与渲染预算。本文件只消费 AcademicTheme.css 的 aurora/glass
+ * token，不定义任何颜色；加载顺序必须在 AcademicPolish.css 之后。
+ *
+ * 层级：html 实色底 → .aurora-backdrop（fixed, z:0）→ .app-layout（z:1）。
+ * 豁免：WebContentsView 覆盖区域（.collab-page、.browser-overlay__panel）
+ * 保持不透明实色——系统级浏览器窗口会盖住任何半透明 DOM。
+ */
+
+/* ── 底色穿透：深空 mesh 渐变底（椭圆、超长衰减、贴边——是环境倾向，
+ *   不是光源；任何位置都不应出现可辨识的圆形边界）──────────────── */
+
+html {
+  background-color: var(--bg-main);
+  background-image:
+    radial-gradient(46vmax 38vmax at 14% -10%, var(--aurora-1), transparent 74%),
+    radial-gradient(40vmax 34vmax at 108% 22%, var(--aurora-2), transparent 72%),
+    radial-gradient(54vmax 46vmax at 40% 122%, var(--aurora-3), transparent 76%);
+  background-attachment: fixed;
+}
+
+body,
+.app-layout {
+  background: transparent;
+}
+
+.app-layout {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── 极光环境光：三枚大尺度低饱和光斑，极慢漂移 ──────────── */
+
+.aurora-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: var(--aurora-opacity);
+}
+
+.aurora-backdrop i {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(46px);
+  will-change: transform;
+}
+
+/* ── 极光漂移层：两枚椭圆光斑以半强度极慢漂移（只做呼吸变化，
+ *   opacity 压住避免与 mesh 底叠加成双倍亮度）────────────────── */
+
+.aurora-backdrop i {
+  opacity: 0.5;
+}
+
+.aurora-backdrop i:nth-child(1) {
+  width: 52vmax;
+  height: 44vmax;
+  left: -16vmax;
+  top: -20vmax;
+  background: radial-gradient(closest-side, var(--aurora-1), transparent);
+  animation: aurora-drift-1 96s ease-in-out infinite alternate;
+}
+
+.aurora-backdrop i:nth-child(2) {
+  width: 44vmax;
+  height: 38vmax;
+  right: -16vmax;
+  bottom: -16vmax;
+  background: radial-gradient(closest-side, var(--aurora-2), transparent);
+  animation: aurora-drift-2 140s ease-in-out infinite alternate;
+}
+
+@keyframes aurora-drift-1 {
+  to { transform: translate3d(9vmax, 7vmax, 0) scale(1.12); }
+}
+
+@keyframes aurora-drift-2 {
+  to { transform: translate3d(-7vmax, -6vmax, 0) scale(1.08); }
+}
+
+@keyframes aurora-drift-3 {
+  to { transform: translate3d(5vmax, -8vmax, 0) scale(1.15); }
+}
+
+/* 细噪点：抑制大面积渐变的色带，附一层胶片质感。 */
+.aurora-backdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  opacity: 0.028;
+  mix-blend-mode: overlay;
+}
+
+/* ── 壳层玻璃：侧栏/检查器统一 token 材质 + 内缘高光 ───────── */
+
+.sidebar {
+  background: var(--glass-surface);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow: inset 1px 0 0 var(--glass-edge);
+}
+
+.shell-left {
+  background: var(--glass-surface);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow: inset 1px 0 0 var(--glass-edge);
+}
+
+.shell-right {
+  background: var(--glass-surface);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow: inset -1px 0 0 var(--glass-edge);
+}
+
+.chat-sidebar {
+  background: var(--glass-surface);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow: inset -1px 0 0 var(--glass-edge);
+}
+
+/* ── 浮层玻璃：遮罩景深模糊 + 弹窗深玻璃 + 顶部高光 ─────────── */
+
+.modal-overlay {
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.modal {
+  background: var(--glass-surface-strong);
+  -webkit-backdrop-filter: blur(var(--glass-blur-strong)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--glass-blur-strong)) saturate(var(--glass-saturate));
+  box-shadow: var(--shadow-modal), inset 0 1px 0 var(--glass-edge);
+}
+
+/* ── 降级 ─────────────────────────────────────────── */
+
+/* 注意：不绑定 prefers-reduced-transparency。该系统开关针对的是任务栏等
+ * OS chrome（2026-09-02 实测刘总机器上为 true，会把应用玻璃全部抹平，
+ * 视觉诉求核心受损）；真正的无障碍高对比场景由 forced-colors 覆盖
+ * （AcademicTheme.css 已将玻璃/光斑 token 落地为系统色）。
+ * 如需"降低透明度"选项，后续做成设置项而不是跟随系统开关。 */

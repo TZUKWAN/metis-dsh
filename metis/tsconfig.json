@@ -1,0 +1,46 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2023"],
+    "strict": true,
+    "noImplicitAny": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "exactOptionalPropertyTypes": false,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "types": ["node"],
+    // TS 6+/7 起 paths 相对 tsconfig 目录解析，无需 baseUrl。
+    "paths": {
+      // 类型来自 DSH 构建产物（pnpm build 已生成 lib/types）。运行期模块解析
+      // 由 DSH 加载器在真实安装树完成（与 typecheck 解耦）。
+      "@deepseek-ai/cordis": ["../vendor/cordis/lib/index.js"],
+      "@deepseek-ai/cordis/*": ["../vendor/cordis/lib/types/*.d.ts"],
+      "@deepseek-ai/dsh-tools": ["../packages/core/tools/lib/index.js"],
+      "@deepseek-ai/dsh-tools/*": ["../packages/core/tools/lib/types/*.d.ts"],
+      "@deepseek-ai/dsh-util-values": ["../packages/util/values/lib/index.js"],
+      "@deepseek-ai/dsh-session": ["../packages/core/session/lib/types/index.d.ts"],
+      "@deepseek-ai/dsh-llm": ["../packages/llm/llm/lib/types/index.d.ts"],
+      "@deepseek-ai/dsh-brand": ["../packages/util/brand/lib/types/index.d.ts"],
+      "@deepseek-ai/dsh-fs": ["../packages/fs/fs/lib/types/index.d.ts"],
+      "@deepseek-ai/dsh-web": ["../packages/web/web/lib/types/index.d.ts"],
+      "dsh-metis-literature": ["./plugins/literature/src/index.ts"],
+      // 开发期类型解析：直接映射到 DSH checkout 源码（与 DSH tsconfig.base.json 的
+      // paths 语义一致）。运行期由 DSH 加载器（tsx / bundle layer）解析真实包。
+      "@metis/*": ["./plugins/*/src/index.ts"],
+      "@metis-shared/*": ["./shared/*/src/index.ts"]
+    }
+  },
+  "include": [
+    "types/**/*.d.ts",
+    "plugins/*/src/**/*.ts",
+    "shared/*/src/**/*.ts",
+    "tests/**/*.ts"
+  ]
+}

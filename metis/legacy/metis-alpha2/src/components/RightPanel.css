@@ -1,0 +1,14 @@
+
+/* 任务清单步骤提示词展开（2026-08-29 刘总要求） */
+.task-detail {
+  margin: 4px 0 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  background: var(--bg-secondary);
+  font-size: 12px;
+  line-height: 1.55;
+  max-height: 260px;
+  overflow: auto;
+  white-space: pre-wrap;
+}

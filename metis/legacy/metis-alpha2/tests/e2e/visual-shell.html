@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>KIMI-201 Visual Validation</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body,#root{width:100%;height:100%;overflow:hidden}
+  body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif}
+</style></head><body><div id="root"></div>
+<script type="module">
+import { createRoot } from 'react-dom/client';
+import { ProjectShell } from '/src/shell/ProjectShell.tsx';
+
+// Validate that we can load the shell
+const root = createRoot(document.getElementById('root'));
+root.render(
+  ProjectShell({
+    leftContent: '<div style="padding:16px">Left Panel</div>',
+    centerContent: '<div style="padding:16px">Center Content</div>',
+    rightContent: null,
+    activeMode: 'converse',
+    onModeChange: () => {},
+    leftCollapsed: false,
+    rightCollapsed: true,
+    onLeftCollapsedChange: () => {},
+    onRightCollapsedChange: () => {},
+    workspaceHeader: null,
+    runTimeline: null,
+    breadcrumbs: null,
+    commandBarOpen: false,
+    objectTabs: [],
+    selectionActionBar: null,
+    splitPreview: null,
+    versionDiffReviewer: null,
+    recycleRestore: null,
+    importCreate: null,
+    projectSwitcher: null,
+    activeObjectTabId: null,
+    onObjectTabSelect: () => {},
+    onObjectTabClose: () => {},
+    onObjectTabReorder: () => {},
+    onCommandBarOpen: () => {},
+    onCommandBarClose: () => {},
+  })
+);
+</script></body></html>

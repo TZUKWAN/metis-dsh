@@ -1,0 +1,27 @@
+{
+  "name": "metis-research-plugins",
+  "private": true,
+  "version": "0.1.0",
+  "description": "METIS Research Plugin Family —科研领域插件家族，运行于 DeepSeek Harness（DSH upstream untouched）。",
+  "type": "module",
+  "scripts": {
+    "build": "pnpm -r --if-present run build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
+    "lint": "eslint plugins shared tests --ext .ts",
+    "pack": "pnpm -r --if-present run pack",
+    "check:dsh-untouched": "node scripts/check-dsh-untouched.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.9.0",
+    "vitest": "^4.1.0",
+    "zod": "^3.23.0"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

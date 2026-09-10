@@ -1,0 +1,461 @@
+/**
+ * SplitPreview styles — resizable two-pane preview with accessibility support.
+ *
+ * Provides: horizontal/vertical split, draggable sash, collapse controls,
+ * sync-scroll toggle, loading/empty/error states, narrow-screen stacking,
+ * keyboard focus, RTL via logical properties, forced-colors mode, and
+ * prefers-reduced-motion.
+ */
+
+.split-preview {
+  --split-preview-accent: var(--accent);
+  --split-preview-accent-strong: var(--accent-hover);
+  --split-preview-accent-soft: color-mix(in srgb, var(--split-preview-accent) 11%, transparent);
+  --split-preview-bg: var(--bg-card);
+  --split-preview-canvas: var(--bg-main, var(--bg-secondary));
+  --split-preview-border: var(--border-light, var(--border-light));
+  --split-preview-text: var(--text-body, var(--border));
+  --split-preview-muted: var(--text-muted, var(--text-muted));
+  --split-preview-focus: var(--focus-ring-color);
+  --split-preview-danger: var(--status-danger);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--split-preview-bg);
+  border: 1px solid var(--split-preview-border);
+  border-radius: var(--radius-md);
+  color: var(--split-preview-text);
+  font-family: inherit;
+  container-type: inline-size;
+}
+
+/* ── Error/recovery banner ── */
+.split-preview__error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--split-preview-danger) 22%, var(--split-preview-border));
+  background: color-mix(in srgb, var(--split-preview-danger) 8%, transparent);
+  color: var(--split-preview-danger);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.split-preview__error-icon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.split-preview__error-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-wrap: anywhere;
+}
+
+.split-preview__retry-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border: 1px solid currentColor;
+  border-radius: 5px;
+  background: transparent;
+  color: inherit;
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.12s ease;
+}
+
+.split-preview__retry-btn:hover {
+  background: color-mix(in srgb, var(--split-preview-danger) 14%, transparent);
+}
+
+.split-preview__retry-btn:focus-visible {
+  outline: 3px solid var(--split-preview-focus);
+  outline-offset: 2px;
+}
+
+/* ── Toolbar ── */
+.split-preview__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 40px;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--split-preview-border);
+  background: var(--split-preview-canvas);
+  flex-shrink: 0;
+}
+
+.split-preview__toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.split-preview__toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 28px;
+  padding: 4px 9px;
+  border: 1px solid var(--split-preview-border);
+  border-radius: 6px;
+  background: var(--split-preview-bg);
+  color: var(--split-preview-muted);
+  font-size: 12px;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+}
+
+.split-preview__toolbar-btn:hover:not(:disabled) {
+  background: var(--split-preview-accent-soft);
+  color: var(--split-preview-accent-strong);
+  border-color: color-mix(in srgb, var(--split-preview-accent) 36%, var(--split-preview-border));
+}
+
+.split-preview__toolbar-btn.is-active {
+  color: var(--split-preview-accent-strong);
+  background: var(--split-preview-accent-soft);
+  border-color: color-mix(in srgb, var(--split-preview-accent) 44%, var(--split-preview-border));
+}
+
+.split-preview__toolbar-btn:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.split-preview__toolbar-btn:focus-visible {
+  outline: 3px solid var(--split-preview-focus);
+  outline-offset: 2px;
+}
+
+.split-preview__toolbar-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 8ch;
+}
+
+.split-preview__split-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: var(--radius-md);
+  background: var(--split-preview-accent-soft);
+  color: var(--split-preview-accent-strong);
+  font-size: 11px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+/* ── Body and panes ── */
+.split-preview__body {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.split-preview--horizontal .split-preview__body {
+  flex-direction: row;
+}
+
+.split-preview--vertical .split-preview__body {
+  flex-direction: column;
+}
+
+.split-preview__pane {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--split-preview-bg);
+}
+
+.split-preview__pane--primary {
+  flex: 0 0 auto;
+}
+
+.split-preview__pane--secondary {
+  flex: 1 1 0;
+}
+
+.split-preview__pane.is-collapsed {
+  flex: 0 0 0 !important;
+  min-width: 0;
+  min-height: 0;
+  width: 0;
+  height: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.split-preview__pane--primary:not(.is-collapsed) {
+  border-inline-end: 1px solid var(--split-preview-border);
+  border-block-end: 0;
+}
+
+.split-preview--vertical .split-preview__pane--primary:not(.is-collapsed) {
+  border-inline-end: 0;
+  border-block-end: 1px solid var(--split-preview-border);
+}
+
+.split-preview__scroll {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: 12px;
+  scrollbar-width: thin;
+}
+
+.split-preview__scroll:focus-visible {
+  outline: 2px solid var(--split-preview-focus);
+  outline-offset: -2px;
+}
+
+/* ── Sash ── */
+.split-preview__sash {
+  position: relative;
+  z-index: var(--z-inpage, 40); /* 页内局部层：分栏拖拽手柄 */
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  touch-action: none;
+  cursor: col-resize;
+}
+
+.split-preview--horizontal .split-preview__sash {
+  width: 10px;
+  min-height: 100%;
+}
+
+.split-preview--vertical .split-preview__sash {
+  height: 10px;
+  min-width: 100%;
+  cursor: row-resize;
+}
+
+.split-preview__sash:hover .split-preview__sash-handle,
+.split-preview__sash:focus-visible .split-preview__sash-handle,
+.split-preview.is-dragging .split-preview__sash-handle {
+  background: var(--split-preview-accent);
+}
+
+.split-preview__sash-handle {
+  flex: 0 0 auto;
+  border-radius: var(--radius-md);
+  background: var(--split-preview-border);
+  transition: background 0.15s ease;
+}
+
+.split-preview--horizontal .split-preview__sash-handle {
+  width: 3px;
+  height: 32px;
+}
+
+.split-preview--vertical .split-preview__sash-handle {
+  width: 32px;
+  height: 3px;
+}
+
+.split-preview__sash:focus-visible {
+  outline: 3px solid var(--split-preview-focus);
+  outline-offset: -2px;
+}
+
+/* ── Loading state ── */
+.split-preview__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 120px;
+  color: var(--split-preview-muted);
+  font-size: 13px;
+}
+
+.split-preview__spinner {
+  animation: split-preview-spin 900ms linear infinite;
+}
+
+@keyframes split-preview-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Empty state ── */
+.split-preview__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 120px;
+  color: var(--split-preview-muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+.split-preview__empty-icon {
+  opacity: 0.6;
+}
+
+.split-preview__empty-text {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-wrap: anywhere;
+}
+
+/* ── Screen-reader-only announcements ── */
+.split-preview__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Narrow responsive band (auto-stack) ── */
+.split-preview[data-responsive-band='narrow'] .split-preview__body,
+.split-preview--vertical[data-responsive-band='narrow'] .split-preview__body {
+  flex-direction: column;
+}
+
+.split-preview[data-responsive-band='narrow'] .split-preview__pane--primary {
+  flex: 1 1 50% !important;
+  border-inline-end: 0;
+  border-block-end: 1px solid var(--split-preview-border);
+}
+
+.split-preview[data-responsive-band='narrow'] .split-preview__pane--secondary {
+  flex: 1 1 50%;
+}
+
+.split-preview[data-responsive-band='narrow'] .split-preview__sash {
+  display: none;
+}
+
+.split-preview[data-responsive-band='narrow'] .split-preview__toolbar-text {
+  display: none;
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .split-preview__toolbar-btn,
+  .split-preview__retry-btn,
+  .split-preview__sash-handle {
+    transition: none;
+  }
+
+  .split-preview__spinner {
+    animation-duration: 2s;
+  }
+}
+
+/* ── Forced colors ── */
+@media (forced-colors: active) {
+  .split-preview {
+    border-color: CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .split-preview__error {
+    border-color: CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .split-preview__toolbar {
+    border-color: CanvasText;
+    background: Canvas;
+  }
+
+  .split-preview__toolbar-btn {
+    border-color: ButtonBorder;
+    background: ButtonFace;
+    color: ButtonText;
+  }
+
+  .split-preview__toolbar-btn:hover:not(:disabled) {
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .split-preview__toolbar-btn.is-active {
+    background: Highlight;
+    color: HighlightText;
+    border-color: Highlight;
+  }
+
+  .split-preview__split-badge {
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .split-preview__pane--primary:not(.is-collapsed) {
+    border-color: CanvasText;
+  }
+
+  .split-preview__sash-handle {
+    background: ButtonBorder;
+  }
+
+  .split-preview__sash:hover .split-preview__sash-handle,
+  .split-preview__sash:focus-visible .split-preview__sash-handle,
+  .split-preview.is-dragging .split-preview__sash-handle {
+    background: Highlight;
+  }
+
+  .split-preview__retry-btn {
+    border-color: ButtonBorder;
+  }
+
+  .split-preview__spinner {
+    forced-color-adjust: none;
+  }
+}
+
+/* ── High-contrast / 200% zoom safeguards ── */
+@media (max-width: 320px) {
+  .split-preview__toolbar-btn {
+    min-width: 28px;
+    padding-inline: 5px;
+  }
+
+  .split-preview__toolbar-text {
+    display: none;
+  }
+}

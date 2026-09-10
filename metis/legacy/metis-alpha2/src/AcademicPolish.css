@@ -1,0 +1,958 @@
+/**
+ * AcademicPolish.css — 学术质感视觉层（POLISH-METIS-01）。
+ *
+ * 设计方向：研究仪器式的克制美学 —— 纸白底、石墨字、赤陶铜点睛；
+ * 衬线字体承载学术内容（页面主标题、论文/成果/项目名），无衬线承载
+ * 界面控件。本文件只覆盖表现层：不改布局结构，统一间距节奏、按钮
+ * 体系、卡片样式、空状态与滚动条。所有改动保持：圆角 ≤6px、无大写
+ * 转换、对比度 WCAG AA、焦点框格式合法。
+ */
+
+/* ─── 1. 基础排版 ───────────────────────────────────────────── */
+
+/* 页面主标题与学术内容标题使用衬线，营造期刊质感。 */
+.placeholder-page h2,
+.settings-page h2,
+.personalization-page h1,
+.personalization-page h2,
+.autonomous-header h1,
+.artifacts-center__header h2,
+.projects-page__sidebar-header h2,
+.projects-page h2,
+.paper-title,
+.detail-header h2,
+.chat-empty h2,
+.personalization-card__select strong,
+.artifacts-center__item-title,
+.projects-page__item-title,
+.personalization-template__section input,
+.personalization-template__section textarea {
+  font-family: var(--font-serif);
+}
+
+/* 衬线标题的中文字距需要留白呼吸。 */
+.placeholder-page h2,
+.settings-page h2,
+.personalization-page h1,
+.autonomous-header h1,
+.chat-empty h2 {
+  letter-spacing: 0;
+  font-weight: 600;
+}
+
+/* 正文行高微调，长文本更像纸面。 */
+.chat-message-content,
+.note-content-input,
+.chat-empty p {
+  line-height: 1.7;
+}
+
+/* ─── 2. 顶部导航 —— 期刊目录式下划线 + 品牌衬线 ────────────── */
+
+.topbar-brand__name {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+/* 品牌与副标题之间不再需要竖线分隔。 */
+.topbar-brand__divider { display: none; }
+
+.topbar-brand__context {
+  font-family: var(--font-serif);
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  border-left: 1px solid var(--border-light);
+  padding-left: 8px;
+  margin-left: 2px;
+}
+
+/* 导航项：圆角 pill 选中态（--accent-soft 底 + accent 文字，Apple 分段控件感）。 */
+.topbar-nav__item {
+  padding: 6px 11px;
+  border-radius: var(--radius-pill, 999px);
+  border: 1px solid transparent;
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  background: transparent;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .topbar-nav__item:hover {
+    color: var(--text-primary);
+    background: var(--bg-hover);
+  }
+}
+
+.topbar-nav__item.active {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: transparent;
+  font-weight: 600;
+}
+
+/* 顶栏分隔线更轻。 */
+.topbar-nav__divider { background: var(--border-light); opacity: 0.7; }
+
+/* 右上角图标按钮统一成 30px 方格 + 细边框 hover。 */
+.topbar-icon-button {
+  border-radius: var(--radius-sm, 2px);
+  border: 1px solid transparent;
+}
+
+.topbar-icon-button:hover {
+  border-color: var(--border-light);
+  background: var(--bg-card);
+}
+
+/* 顶栏主题切换按钮与图标按钮保持同一视觉重量。 */
+.topbar-actions .theme-toggle {
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm, 2px);
+}
+.topbar-actions .theme-toggle:hover {
+  border-color: var(--border-light);
+  background: var(--bg-card);
+}
+
+/* ─── 3. 按钮体系 —— 克制、一致、理性 ───────────────────── */
+
+/* 主按钮：墨青实心、几乎扁平（理性极简）。 */
+.btn-primary {
+  padding: 7px 14px;
+  border-radius: var(--radius-sm, 2px);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  border: 1px solid color-mix(in srgb, var(--primary) 86%, var(--text-heading));
+  box-shadow: none;
+  transition: background var(--dur-fast, 160ms) var(--ease-out, ease), transform var(--dur-fast, 160ms) var(--ease-out, ease);
+}
+.btn-primary:hover {
+  background: var(--primary-hover);
+  box-shadow: none;
+}
+.btn-primary:active:not(:disabled) { transform: scale(0.97); }
+.btn-primary:disabled {
+  background: var(--bg-hover);
+  border-color: var(--border);
+  color: var(--text-muted);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* 次按钮：细边框幽灵风格。 */
+.btn-secondary {
+  padding: 7px 14px;
+  border-radius: var(--radius-sm, 2px);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--primary);
+  border: 1px solid color-mix(in srgb, var(--primary) 45%, var(--border));
+  background: var(--bg-card);
+  transition: border-color var(--dur-fast, 160ms) var(--ease-out, ease), background var(--dur-fast, 160ms) var(--ease-out, ease), color var(--dur-fast, 160ms) var(--ease-out, ease), transform var(--dur-fast, 160ms) var(--ease-out, ease);
+}
+.btn-secondary:active:not(:disabled) { transform: scale(0.97); }
+.btn-secondary:hover {
+  background: var(--primary-soft);
+  border-color: color-mix(in srgb, var(--primary) 70%, var(--border));
+}
+.btn-secondary:disabled {
+  color: var(--text-muted);
+  border-color: var(--border);
+  background: var(--bg-input-disabled);
+  cursor: not-allowed;
+}
+
+.btn-sm { padding: 4px 10px; font-size: 11.5px; }
+
+/* 链接按钮保持下划线学术风格。 */
+.btn-link { color: var(--accent); }
+
+/* ─── 4. 卡片与表单 ────────────────────────────────────────── */
+
+.settings-group {
+  border-radius: var(--radius-sm, 2px);
+  padding: 18px 20px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-card);
+}
+
+/* 语言 + 外观：一行两列，避免两个矮块竖排浪费空间（刘总规格）。 */
+.settings-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 720px) {
+  .settings-row { grid-template-columns: 1fr; }
+}
+
+.settings-group h3 {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  letter-spacing: 0;
+}
+
+.settings-group label {
+  font-size: 12px;
+  letter-spacing: 0.01em;
+}
+
+/* 输入控件：更精细的边框与聚焦态。 */
+.settings-input,
+.search-input {
+  border-radius: var(--radius-sm, 2px);
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+.settings-input:focus,
+.search-input:focus {
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring-shadow);
+}
+
+/* ─── 5. 对话页 ────────────────────────────────────────────── */
+
+/* 会话栏「新会话」：从大块实心改为窄条细边框按钮。 */
+.chat-sidebar-header .btn-primary,
+.chat-sidebar-header button {
+  width: 100%;
+  font-size: 12px;
+  padding: 7px 12px;
+  border-radius: var(--radius-sm, 2px);
+}
+
+/* 进行中/归档 过滤改为分段控件（紧贴的一组）。 */
+.chat-sidebar-toolbar {
+  padding: 8px 12px;
+  gap: 4px;
+}
+.chat-sidebar-filter {
+  border-radius: var(--radius-sm, 2px);
+  border: 1px solid transparent;
+  background: transparent;
+  padding: 4px 10px;
+  color: var(--text-muted);
+  transition: color 120ms ease, background 120ms ease;
+}
+.chat-sidebar-filter:hover { color: var(--text-primary); background: var(--bg-hover); }
+.chat-sidebar-filter.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+/* 会话条目选中态：左侧细线指示而非整块色。 */
+.chat-session-item {
+  border-radius: var(--radius-sm, 2px);
+  border-left: 2px solid transparent;
+  margin-bottom: 1px;
+}
+.chat-session-item.active {
+  background: var(--accent-soft);
+  border-left-color: var(--accent);
+}
+
+/* 空状态：衬线标题 + 细分隔线 + 示例提示。 */
+.chat-empty {
+  padding-top: 140px;
+  max-width: 520px;
+  margin: 0 auto;
+}
+.chat-empty h2 {
+  font-family: var(--font-serif);
+  font-size: 21px;
+  letter-spacing: 0;
+}
+.chat-empty p { color: var(--text-secondary); }
+.chat-empty__examples {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-light);
+  font-style: normal;
+  color: var(--text-muted);
+}
+
+/* 输入区：文本框聚焦边框强调，图标按钮统一 30px 方格。 */
+.chat-input-area {
+  padding: 12px 20px;
+  gap: 10px;
+}
+.chat-textarea {
+  border-radius: var(--radius-sm, 2px);
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+.chat-textarea:focus {
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring-shadow);
+}
+.chat-send {
+  border-radius: var(--radius-sm, 2px);
+  height: 36px;
+  padding: 0 18px;
+  border: 1px solid color-mix(in srgb, var(--primary) 82%, var(--text-heading));
+  box-shadow: 0 1px 2px rgba(15, 20, 25, 0.08);
+}
+.chat-input-actions button,
+.chat-input-area > button,
+.chat-input-area .chat-icon-button {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm, 2px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 右栏页签：分段控件式下划线。 */
+.right-panel-tabs { gap: 2px; }
+.right-panel-tab {
+  font-size: 12.5px;
+  padding: 10px 8px 8px;
+  border-bottom: 2px solid transparent;
+  color: var(--text-muted);
+}
+.right-panel-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  background: transparent;
+  font-weight: 600;
+}
+.right-panel-header h3 {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  letter-spacing: 0;
+}
+
+/* ─── 6. 科研项目工作台 ─────────────────────────────────────── */
+
+/* 项目卡片选中态：左侧细线 + 柔和底色（不再整块赤陶）。 */
+.projects-page__item {
+  border-radius: var(--radius-sm, 2px);
+  border-left: 2px solid transparent;
+  margin-bottom: 2px;
+}
+.projects-page__item.active {
+  background: var(--accent-soft);
+  outline: none;
+  border-left-color: var(--accent);
+}
+.projects-page__item.active .projects-page__item-title {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* 项目列表标题。 */
+.projects-page__sidebar-header h2 {
+  font-size: 14px;
+  letter-spacing: 0;
+}
+
+/* 模式页签与右栏页签同一套下划线语言。 */
+.projects-page__tab {
+  font-size: 12.5px;
+  padding: 8px 14px 7px;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+.projects-page__tab:hover { color: var(--text-primary); }
+.projects-page__tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 600;
+}
+
+/* ─── 7. 任务看板 ──────────────────────────────────────────── */
+
+.kanban-header h2,
+.kanban-header h1 { font-family: var(--font-serif); letter-spacing: 0; }
+
+/* 空列提示：细虚线框 + 居中，不再大片空白。 */
+.kanban-empty,
+.kanban-column .kanban-empty {
+  border: 1px dashed var(--border-light);
+  border-radius: var(--radius-sm, 2px);
+  padding: 18px 10px;
+  margin: 8px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+/* ─── 8. 研究成果中心 ──────────────────────────────────────── */
+
+.artifacts-center__header h2 {
+  font-size: 17px;
+  letter-spacing: 0;
+}
+
+/* 筛选 chip：默认细边框、hover 微高亮、active 柔和底色。 */
+.artifacts-center__filter {
+  border-radius: var(--radius-sm, 2px);
+  border: 1px solid var(--border-light);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 12px;
+  padding: 3px 11px;
+  transition: border-color 120ms ease, background 120ms ease, color 120ms ease;
+}
+.artifacts-center__filter:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border-light));
+  color: var(--text-primary);
+}
+.artifacts-center__filter.active {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.artifacts-center__item {
+  border-radius: var(--radius-sm, 2px);
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 140ms ease, border-color 140ms ease;
+}
+.artifacts-center__item:hover { box-shadow: 0 2px 6px rgba(15, 20, 25, 0.1); }
+
+.artifacts-center__item-title {
+  font-size: 13.5px;
+  letter-spacing: 0;
+}
+
+/* 类别徽章与状态徽章保持细线克制。 */
+.artifacts-center__category,
+.artifacts-center__status {
+  border-radius: var(--radius-sm, 2px);
+  font-size: 11px;
+  letter-spacing: 0.01em;
+}
+
+/* 空状态。 */
+.artifacts-center__empty {
+  max-width: 480px;
+  margin: 0 auto;
+}
+.artifacts-center__empty-title {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  color: var(--text-primary);
+  letter-spacing: 0;
+}
+
+/* ─── 9. 自主科研 ──────────────────────────────────────────── */
+
+.autonomous-header h1 {
+  font-size: 19px;
+  letter-spacing: 0;
+}
+
+/* 控制区：输入框边框可见、卡片化。 */
+.autonomous-goal-input {
+  border-radius: var(--radius-sm, 2px);
+  border: 1px solid var(--border);
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+.autonomous-goal-input:focus {
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring-shadow);
+}
+
+/* ─── 10. 场景中心 ─────────────────────────────────────────── */
+
+.personalization-page h1 {
+  font-size: 22px;
+  letter-spacing: 0;
+}
+
+/* 库卡片：衬线名称 + 操作行分隔。 */
+.personalization-card__select strong {
+  font-size: 14px;
+  letter-spacing: 0;
+  font-weight: 600;
+}
+.personalization-card__actions {
+  border-top: 1px solid var(--border-light);
+  padding-top: 8px;
+  margin-top: 2px;
+}
+.personalization-card__actions button {
+  color: var(--accent);
+  font-size: 11.5px;
+}
+
+/* AI 创建与模板识别面板统一细边框卡片。 */
+.personalization-ai-create,
+.personalization-template__panel {
+  border-radius: var(--radius-sm, 2px);
+  box-shadow: var(--shadow-card);
+}
+
+
+/* ─── 12. 滚动条 —— 细、中性、不抢戏 ──────────────────────── */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--text-muted) 35%, transparent) transparent;
+}
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--text-muted) 30%, transparent);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--text-muted) 50%, transparent);
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-track { background: transparent; }
+
+/* ─── 13. 焦点可见性微调 ───────────────────────────────────── */
+
+/* 统一焦点环（合同校验格式）。 */
+button:focus-visible,
+a:focus-visible,
+[role="tab"]:focus-visible,
+[role="menuitem"]:focus-visible {
+  outline: 2px solid var(--focus-ring-color);
+  outline-offset: 2px;
+}
+
+/* ─── 14. 模态与面板 ───────────────────────────────────────── */
+
+.modal {
+  border-radius: var(--radius-sm, 2px);
+  box-shadow: var(--shadow-modal);
+}
+
+/* 场景激活/快捷入口等悬浮层。 */
+/* ─── POLISH-METIS-01 第二轮修正 ─────────────────────────────── */
+
+/* 发送按钮：不换行、不被压缩。 */
+.chat-send {
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 64px;
+}
+
+/* 会话栏「新会话」改为细边框幽灵按钮（学术侧栏不应有大色块）。 */
+.chat-sidebar-header .btn-primary.btn-full {
+  background: var(--bg-card);
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+  box-shadow: none;
+  font-weight: 500;
+}
+.chat-sidebar-header .btn-primary.btn-full:hover {
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent) 70%, var(--border));
+  box-shadow: none;
+}
+
+/* 自主科研：控制区与输入框可见边界。 */
+.autonomous-control {
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-card);
+}
+.autonomous-goal-input {
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+}
+
+/* 自主科研小节标题衬线。 */
+.autonomous-reflections h2,
+.autonomous-workflow h2,
+.autonomous-topic h2,
+.autonomous-recovery h2,
+.autonomous-summary h2 {
+  font-family: var(--font-serif);
+  letter-spacing: 0;
+}
+
+/* 任务看板空列：虚线框提示。 */
+.kanban-column__empty {
+  border: 1px dashed var(--border-light);
+  border-radius: var(--radius-sm, 2px);
+  padding: 16px 10px;
+  margin: 8px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+/* 看板列卡片白底 + 微阴影，浮出纸面。 */
+.kanban-column {
+  background: var(--bg-card);
+  box-shadow: var(--shadow-card);
+}
+
+/* 看板刷新按钮对齐按钮体系。 */
+.kanban-header .btn-toggle {
+  border-radius: var(--radius-sm, 2px);
+  border: 1px solid color-mix(in srgb, var(--primary) 45%, var(--border));
+  color: var(--primary);
+  background: var(--bg-card);
+}
+.kanban-header .btn-toggle:hover {
+  background: var(--primary-soft);
+}
+
+
+/* 场景中心：库卡片标题与空状态更学术。 */
+.personalization-empty {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* ─── POLISH-METIS-02 理性极简深化 ──────────────────────────── */
+
+/* 下拉选择框：去掉原生灰边，发丝边框 + 统一底色。 */
+select.settings-input,
+.settings-group select,
+.chat-scenario-bar select,
+.kanban-filterbar select,
+.personalization-tabs select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-muted) 50%), linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+  background-position: calc(100% - 14px) 55%, calc(100% - 9px) 55%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm, 2px);
+  background-color: var(--bg-input);
+  color: var(--text-primary);
+  padding-right: 26px;
+}
+select.settings-input:focus,
+.settings-group select:focus,
+.chat-scenario-bar select:focus,
+.kanban-filterbar select:focus {
+  border-color: var(--accent);
+  box-shadow: var(--focus-ring-shadow);
+}
+
+/* 对话空状态：发丝线框构图，期刊扉页感。 */
+.chat-empty {
+  padding: 60px 48px;
+  border: 1px solid var(--border-light);
+  background: var(--bg-card);
+  border-radius: var(--radius-sm, 2px);
+  margin-top: 80px;
+  box-shadow: var(--shadow-card);
+}
+
+/* 顶栏主题切换与搜索按钮更薄。 */
+.topbar-actions .theme-toggle {
+  font-family: var(--font-sans);
+  letter-spacing: 0.02em;
+}
+
+/* 场景中心顶部副标题与说明文字用次级灰，减少噪音。 */
+.personalization-page > p,
+.autonomous-subtitle {
+  color: var(--text-secondary);
+  max-width: 720px;
+}
+
+/* 场景库卡片：更扁平理性。 */
+.personalization-card {
+  border-radius: var(--radius-sm, 2px);
+}
+.personalization-card.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+/* ─── 分栏拖拽分隔条（SplitHandle） ─────────────────────────── */
+.split-handle {
+  flex: 0 0 7px;
+  cursor: col-resize;
+  position: relative;
+  background: transparent;
+  transition: background 120ms ease;
+  touch-action: none;
+}
+.split-handle::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--border-light);
+  transition: background 120ms ease, width 120ms ease;
+}
+.split-handle:hover::before,
+.split-handle:focus-visible::before {
+  background: var(--accent);
+  width: 2px;
+}
+.split-handle:focus-visible {
+  outline: 2px solid var(--focus-ring-color);
+  outline-offset: 0;
+}
+
+/* ─── PHASE-2 Apple-HIG 层：动效/海拔/圆角令牌 + 兼容别名 ──────────
+ * 动效遵循 ease-out 优先、UI 动画 <300ms、按压 scale(0.97)；
+ * 浅色用分层细阴影表达海拔，深色用描边分离（阴影归零）。
+ * prefers-reduced-motion 下 AcademicTheme 已把所有过渡压到 0.01ms，
+ * 这里再显式关掉按压位移，避免纯位移反馈。 */
+
+:root {
+  /* Motion — 强 ease-out 用于进入/反馈，ease-in-out 用于屏内移动 */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --dur-fast: 160ms;
+  --dur-base: 220ms;
+
+  /* Radius — Apple 分级：卡片 14px，浮层/模态 16px，胶囊选中态 999px */
+  --radius-card: 14px;
+  --radius-overlay: 16px;
+  --radius-pill: 999px;
+
+  /* Elevation — 浅色：苹果式柔和双层阴影；深色：靠描边分离 */
+  --shadow-1: 0 1px 2px rgb(0 0 0 / 4%), 0 8px 24px rgb(0 0 0 / 6%);
+  --shadow-2: 0 2px 6px rgb(0 0 0 / 6%), 0 12px 32px rgb(0 0 0 / 10%);
+  --shadow-card: var(--shadow-1);
+  --shadow-modal: 0 2px 6px rgb(0 0 0 / 6%), 0 24px 64px rgb(0 0 0 / 22%);
+
+  /* Compat aliases — 页面 CSS 引用但 AcademicTheme 未定义的语义名。
+     别名指向主题令牌，因此自动随 light/dark/accent 矩阵切换。 */
+  --bg-primary: var(--bg-main);
+  --bg-subtle: var(--bg-sidebar);
+  --bg-tertiary: var(--bg-hover);
+  --surface: var(--bg-card);
+  --surface-raised: var(--bg-card);
+  --text: var(--text-body);
+  --text-main: var(--text-primary);
+  --text-strong: var(--text-heading);
+  --text-tertiary: var(--text-muted);
+  --text-faint: var(--text-muted);
+  --accent-color: var(--accent);
+  --border-color: var(--border);
+  --border-subtle: var(--border-light);
+  --status-error: var(--status-failed);
+  --status-warning: var(--evidence-pending);
+  --status-warning-bg: var(--status-skimmed-bg);
+  --warning: var(--evidence-pending);
+  --warning-bg: var(--status-skimmed-bg);
+  --warning-text: var(--status-skimmed-text);
+  --warning-border: color-mix(in srgb, var(--evidence-pending) 45%, transparent);
+  --success-bg: var(--status-completed-bg);
+  --success-text: var(--status-completed);
+  --success-border: color-mix(in srgb, var(--status-completed) 45%, transparent);
+  --danger-bg: var(--status-failed-bg);
+  --danger-text: var(--status-failed);
+  --danger-border: color-mix(in srgb, var(--status-failed) 45%, transparent);
+}
+
+[data-theme="dark"] {
+  --shadow-1: none;
+  --shadow-2: none;
+  --shadow-card: none;
+  --shadow-modal: 0 24px 64px rgb(0 0 0 / 60%);
+}
+
+/* 顶栏：磨砂材质 — 半透明 + 背景模糊，内容从其下方滚过。 */
+.topbar {
+  background: var(--glass-surface);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow: inset 0 1px 0 var(--glass-edge), inset 0 -1px 0 var(--border-light);
+  border-bottom-color: transparent;
+}
+
+/* 模态：大圆角 + 分层阴影 + scale(0.95)→1 的物质化入场（从不从 0 缩放）。 */
+.modal {
+  border-radius: var(--radius-overlay);
+  transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
+}
+.modal-overlay {
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+@starting-style {
+  .modal { opacity: 0; transform: scale(0.95); }
+  .modal-overlay { opacity: 0; }
+}
+
+/* 其它全局浮层窗口走同一套物质化入场。 */
+.free-api-window,
+.connection-mode-dialog,
+.settings-advanced-dialog,
+.scenario-approval-card {
+  transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
+}
+.free-api-overlay,
+.connection-mode-overlay,
+.settings-advanced-overlay,
+.scenario-approval-overlay {
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+@starting-style {
+  .free-api-window,
+  .connection-mode-dialog,
+  .settings-advanced-dialog,
+  .scenario-approval-card { opacity: 0; transform: scale(0.95); }
+  .free-api-overlay,
+  .connection-mode-overlay,
+  .settings-advanced-overlay,
+  .scenario-approval-overlay { opacity: 0; }
+}
+
+/* 统一按压反馈：pointer-down 即时 scale(0.97)，释放快速回弹。 */
+.btn-sm,
+.topbar-icon-button,
+.topbar-nav__item,
+.topbar-actions .theme-toggle,
+.chat-send,
+.chat-icon-button,
+.chat-sidebar-filter,
+.chat-session-item,
+.artifacts-center__filter,
+.projects-page__tab,
+.right-panel-tab {
+  transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+.btn-sm:active:not(:disabled),
+.topbar-icon-button:active:not(:disabled),
+.topbar-nav__item:active:not(:disabled),
+.topbar-actions .theme-toggle:active:not(:disabled),
+.chat-send:active:not(:disabled),
+.chat-icon-button:active:not(:disabled),
+.chat-sidebar-filter:active:not(:disabled),
+.artifacts-center__filter:active:not(:disabled),
+.projects-page__tab:active:not(:disabled),
+.right-panel-tab:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-primary:active:not(:disabled),
+  .btn-secondary:active:not(:disabled),
+  .btn-sm:active:not(:disabled),
+  .topbar-icon-button:active:not(:disabled),
+  .topbar-nav__item:active:not(:disabled),
+  .topbar-actions .theme-toggle:active:not(:disabled),
+  .chat-send:active:not(:disabled),
+  .chat-icon-button:active:not(:disabled),
+  .chat-sidebar-filter:active:not(:disabled),
+  .artifacts-center__filter:active:not(:disabled),
+  .projects-page__tab:active:not(:disabled),
+  .right-panel-tab:active:not(:disabled) {
+    transform: none;
+  }
+}
+
+/* 大字距策略：大号无衬线拉丁标题略收紧；中文衬线标题保持 0（§1 已定）。 */
+.submissions-mail__subtitle,
+.artifacts-center__empty-title,
+.kanban-header h1,
+.kanban-header h2 {
+  letter-spacing: -0.01em;
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * Aurora Glass 表达层（2026-09-02）：渐变强调、辉光、光点。
+ * 克制高级版——渐变只出现在强调元素（主按钮/选中态/品牌字），
+ * 辉光只出现在交互反馈（hover/焦点/流式），不做大面积装饰。
+ * 全部颜色经 --accent-gradient / --glow-* / --title-gradient token
+ * 派生，随 8 套主题（亮/暗 × 金蓝绿灰）自动联动。
+ * ════════════════════════════════════════════════════════════════ */
+
+/* 主按钮：强调色渐变 + 常态微光，hover 抬升 + 辉光增强。 */
+.btn-primary {
+  background: var(--accent-gradient);
+  border-color: transparent;
+  box-shadow: var(--glow-accent-soft);
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-gradient);
+  box-shadow: var(--glow-accent);
+  transform: translateY(-1px);
+}
+
+/* 侧栏选中项：渐变 pill + 微光（Apple 高亮态的物质感版本）。 */
+.nav-item.active {
+  background: var(--accent-gradient);
+  box-shadow: var(--glow-accent-soft);
+}
+
+/* 顶栏活跃项：渐变浅底替换单色 soft，其余保持克制。 */
+.topbar-nav__item.active {
+  background: var(--accent-gradient-soft);
+}
+
+/* 品牌名：克制的标题渐变字（从石墨渐入强调色，始终可读）。 */
+.topbar-brand__name {
+  background: var(--title-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 流式插入符：光点化——强调色 + 辉光 + 呼吸脉冲。 */
+.streaming-caret {
+  background: var(--accent-hover);
+  border-radius: 999px;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+@keyframes streaming-caret-pulse {
+  0%, 100% { opacity: 0.9; box-shadow: 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent); }
+  50% { opacity: 0.35; box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 60%, transparent); }
+}
+
+/* 强制配色下降级：渐变字还原实色，渐变/辉光落地为系统色。 */
+@media (forced-colors: active) {
+  .topbar-brand__name {
+    background: none;
+    -webkit-text-fill-color: CanvasText;
+    color: CanvasText;
+  }
+  .btn-primary,
+  .nav-item.active {
+    background: Highlight;
+    box-shadow: none;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * Typographic discipline（2026-09-02）：全局排版纪律。
+ * 依据 apple-design §15 / redesign-existing-projects 审计清单：
+ * 层级=字重+字号+行高三件套；大字负 tracking；数字 tabular-nums；
+ * 数据密集 UI 行高收紧。 ══════════════════════════════════════════ */
+
+/* 标题：随字号收紧字距、加重字重——标题要有存在感。 */
+h1, h2 {
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-display);
+  font-weight: var(--weight-heading);
+  text-wrap: balance;
+}
+h3, h4 {
+  letter-spacing: var(--tracking-heading);
+  line-height: 1.35;
+  font-weight: var(--weight-heading);
+  text-wrap: balance;
+}
+
+/* 数据与时间戳：等宽数字，竖向对齐。 */
+.submissions-timeline__time,
+time,
+kbd, code {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 表单：label 在上、helper 在下（taste-skill §4.6），label 是小标签语态。 */
+label > span,
+label > div:first-child {
+  letter-spacing: var(--tracking-label);
+}
+
+/* 按钮/输入：按压反馈（emil：buttons must feel responsive）。 */
+button:not(:disabled):active {
+  transform: scale(0.98);
+}

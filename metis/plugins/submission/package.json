@@ -1,0 +1,27 @@
+{
+  "name": "dsh-metis-submission",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "files": [
+    "./src/index.ts",
+    "./src/journal-catalog.ts",
+    "./src/journal-targeting.ts",
+    "./src/submission-contract.ts",
+    "./cordis.patch.yml"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "*",
+    "@deepseek-ai/dsh-tools": "*"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "*",
+    "@deepseek-ai/dsh-tools": "*"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "repository": "https://github.com/deepseek-ai/deepseek-harness",
+  "branch": "master",
+  "commit": "d347e703908d0406b7a7ef80e3a0e594d86b2215",
+  "recordedAt": "2026-09-09T23:30:00+08:00",
+  "nodeVersion": "v25.6.0",
+  "pnpmVersion": "11.7.0",
+  "packageManager": "pnpm@11.7.0",
+  "policy": {
+    "upstreamUntouched": true,
+    "readOnlyPaths": ["apps/**", "packages/**", "docs/**", "scripts/**", "package.json", "pnpm-workspace.yaml", "tsconfig*.json"],
+    "newDevelopmentOnlyIn": "metis/**",
+    "baselineGitStatus": "clean"
+  },
+  "legacySource": {
+    "path": "metis/legacy/metis-alpha2",
+    "copiedFrom": "D:\\LATEXTEST\\metis-alpha2-release",
+    "copiedAt": "2026-09-09T23:31:04+08:00",
+    "files": 2980,
+    "note": "只读迁移来源；node_modules/dist 等构建产物未复制"
+  }
+}

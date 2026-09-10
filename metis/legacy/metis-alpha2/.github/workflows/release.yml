@@ -1,0 +1,66 @@
+name: Release gate
+
+# Task 5 §4/§5: the release-only gate — full Windows release chain (source +
+# dist provenance, electron-builder packaging, SBOM/licenses, package scan,
+# policy verify), install/upgrade/uninstall smoke on the real installers, and
+# the update trust evidence. Runs on version tags and on demand. This
+# workflow never publishes; it produces auditable evidence artifacts.
+#
+# Update trust model (see docs/UPDATE_TRUST_MODEL.md): alpha tags may ship
+# UNSIGNED artifacts (disclosed in-app). A stable tag with unsigned artifacts
+# fails `release:verify` — the release gate refuses to bless it.
+#
+# Code signing scaffold: when a certificate is provisioned, set the secrets
+# below and electron-builder signs automatically; then flip
+# build/release-policy.json windows.requireAuthenticode to true and set
+# expectedSignerSubject in electron/UpdateChannelPolicy.ts +
+# build/update-trust-policy.json.
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release-gate:
+    name: Windows release chain + install smoke
+    runs-on: windows-2022
+    timeout-minutes: 120
+    env:
+      # Signing scaffold — empty until a certificate exists (unsigned alpha).
+      CSC_LINK: ${{ secrets.WINDOWS_CSC_LINK }}
+      CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CSC_KEY_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Tier 1 gate
+        run: npm run verify:reliability
+      - name: Full Windows release chain (provenance → build → package → SBOM → scan → verify)
+        run: npm run release:windows
+      - name: Install / upgrade / uninstall smoke on the produced installers
+        run: node scripts/install-upgrade-smoke.cjs --report logs/install-upgrade-smoke.json
+      - name: Upload release evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-evidence
+          path: |
+            release/evidence/
+            logs/reliability-gate-report.json
+            logs/install-upgrade-smoke*.json
+            release4/*.exe
+            release4/*.msi
+            release4/*.yml
+            release4/*.blockmap
+          if-no-files-found: error
+          retention-days: 30

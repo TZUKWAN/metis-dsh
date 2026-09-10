@@ -1,0 +1,1427 @@
+
+<!doctype html public "-//w3c//dtd xhtml 1.0 transitional//en" "http://www.w3.org/tr/xhtml1/dtd/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv="X-UA-Compatible" content="IE=8" /><meta name="viewport" content="width=device-width" /><link href="/style/basic.css" rel="stylesheet" type="text/css" /><link href="/style/links.css" rel="stylesheet" type="text/css" /><link href="/style/main.css?v=3.6" rel="stylesheet" type="text/css" /><link href="/css/common.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="/js/plugin/jquery-1.8.3.min.js"></script>
+    <script  type="text/javascript" src="/js/plugin/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/js/top.js"></script>
+    
+    
+    <meta name="keywords" content="高级搜索,万维书刊"/>
+<meta name="description" content="万维书刊网新版高级搜索功能"/>
+
+    <script src="static/Jquery/Validate/lib/jquery-1.9.1.js" type="text/javascript"></script>
+    <script type="text/javascript" src="js/plugin/jquery.cookie.js"></script>
+    <script src="/js/layui/layui.js"></script>
+    <link href="/js/layui/css/layui.css" rel="stylesheet" />
+    <link href="css/main.css" rel="stylesheet" />
+    <link href="/static/css/NoAd.css" rel="stylesheet" />
+    <link href="/images/font/iconfont.css" rel="stylesheet" type="text/css">
+    <style type="text/css">
+        .btn {
+            margin-bottom: 5px;
+            text-align: center;
+            padding: 0 15px;
+            line-height: 30px;
+            border-radius: 3px;
+            display: inline-block;
+            border: 1px solid transparent;
+        }
+
+            .btn:hover {
+                cursor: pointer;
+            }
+
+            .btn.blue_shadow {
+                transition: all 0.4s;
+                color: #5e5e5e;
+            }
+
+                .btn.blue_shadow:hover {
+                    color: #005CB1;
+                    background: #D5E2FF;
+                    text-shadow: hsla(0, 100%, 100%, 0.901961) 0px 1px 0px;
+                    box-shadow: 0 1px 2px rgba(34,25,25,0.5);
+                    border-color: #A6C2FF;
+                }
+
+            .btn.blue {
+                background-color: #247ad2;
+                border: 1px solid #185aa5;
+                box-shadow: 0 2px 5px rgba(0,28,88,.3);
+                color: #fff;
+            }
+
+                .btn.blue:hover {
+                    background-color: #3d8de2;
+                }
+
+        .ttb {
+            padding: 5px 6px;
+            margin-bottom: 5px;
+            border-radius: 3px;
+        }
+
+            .ttb.gray {
+                color: #333;
+                border: 1px solid #ccc;
+            }
+
+                .ttb.gray:focus {
+                    transition: border 0.7s ease 0s;
+                    border: 1px solid #73b8ee;
+                    box-shadow: 1px 1px 8px #B0DFF0;
+                }
+
+        ul.search {
+            margin: 10px 0;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+        }
+
+            ul.search li {
+                border-top: 1px solid #ddd;
+                padding: 5px;
+                line-height: 30px;
+                overflow: hidden;
+            }
+
+                ul.search li:first-child {
+                    border-top: 0;
+                }
+
+                ul.search li .l {
+                    min-height: 30px;
+                    width: 120px;
+                    text-align: right;
+                    font-weight: bold;
+                    float: left;
+                }
+
+                ul.search li .m {
+                    width: 720px;
+                    line-height: 26px;
+                    float: left;
+                }
+
+                    ul.search li .m input[type=checkbox], ul.search li .m input[type=radio] {
+                    }
+
+                    ul.search li .m label {
+                        padding: 0 5px;
+                        margin: 2px 1px;
+                        color: #5e5e5e;
+                        border-radius: 3px;
+                        display: inline-block;
+                        border: 1px solid transparent;
+                    }
+
+                        ul.search li .m label:hover {
+                            transition: all 0.4s;
+                            color: #005CB1;
+                            /*background: #D5E2FF;
+                            text-shadow: hsla(0, 100%, 100%, 0.901961) 0px 1px 0px;
+                            box-shadow: 0 1px 2px rgba(34,25,25,0.5);
+                            border-color: #A6C2FF;*/
+                            cursor: pointer;
+                        }
+
+                        ul.search li .m label.current {
+                            color: #005CB1;
+                            background: #D5E2FF;
+                            text-shadow: hsla(0, 100%, 100%, 0.901961) 0px 1px 0px;
+                            box-shadow: 0 1px 2px rgba(34,25,25,0.5);
+                            border-color: #A6C2FF;
+                        }
+
+                    ul.search li .m input[type=text] {
+                    }
+
+                    ul.search li .m input[type=checkbox], ul.search li .m input[type=radio] {
+                        display: none;
+                    }
+
+                ul.search li .r {
+                    float: right;
+                }
+
+                    ul.search li .r a {
+                        width: 48px;
+                        font-size: 13px;
+                        line-height: 32px;
+                        position: relative;
+                        color: #666;
+                        display: inline-block;
+                        text-decoration: none;
+                    }
+
+                        ul.search li .r a:hover {
+                            cursor: pointer;
+                        }
+
+            ul.search i {
+                right: 10px;
+                top: 12px;
+                background-image: url(/img/common/i_expend.png);
+                background-repeat: no-repeat;
+                width: 10px;
+                height: 6px;
+                display: inline-block;
+                position: absolute;
+            }
+
+                ul.search i.expend {
+                    background-position: 0 -18px;
+                }
+
+                ul.search i.unexpend {
+                    background-position: 0 -6px;
+                }
+
+        /*警告信息_配合strong和p使用*/
+        .alert {
+            font-size: 14px;
+            margin-bottom: 5px;
+            padding: 5px 35px;
+            padding-right: 25px;
+            border: 1px solid transparent;
+            line-height: 25px;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+            border-radius: 4px;
+            display: block;
+            position: relative;
+        }
+
+            .alert:before {
+                left: 10px;
+                top: 7px;
+                position: absolute;
+            }
+
+            .alert a {
+                color: #379bec;
+            }
+
+                .alert a:hover {
+                    color: red !important;
+                    text-decoration: underline;
+                }
+
+            .alert p {
+                text-indent: 2em;
+            }
+
+            .alert .close {
+                display: none;
+                font-style: normal;
+                top: 5px;
+                right: 10px;
+                position: absolute;
+            }
+
+                .alert .close:hover {
+                    color: red;
+                    cursor: pointer;
+                }
+
+                .alert .close:before {
+                    content: "×";
+                    font-weight: bold;
+                }
+
+            .alert:hover .close {
+                display: block;
+            }
+
+            .alert.error {
+                color: #b94a48;
+                background-color: #f2dede;
+                border-color: #eed3d7;
+            }
+
+                .alert.error:before {
+                    content: "×";
+                    font: bold 22px/22px helvetica;
+                }
+
+            .alert.info {
+                color: #3a87ad;
+                background-color: #d9edf7;
+                border-color: #bce8f1;
+            }
+
+                .alert.info:before {
+                    content: "i";
+                    font: bold 12px/18px "宋体";
+                    background-color: #72B8DA;
+                    color: #d9edf7;
+                    left: 8px;
+                    top: 8px;
+                    text-align: center;
+                    width: 18px;
+                    height: 18px;
+                    border-radius: 50%;
+                }
+
+            .alert.success {
+                color: #468847;
+                background-color: #dff0d8;
+                border-color: #d6e9c6;
+            }
+
+                .alert.success:before {
+                    content: "√";
+                    font: bold 16px/24px 'microsoft yahei';
+                }
+
+            .alert.warning {
+                background-color: #F5C3C1;
+                color: #BD0704;
+                border-color: #EFA2A0;
+            }
+
+                .alert.warning:before {
+                    content: "！";
+                    text-indent: 6px;
+                    font: normal 12px/18px '宋体';
+                    background-color: #b94a48;
+                    color: #f5b3b0;
+                    left: 8px;
+                    top: 9px;
+                    text-align: center;
+                    width: 18px;
+                    height: 18px;
+                    border-radius: 50%;
+                }
+                .text-container{
+					overflow: hidden;
+					text-overflow: ellipsis; 
+					display: -webkit-box;
+					-webkit-line-clamp: 3 ;
+					-webkit-box-orient: vertical;
+					line-height:25px;
+				}
+				.expanded {
+				   max-height: none;
+				   -webkit-line-clamp: initial;
+				}
+                .hover-tips{color:#666; font-size:14px;}
+                .hxnone{ display:none !important;}
+                a.cur{background-color:#EDEFFE;}
+                .ma{border:1px solid #ccc; border-radius:5px; padding:3px 5px; margin-left:5px;}
+				.fset {border:1px solid #88B7DC; border-radius:5px; padding:2px 5px;}
+				.fset legend{padding:3px; color:#999;}
+                .ex-hx{border:1px solid #faf9f8;border-radius:5px;margin-top:5px;}
+    </style>
+    <script type="text/javascript">
+        jQuery(function ($) {
+            $('.hover-tips').hover(function () {
+                layer.tips($(this).data('tips'), this, { time: 0, area: 'auto' });
+            }, function () {
+                layer.closeAll('tips');
+            });
+
+            $("div.r a").trigger("click");       
+            $(".m input+label").click(function () {
+                var $this = $(this);
+                var $li = $this.parent().parent();
+                //选中版面费，隐藏版面费区间
+                if ($li.index() == 17) {
+                    if ($this.index() == 1) {
+                        $li.next().slideDown();
+                    } else {
+                        $li.next().slideUp();
+                    }
+                }
+                //选中版面费区间，隐藏版面费
+                if ($li.index() == 18) {
+                    if ($this.index() == 1) {
+                        $li.prev().slideDown();
+                    } else {
+                        $li.prev().slideUp();
+                    }
+                }
+            })
+            //单选框：切换选中特效
+            $(".m input[type=radio]+label").click(function () {
+                var $this = $(this);
+                $this.siblings().removeClass("current");
+                $this.addClass("current");
+            });
+            //复选框：切换选中特效
+            $(".m input[type=checkbox]+label").click(function () {
+                $(this).toggleClass("current");
+            });
+
+            //复选框：选中后面的复选框，撤销不限定的选中样式；选中不限定，撤销后面所有选中的样式
+            $(".m input[type=checkbox]+label").click(function () {
+                //console.log($(this).index());
+                var $this = $(this);
+                var $parent = $this.parent();
+                var hx = $parent.parent().attr('class');
+                if (hx == 'hx-container') {
+                    $('#heXin').removeAttr("checked");
+                    $('#heXinlab').removeClass("current")
+                }
+                if ($this.index() == 1) {
+                    if (hx != 'hx-container') {
+                        $parent.children("input:gt(0)").removeAttr("checked");
+                        $parent.children("label:gt(0)").removeClass("current");
+                    }
+                } else {
+                    if ($parent.children("label:first").html() == '不限定') {
+                        $parent.children("input:first").removeAttr("checked");
+                        $parent.children("label:first").removeClass("current");
+                    }
+                }
+            });
+
+            //单选框/复选框：点击标签，触发选中前面的 复选框/单选框
+            $(".m label").click(function () {
+                $(this).prev().trigger("click");
+            });
+
+            //取消核心
+            $('#heXinlab').on('click', function () {
+                cancelHx();
+            });
+        });
+
+        //取消选择的核心
+        function cancelHx() {
+            $('.hx-container input').each(function (i) { $(this).removeAttr("checked"); });
+            $('.hx-container label').each(function (i) { $(this).removeClass('current'); });
+        }
+    
+        $().ready(function () {
+
+            $(".divlevel label").click(function () {
+                //alert($(this).text());
+                if ($(this).text() == "不限定") {
+                    $("#li_hexin").hide();
+                    $("#li_pukan").hide();
+                }
+                if ($(this).text() == "核心") {
+                    $("#li_hexin").show();
+                    $("#li_pukan").hide();
+                    $('#li_hexin ul').removeClass('none');
+                }
+                if ($(this).text() == "普刊") {
+                    $("#li_hexin").hide();
+                    $("#li_pukan").show();
+                }
+            });
+        });
+    </script>
+
+
+    <style type="text/css">
+        .yonghu a { padding-left:6px; text-decoration: none; padding-right:6px;}
+        #loginStatus{color:#fff;}
+    </style>
+<title>
+	高级搜索—万维书刊
+</title></head>
+<body>
+    <!--header-->
+    <script type="text/javascript">
+        function checklogin() {
+            if (document.getElementById("Top1_Text1").value == "") {
+                alert("请输入用户名");
+                return false;
+            }
+            if (document.getElementById("Top1_Text2").value == "") {
+                alert("请输入密码");
+                return false;
+            }
+        }
+        function SetHome(obj, vrl) {
+            try {
+                obj.style.behavior = 'url(#default#homepage)'; obj.setHomePage(vrl);
+            }
+            catch (e) {
+                if (window.netscape) {
+                    try {
+                        netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+                    }
+                    catch (e) {
+                        alert('抱歉！您的浏览器不支持直接设为首页。请在浏览器地址栏输入“about:config”并回车然后将[signed.applets.codebase_principal_support]设置为“true”，点击“加入收藏”后忽略安全提示，即可设置成功。');
+                    }
+                    var prefs = Components.classes['@mozilla.org/preferences-service;1'].getService(Components.interfaces.nsIPrefBranch);
+                    prefs.setCharPref('browser.startup.homepage', vrl);
+                }
+            }
+        }
+
+        loadUserInfo();
+        function loadUserInfo() {
+            $.ajax({
+                type: "post",
+                url: "/ashx/BaseHandler.ashx",
+                data: "Action=UserInfo",
+                cache: false,
+                success: function (html) {
+                    $('#loginStatus').html(html);
+                }
+            });
+        }
+    </script>
+    
+    <div id="box">
+        <div class="top" style="margin: 0px auto">
+            <div class="yonghu">
+                <ul>
+                    <li style="width: 630px; color: #fff; height: 25px; text-align: left;">&nbsp;&nbsp;&nbsp;&nbsp;服务教育科研，促进学术发展！&nbsp;&nbsp;&nbsp;&nbsp;<span id="loginStatus"></span></li>
+                    <li style="float: right; width: 160px; line-height: 25px;">
+                        <a href="javascript:;" onclick="setHomepage()" style="padding-top: 4px; margin-right:20px;">设为首页</a> 
+                        <a href="javascript:;" onclick="addToFavorites()" style="padding-top: 4px;">收藏本站</a> 
+                         
+                        
+                    </li>
+                </ul>
+            </div>
+            <div class="logo">
+                <img src="/images/head.gif" alt="万维书刊—免费投稿网、期刊大全、投稿地址大全，论文投稿发表更容易!" title="万维书刊—免费投稿网、期刊大全、投稿地址大全，论文投稿发表更容易!" />
+            </div>
+            <div class="Navigation">
+                <ul>
+                    <li style="width: 90px; text-align: left; padding-left: 10px; font-weight: bold;">投稿好助手！ </li>
+                    <li style="width: 800px; white-space: nowrap; color: #fff; font-size: 12.5px; text-align: left;">
+                        <a href="/">网站首页</a>|
+                        <a href="/jtypelist.aspx" target="_blank">期刊大全</a>|
+                        <a href="/dplist.aspx" target="_blank">期刊点评</a>|
+                        <a href="/sci/SciCate1.aspx" target="_blank">SCI/E期刊</a>|
+                        <a href="/sci/scidplist.aspx" target="_blank">SCI/E点评</a>|
+                        <a href="/sci/SciCate1.aspx?jtype=792" target="_blank">SSCI期刊</a>|
+                        <a href="/sci/scidplist.aspx?jtype=792" target="_blank">SSCI期刊点评</a>|
+                        <a href="/sci/SciCate1.aspx?jtype=795" target="_blank">AHCI期刊</a>|
+                        <a href="/sci/scidplist.aspx?jtype=795" target="_blank">AHCI期刊点评</a>|
+                        <a href="/ConferenceCollection/" target="_blank">学术会议</a>|
+                        <a href="/HelpCenter.aspx" target="_blank">帮助中心</a>
+                        <a href="/Editor/Index.aspx" target="_blank" style="font-size:0px;">编辑QQ征稿</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!--header-->
+        <script type="text/javascript">
+            String.prototype.GetValue = function (para) {
+                var reg = new RegExp("(^|&)" + para + "=([^&]*)(&|$)");
+                var r = this.substr(this.indexOf("\?") + 1).match(reg);
+                if (r != null) return unescape(r[2]); return null;
+            }
+            var str = location.href;
+            function qhtab(a) {
+                if (a == "1") {
+                    document.getElementById("tw1").className = "thistab";
+                    document.getElementById("tabcon1").style.display = 'block';
+                    document.getElementById("tw2").className = "";
+                    document.getElementById("tabcon2").style.display = 'none';
+                    document.getElementById("tw3").className = "";
+                    document.getElementById("tabcon3").style.display = 'none';
+                }
+                else if (a == "2") {
+                    document.getElementById("tw1").className = "";
+                    document.getElementById("tabcon1").style.display = 'none';
+                    document.getElementById("tw2").className = "thistab";
+                    document.getElementById("tabcon2").style.display = 'block';
+                    document.getElementById("tw3").className = "";
+                    document.getElementById("tabcon3").style.display = 'none';
+                }
+                else if (a == "3") {
+                    document.getElementById("tw1").className = "";
+                    document.getElementById("tabcon1").style.display = 'none';
+                    document.getElementById("tw2").className = "";
+                    document.getElementById("tabcon2").style.display = 'none';
+                    document.getElementById("tw3").className = "thistab";
+                    document.getElementById("tabcon3").style.display = 'block';
+                }
+            }
+        </script>
+        <script type="text/javascript" src="/js/miaov.js"></script>
+        <div class="float_layer" id="miaov_float_layer">
+            <h2>
+                <strong style="color: #fff;">投稿问答</strong><a style="text-align: right; font-size: 12px; margin-left: 60px; color: #fff;"
+                    id="btn_min" href="javascript:;">最小化</a>&nbsp;&nbsp;<a id="btn_close" style="font-size: 12px; color: #fff;"
+                        href="javascript:;">关闭</a> </h2>
+            <div class="content1">
+                <p style="margin:5px;color:blue;border-bottom: #999999 1px dashed;">投稿有问题？问问网友吧！</p>
+                <div class="wrap">
+                    <p><span style='color:blue;'>·</span><a href="/wd/displaywd.aspx?zid=529562" title='财经金融类的期刊，哪个见刊快？' target="_blank">财经金融类的期刊，哪个见刊快？</a> <span style='color:#bbb;'>0回答</span></p><p><span style='color:blue;'>·</span><a href="/wd/displaywd.aspx?zid=529561" title='科教导刊投稿' target="_blank">科教导刊投稿</a> <span style='color:#bbb;'>2回答</span></p><p><span style='color:blue;'>·</span><a href="/wd/displaywd.aspx?zid=529560" title='想问下各位，市场营销/经管方向普刊，希望见刊速度较快、版面费性价比高，有哪些比较稳妥的期刊推荐？优先带CN刊号、知网收录，麻烦分享下经验，谢谢大家！' target="_blank">想问下各位，市场营销/经管方向普刊，...</a> <span style='color:#bbb;'>1回答</span></p><p><span style='color:blue;'>·</span><a href="/wd/displaywd.aspx?zid=529559" title='授权码怎么获得' target="_blank">授权码怎么获得</a> <span style='color:#bbb;'>1回答</span></p>
+                </div>
+                <p>
+                    <a target="_blank" href="/wd/addwd.aspx">
+                        <img src="/fdimg/tw.gif" alt="提问" style="border: 0px;" /></a>
+                </p>
+            </div>
+        </div>
+        
+    
+<div id="search">
+    <select>
+        <option value="0" selected="selected">搜刊名/刊号</option>
+        <optgroup label="搜其它">
+            <option value="2">搜学期刊动态</option>
+            <option value="3">搜文苑文章</option>
+            <option value="4">搜社会实践</option>
+            <option value="6">学术资讯</option>
+        </optgroup>
+    </select>
+    <input type="text" class="text" value="" placeholder="多个关键词用空格隔开" maxlength="200" />
+    <input type="button" class="btn" value="万维搜索" />
+    <a href="/SuperSearch.aspx" style="padding: 0 12px; line-height: 23px; display: inline-block; top: -1px; position: relative; border-radius: 3px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.2); color: #fff; background: #006dcc; background-image: linear-gradient(#08c,#04c); border-color: #04c #04c #002a80;">高级搜索</a>
+    <a href="/sci/sciSearh.aspx" style="padding: 0 12px; line-height: 23px; display: inline-block; top: -1px; position: relative; border-radius: 3px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.2); color: #fff; background: #f40; background-image: linear-gradient(#dc521c,#cc4200); border-color: #04c #04c #002a80;">SCI/E搜索</a>
+    <span style="margin-left: 5px; line-height: 14px; display: inline-block; color: red; border: 1px solid #f40; padding: 1px; border-radius: 3px;">推荐</span>
+    <div class="marquee" style="float: right; margin: 3px 10px 0 0;">今日更新期刊信息<b>95</b>条，本周累计更新<b>205</b>条，本年累计更新<b>14879</b>条。</div>
+</div>
+<div style="margin: 5px auto; display: none;">
+    <img src="/images/app.jpg" alt="万维书刊APP下载" />
+</div>
+<script src="/js/ascx/search.js" type="text/javascript"></script>
+<script src="/static/Jquery/Marquee/jquery.marquee.min.js" type="text/javascript"></script>
+<script type="text/javascript">jQuery(".marquee").marquee();</script>
+    
+    <div class="position" style="line-height: 14px; margin: 10px 0px;">您的位置：<a href="/" title="万维书刊">万维书刊网</a> &gt;&gt; <a href="/SuperSearch.aspx">高级搜索</a></div>
+    <div class="alert info">
+        使用高级搜索，您可以做到这些：<br />
+        1、找到不收版面费的期刊；<br />
+        2、找到审稿快的期刊；<br />
+        3、找到不收版面费 并且 审稿快的期刊；等等。
+    </div>
+    <form action="/SuperSearchList.aspx" method="get" target="_blank">
+        <!--header-->
+        <ul class="search">
+            <li>
+                <div class="l">关键词：</div>
+                <div class="m">
+                    <input type="text" class="ttb gray" name="keyword" style="width: 400px; border: 1px solid #88b7dc;" placeholder="多个关键词用空格隔开" />
+                </div>
+            </li>
+            <li>
+                <div class="l"><em class="iconfont icon-bangzhu hover-tips" data-tips="温馨提示：<br>
+                ①中文CN：有中国刊号（CN）的中文期刊。<br>
+                ②外文CN：有CN刊号的外文期刊（中国主办）。<br>
+                ③境内外文：中国机构主办、无CN、仅ISSN的外文期刊。<br>
+                ④中文ISSN：仅有ISSN（国际刊号）、无CN刊号的中文期刊。<br>
+                ⑤集刊：以书代刊的连续性学术辑刊（ISBN为主）。<br>
+                ⑥内刊：经批准的内部资料性出版物。<br>
+                ⑦中文CN（电子）：以中文出版，并以电子形式如（网络版、光盘版）为主要或唯一载体的正式学术或专业期刊。<br>
+                ⑧境外期刊：境外出版、无CN的正式外文期刊（含SCI等）。"></em> 出版分类：</div>
+                <div class="m">
+                    <input type="radio" name="wenZhong" value="-1" checked="checked" /><label class="current">不限定</label>
+                    <input type="radio" name="wenZhong" value="230" /><label>中文CN</label>
+                    <input type="radio" name="wenZhong" value="231" /><label>外文CN</label>
+                    <input type="radio" name="wenZhong" value="232" /><label>境内外文</label>
+                    <input type="radio" name="wenZhong" value="233" /><label>中文ISSN</label>
+                    <input type="radio" name="wenZhong" value="234" /><label>集刊</label>
+                    <input type="radio" name="wenZhong" value="235" /><label>内刊</label>
+                    <input type="radio" name="wenZhong" value="236" /><label>中文CN(电子)</label>
+                    <input type="radio" name="wenZhong" value="237" /><label>境外期刊</label>
+                    <input type="radio" name="wenZhong" value="238" /><label>出版社</label>
+                    <input type="radio" name="wenZhong" value="239" /><label>报纸</label>
+                </div>
+            </li>
+            <li>
+                <div class="l">是否学术：</div>
+                <div class="m">
+                    <input type="radio" name="isXueshu" value="-1" checked="checked" /><label class="current">不限定</label>
+                    <input type="radio" name="isXueshu" value="224" /><label>学术期刊</label>
+                    <input type="radio" name="isXueshu" value="225" /><label>非学术期刊</label>
+                </div>
+            </li>
+            <li>
+                <div class="l">刊期：</div>
+                <div class="m">
+                    <input type="checkbox" name="kanQi" value="0" checked="checked" /><label class="current">不限定</label>
+                    
+                            <input type="checkbox" name="kanQi" value="1" /><label>周刊</label>
+                        
+                            <input type="checkbox" name="kanQi" value="2" /><label>旬刊</label>
+                        
+                            <input type="checkbox" name="kanQi" value="3" /><label>半月刊</label>
+                        
+                            <input type="checkbox" name="kanQi" value="4" /><label>月刊</label>
+                        
+                            <input type="checkbox" name="kanQi" value="5" /><label>双月刊</label>
+                        
+                            <input type="checkbox" name="kanQi" value="6" /><label>季刊</label>
+                        
+                            <input type="checkbox" name="kanQi" value="7" /><label>半年刊</label>
+                        
+                            <input type="checkbox" name="kanQi" value="8" /><label>年刊</label>
+                        
+                </div>
+            </li>
+            <li>
+                <div class="l">学科分类：</div>
+                <div class="m">
+                    <input type="checkbox" name="classify" value="0" checked="checked" /><label for="classify" class="current">不限定</label>
+                    
+                            <input type="checkbox" name="classify" value="12" /><label>自然科学综合</label>
+                        
+                            <input type="checkbox" name="classify" value="13" /><label>自然科学</label>
+                        
+                            <input type="checkbox" name="classify" value="14" /><label>农业科学综合</label>
+                        
+                            <input type="checkbox" name="classify" value="15" /><label>农业科学</label>
+                        
+                            <input type="checkbox" name="classify" value="16" /><label>政法外交综合</label>
+                        
+                            <input type="checkbox" name="classify" value="17" /><label>政法外交</label>
+                        
+                            <input type="checkbox" name="classify" value="18" /><label>社会科学综合</label>
+                        
+                            <input type="checkbox" name="classify" value="19" /><label>社会科学</label>
+                        
+                            <input type="checkbox" name="classify" value="20" /><label>医药卫生综合</label>
+                        
+                            <input type="checkbox" name="classify" value="21" /><label>医卫科学</label>
+                        
+                            <input type="checkbox" name="classify" value="22" /><label>工程科技综合</label>
+                        
+                            <input type="checkbox" name="classify" value="23" /><label>工程科技</label>
+                        
+                            <input type="checkbox" name="classify" value="24" /><label>财经管理综合</label>
+                        
+                            <input type="checkbox" name="classify" value="25" /><label>财政经济</label>
+                        
+                            <input type="checkbox" name="classify" value="26" /><label>文化艺术</label>
+                        
+                            <input type="checkbox" name="classify" value="27" /><label>教育科研</label>
+                        
+                            <input type="checkbox" name="classify" value="222" /><label>停刊刊物</label>
+                        
+                            <input type="checkbox" name="classify" value="238" /><label>内刊刊物</label>
+                        
+                            <input type="checkbox" name="classify" value="312" /><label>SCI/E期刊大全</label>
+                        
+                            <input type="checkbox" name="classify" value="765" /><label>集刊大全</label>
+                        
+                            <input type="checkbox" name="classify" value="915" /><label>中国国际期刊</label>
+                        
+                            <input type="checkbox" name="classify" value="237" /><label>文学内刊</label>
+                        
+                </div>
+                
+            </li>
+            <li class="area">
+                <div class="l">地区：</div>
+                <div class="m text-container expanded">
+                    <input type="checkbox" name="area" value="0" checked="checked" /><label class="current">不限定</label>
+                    
+                            <input type="checkbox" name="area" value="1"><label>北京</label>
+                        
+                            <input type="checkbox" name="area" value="2"><label>天津</label>
+                        
+                            <input type="checkbox" name="area" value="3"><label>上海</label>
+                        
+                            <input type="checkbox" name="area" value="4"><label>重庆</label>
+                        
+                            <input type="checkbox" name="area" value="5"><label>河北</label>
+                        
+                            <input type="checkbox" name="area" value="6"><label>山西</label>
+                        
+                            <input type="checkbox" name="area" value="7"><label>陕西</label>
+                        
+                            <input type="checkbox" name="area" value="8"><label>山东</label>
+                        
+                            <input type="checkbox" name="area" value="9"><label>河南</label>
+                        
+                            <input type="checkbox" name="area" value="10"><label>辽宁</label>
+                        
+                            <input type="checkbox" name="area" value="11"><label>吉林</label>
+                        
+                            <input type="checkbox" name="area" value="12"><label>黑龙江</label>
+                        
+                            <input type="checkbox" name="area" value="13"><label>江苏</label>
+                        
+                            <input type="checkbox" name="area" value="14"><label>浙江</label>
+                        
+                            <input type="checkbox" name="area" value="15"><label>安徽</label>
+                        
+                            <input type="checkbox" name="area" value="16"><label>江西</label>
+                        
+                            <input type="checkbox" name="area" value="17"><label>福建</label>
+                        
+                            <input type="checkbox" name="area" value="18"><label>湖北</label>
+                        
+                            <input type="checkbox" name="area" value="19"><label>湖南</label>
+                        
+                            <input type="checkbox" name="area" value="20"><label>四川</label>
+                        
+                            <input type="checkbox" name="area" value="21"><label>贵州</label>
+                        
+                            <input type="checkbox" name="area" value="22"><label>云南</label>
+                        
+                            <input type="checkbox" name="area" value="23"><label>广东</label>
+                        
+                            <input type="checkbox" name="area" value="24"><label>海南</label>
+                        
+                            <input type="checkbox" name="area" value="25"><label>甘肃</label>
+                        
+                            <input type="checkbox" name="area" value="26"><label>青海</label>
+                        
+                            <input type="checkbox" name="area" value="27"><label>台湾</label>
+                        
+                            <input type="checkbox" name="area" value="28"><label>内蒙古</label>
+                        
+                            <input type="checkbox" name="area" value="29"><label>新疆</label>
+                        
+                            <input type="checkbox" name="area" value="30"><label>西藏</label>
+                        
+                            <input type="checkbox" name="area" value="31"><label>广西</label>
+                        
+                            <input type="checkbox" name="area" value="32"><label>宁夏</label>
+                        
+                            <input type="checkbox" name="area" value="33"><label>香港</label>
+                        
+                            <input type="checkbox" name="area" value="34"><label>澳门</label>
+                        
+                            <input type="checkbox" name="area" value="35"><label>国外</label>
+                        
+                            <input type="checkbox" name="area" value="36"><label>美国</label>
+                        
+                            <input type="checkbox" name="area" value="37"><label>英国</label>
+                        
+                            <input type="checkbox" name="area" value="38"><label>德国</label>
+                        
+                            <input type="checkbox" name="area" value="39"><label>日本</label>
+                        
+                            <input type="checkbox" name="area" value="40"><label>韩国</label>
+                        
+                            <input type="checkbox" name="area" value="41"><label>俄罗斯</label>
+                        
+                            <input type="checkbox" name="area" value="42"><label>新加坡</label>
+                        
+                            <input type="checkbox" name="area" value="43"><label>挪威</label>
+                        
+                            <input type="checkbox" name="area" value="44"><label>瑞典</label>
+                        
+                            <input type="checkbox" name="area" value="45"><label>加拿大</label>
+                        
+                            <input type="checkbox" name="area" value="46"><label>澳大利亚</label>
+                        
+                            <input type="checkbox" name="area" value="47"><label>新西兰</label>
+                        
+                            <input type="checkbox" name="area" value="48"><label>希腊</label>
+                        
+                            <input type="checkbox" name="area" value="49"><label>巴西</label>
+                        
+                            <input type="checkbox" name="area" value="50"><label>波兰</label>
+                        
+                            <input type="checkbox" name="area" value="51"><label>瑞士</label>
+                        
+                            <input type="checkbox" name="area" value="52"><label>奥地利</label>
+                        
+                            <input type="checkbox" name="area" value="53"><label>意大利</label>
+                        
+                            <input type="checkbox" name="area" value="54"><label>丹麦</label>
+                        
+                            <input type="checkbox" name="area" value="55"><label>印度</label>
+                        
+                            <input type="checkbox" name="area" value="56"><label>乌克兰</label>
+                        
+                            <input type="checkbox" name="area" value="57"><label>爱尔兰</label>
+                        
+                            <input type="checkbox" name="area" value="58"><label>荷兰</label>
+                        
+                            <input type="checkbox" name="area" value="59"><label>罗马尼亚</label>
+                        
+                            <input type="checkbox" name="area" value="61"><label>智利</label>
+                        
+                            <input type="checkbox" name="area" value="62"><label>墨西哥</label>
+                        
+                            <input type="checkbox" name="area" value="63"><label>中国台湾</label>
+                        
+                            <input type="checkbox" name="area" value="64"><label>捷克共和国</label>
+                        
+                            <input type="checkbox" name="area" value="65"><label>克罗地亚</label>
+                        
+                            <input type="checkbox" name="area" value="66"><label>匈牙利</label>
+                        
+                            <input type="checkbox" name="area" value="67"><label>斯洛文尼亚</label>
+                        
+                            <input type="checkbox" name="area" value="68"><label>中国</label>
+                        
+                            <input type="checkbox" name="area" value="69"><label>委内瑞拉</label>
+                        
+                            <input type="checkbox" name="area" value="70"><label>比利时</label>
+                        
+                            <input type="checkbox" name="area" value="71"><label>土耳其</label>
+                        
+                            <input type="checkbox" name="area" value="72"><label>葡萄牙</label>
+                        
+                            <input type="checkbox" name="area" value="73"><label>西班牙</label>
+                        
+                            <input type="checkbox" name="area" value="74"><label>法国</label>
+                        
+                            <input type="checkbox" name="area" value="75"><label>阿根廷</label>
+                        
+                            <input type="checkbox" name="area" value="76"><label>保加利亚</label>
+                        
+                            <input type="checkbox" name="area" value="77"><label>芬兰</label>
+                        
+                            <input type="checkbox" name="area" value="78"><label>南非</label>
+                        
+                            <input type="checkbox" name="area" value="79"><label>阿拉伯酋长国</label>
+                        
+                            <input type="checkbox" name="area" value="80"><label>塞尔维亚</label>
+                        
+                            <input type="checkbox" name="area" value="81"><label>埃及</label>
+                        
+                            <input type="checkbox" name="area" value="82"><label>伊朗</label>
+                        
+                            <input type="checkbox" name="area" value="83"><label>马来西亚</label>
+                        
+                            <input type="checkbox" name="area" value="84"><label>泰国</label>
+                        
+                            <input type="checkbox" name="area" value="85"><label>亚美尼亚</label>
+                        
+                            <input type="checkbox" name="area" value="86"><label>马其顿</label>
+                        
+                            <input type="checkbox" name="area" value="87"><label>立陶宛</label>
+                        
+                            <input type="checkbox" name="area" value="88"><label>埃塞俄比亚</label>
+                        
+                            <input type="checkbox" name="area" value="89"><label>哥伦比亚</label>
+                        
+                            <input type="checkbox" name="area" value="90"><label>苏格兰</label>
+                        
+                            <input type="checkbox" name="area" value="91"><label>拉脱维亚</label>
+                        
+                            <input type="checkbox" name="area" value="92"><label>威尔士</label>
+                        
+                            <input type="checkbox" name="area" value="93"><label>爱沙尼亚</label>
+                        
+                            <input type="checkbox" name="area" value="94"><label>中国香港</label>
+                        
+                            <input type="checkbox" name="area" value="95"><label>巴基斯坦</label>
+                        
+                            <input type="checkbox" name="area" value="96"><label>以色列</label>
+                        
+                            <input type="checkbox" name="area" value="97"><label>冰岛</label>
+                        
+                            <input type="checkbox" name="area" value="98"><label>科威特</label>
+                        
+                            <input type="checkbox" name="area" value="99"><label>马拉维</label>
+                        
+                            <input type="checkbox" name="area" value="100"><label>牙买加</label>
+                        
+                            <input type="checkbox" name="area" value="101"><label>斯洛伐克</label>
+                        
+                            <input type="checkbox" name="area" value="102"><label>乌干达</label>
+                        
+                            <input type="checkbox" name="area" value="103"><label>沙特阿拉伯</label>
+                        
+                            <input type="checkbox" name="area" value="104"><label>阿塞拜疆</label>
+                        
+                            <input type="checkbox" name="area" value="105"><label>孟加拉国</label>
+                        
+                            <input type="checkbox" name="area" value="106"><label>尼日利亚</label>
+                        
+                            <input type="checkbox" name="area" value="107"><label>马耳他</label>
+                        
+                            <input type="checkbox" name="area" value="108"><label>菲律宾</label>
+                        
+                            <input type="checkbox" name="area" value="109"><label>约旦</label>
+                        
+                            <input type="checkbox" name="area" value="110"><label>波斯尼亚和黑塞哥维那</label>
+                        
+                            <input type="checkbox" name="area" value="111"><label>印度尼西亚</label>
+                        
+                            <input type="checkbox" name="area" value="112"><label>白俄罗斯</label>
+                        
+                            <input type="checkbox" name="area" value="113"><label>尼泊尔</label>
+                        
+                            <input type="checkbox" name="area" value="114"><label>乌兹别克斯坦</label>
+                        
+                            <input type="checkbox" name="area" value="115"><label>哥斯达黎加</label>
+                        
+                            <input type="checkbox" name="area" value="116"><label>肯尼亚</label>
+                        
+                            <input type="checkbox" name="area" value="117"><label>斯里兰卡</label>
+                        
+                            <input type="checkbox" name="area" value="118"><label>越南</label>
+                        
+                            <input type="checkbox" name="area" value="119"><label>伊拉克</label>
+                        
+                </div>
+                <div class="r">
+                    <a title="点击收缩/展开" class="toggle-button">展开<i class="expend"></i></a>
+                </div>
+            </li>
+            <li>
+                <div class="l">级别：</div>
+                <div class="m divlevel">
+                    <input type="radio" name="level" value="0" checked="checked" /><label class="current">不限定</label>
+                    <input type="radio" name="level" value="1"><label class="">核心</label>
+                    <input type="radio" name="level" value="2" /><label class="">普刊</label>
+                </div>
+            </li>
+
+            <li id="li_hexin" style="display: none;background-color: #dee;">
+                <div class="l">核心：</div>
+                <div class="m">
+                    <input type="checkbox" id="heXin" name="heXin" value="0" checked="checked" /><label id="heXinlab" class="current">不限定</label>
+                    <a href="javascript:;" id="hx-a1" onClick="mShow(1);" class="ma cur" style="margin-left:20px;">包含项</a>
+					<a href="javascript:;" id="hx-a2" onClick="mShow(2);" class="ma">排除项</a>
+                    <ul id="hx-container1" class="hx-container">
+                    	<li>1.<input type="checkbox" name="heXin" value="155" /><label>中文核心（2023年版）</label></li><li>2.<input type="checkbox" name="heXin" value="201" /><label>CSSCI来源期刊（2025-2026）</label><input type="checkbox" name="heXin" value="203" /><label>CSSCI扩展版（2025-2026）</label><input type="checkbox" name="heXin" value="202" /><label>CSSCI收录集刊（2025-2026）</label></li><li>3.<input type="checkbox" name="heXin" value="204" /><label>CSCD核心（2025-2026）</label><input type="checkbox" name="heXin" value="205" /><label>CSCD扩展（2025-2026）</label></li><li>4.<input type="checkbox" name="heXin" value="208" /><label>科技核心（2025学术卷）</label><input type="checkbox" name="heXin" value="209" /><label>科技核心（2025科普卷）</label></li><li>5.<input type="checkbox" name="heXin" value="113" /><label>AMI顶级（2022版）</label><input type="checkbox" name="heXin" value="114" /><label>AMI权威（2022版）</label><input type="checkbox" name="heXin" value="115" /><label>AMI核心（2022版）</label><input type="checkbox" name="heXin" value="116" /><label>AMI扩展（2022版）</label><input type="checkbox" name="heXin" value="117" /><label>AMI入库（2022版）</label><input type="checkbox" name="heXin" value="123" /><label>AMI职刊核心（2022版）</label><input type="checkbox" name="heXin" value="124" /><label>AMI职刊扩展（2022版）</label><input type="checkbox" name="heXin" value="125" /><label>AMI职刊入库（2022版）</label><input type="checkbox" name="heXin" value="119" /><label>AMI核心集刊（2022版）</label><input type="checkbox" name="heXin" value="120" /><label>AMI入库集刊（2022版）	</label><input type="checkbox" name="heXin" value="121" /><label>AMI核心国际刊（2022版）</label><input type="checkbox" name="heXin" value="122" /><label>AMI入库国际刊（2022版）	</label></li><li>6.<input type="checkbox" name="heXin" value="210" /><label>国家社科基金资助期刊（2025）</label></li><li>7.<input type="checkbox" name="heXin" value="177" /><label>RCCSE(中文权威A+)(2023第七版)</label><input type="checkbox" name="heXin" value="178" /><label>RCCSE(中文核心A)(2023第七版)</label><input type="checkbox" name="heXin" value="179" /><label>RCCSE(中文核心A-)(2023第七版)</label><input type="checkbox" name="heXin" value="186" /><label>RCCSE(中文B+)(2023第七版)</label><input type="checkbox" name="heXin" value="183" /><label>RCCSE(中文OA核心A)(2023第七版)</label><input type="checkbox" name="heXin" value="189" /><label>RCCSE(中文OA核心A-)(2023第七版)</label><input type="checkbox" name="heXin" value="188" /><label>RCCSE(中文oaB+)(2023第七版)</label><input type="checkbox" name="heXin" value="180" /><label>RCCSE(高专权威A+)(2023第七版)</label><input type="checkbox" name="heXin" value="181" /><label>RCCSE(高专核心A)(2023第七版)</label><input type="checkbox" name="heXin" value="182" /><label>RCCSE(高专核心A-)(2023第七版)</label><input type="checkbox" name="heXin" value="187" /><label>RCCSE(高专B+)(2023第七版)</label></li><li>8.<input type="checkbox" name="heXin" value="241" /><label>CACJ-权威（武大应用型评价2025版）</label><input type="checkbox" name="heXin" value="242" /><label>CACJ-核心（武大应用型评价2025版）</label><input type="checkbox" name="heXin" value="243" /><label>CACJ-扩展（武大应用型评价2025版）</label><input type="checkbox" name="heXin" value="249" /><label>CACJ-入库（武大应用型评价2025版）</label><input type="checkbox" name="heXin" value="245" /><label>CACJ-权威（武大应用型评价专科学报类2025版）</label><input type="checkbox" name="heXin" value="246" /><label>CACJ-核心（武大应用型评价专科学报类2025版）</label><input type="checkbox" name="heXin" value="247" /><label>CACJ-扩展（武大应用型评价专科学报类2025版）</label></li><li>9.<input type="checkbox" name="heXin" value="217" /><label>高质量科技期刊（T1-2025）</label><input type="checkbox" name="heXin" value="218" /><label>高质量科技期刊（T2-2025）</label><input type="checkbox" name="heXin" value="219" /><label>高质量科技期刊（T3-2025）</label><input type="checkbox" name="heXin" value="220" /><label>高质量科技期刊（T4-2025）</label><input type="checkbox" name="heXin" value="221" /><label>高质量科技期刊（优秀科普-2025）</label><input type="checkbox" name="heXin" value="222" /><label>高质量科技期刊（交叉领域推荐-2025）</label></li><li>10.<input type="checkbox" name="heXin" value="197" /><label>SCIE核心（20260817更新）</label><input type="checkbox" name="heXin" value="196" /><label>SSCI核心（20260817更新）</label><input type="checkbox" name="heXin" value="195" /><label>AHCI核心（20260817更新）</label></li><li>11.<input type="checkbox" name="heXin" value="199" /><label>EI 中国期刊</label><input type="checkbox" name="heXin" value="207" /><label>EI 外国期刊</label></li>
+                    </ul>
+
+                    <ul id="hx-container2" class="hx-container ex-hx hxnone">
+   	                    <li>1.<input type="checkbox" name="exheXin" value="155" /><label>中文核心（2023年版）</label></li><li>2.<input type="checkbox" name="exheXin" value="201" /><label>CSSCI来源期刊（2025-2026）</label><input type="checkbox" name="exheXin" value="203" /><label>CSSCI扩展版（2025-2026）</label><input type="checkbox" name="exheXin" value="202" /><label>CSSCI收录集刊（2025-2026）</label></li><li>3.<input type="checkbox" name="exheXin" value="204" /><label>CSCD核心（2025-2026）</label><input type="checkbox" name="exheXin" value="205" /><label>CSCD扩展（2025-2026）</label></li><li>4.<input type="checkbox" name="exheXin" value="208" /><label>科技核心（2025学术卷）</label><input type="checkbox" name="exheXin" value="209" /><label>科技核心（2025科普卷）</label></li><li>5.<input type="checkbox" name="exheXin" value="113" /><label>AMI顶级（2022版）</label><input type="checkbox" name="exheXin" value="114" /><label>AMI权威（2022版）</label><input type="checkbox" name="exheXin" value="115" /><label>AMI核心（2022版）</label><input type="checkbox" name="exheXin" value="116" /><label>AMI扩展（2022版）</label><input type="checkbox" name="exheXin" value="117" /><label>AMI入库（2022版）</label><input type="checkbox" name="exheXin" value="123" /><label>AMI职刊核心（2022版）</label><input type="checkbox" name="exheXin" value="124" /><label>AMI职刊扩展（2022版）</label><input type="checkbox" name="exheXin" value="125" /><label>AMI职刊入库（2022版）</label><input type="checkbox" name="exheXin" value="119" /><label>AMI核心集刊（2022版）</label><input type="checkbox" name="exheXin" value="120" /><label>AMI入库集刊（2022版）	</label><input type="checkbox" name="exheXin" value="121" /><label>AMI核心国际刊（2022版）</label><input type="checkbox" name="exheXin" value="122" /><label>AMI入库国际刊（2022版）	</label></li><li>6.<input type="checkbox" name="exheXin" value="210" /><label>国家社科基金资助期刊（2025）</label></li><li>7.<input type="checkbox" name="exheXin" value="177" /><label>RCCSE(中文权威A+)(2023第七版)</label><input type="checkbox" name="exheXin" value="178" /><label>RCCSE(中文核心A)(2023第七版)</label><input type="checkbox" name="exheXin" value="179" /><label>RCCSE(中文核心A-)(2023第七版)</label><input type="checkbox" name="exheXin" value="186" /><label>RCCSE(中文B+)(2023第七版)</label><input type="checkbox" name="exheXin" value="183" /><label>RCCSE(中文OA核心A)(2023第七版)</label><input type="checkbox" name="exheXin" value="189" /><label>RCCSE(中文OA核心A-)(2023第七版)</label><input type="checkbox" name="exheXin" value="188" /><label>RCCSE(中文oaB+)(2023第七版)</label><input type="checkbox" name="exheXin" value="180" /><label>RCCSE(高专权威A+)(2023第七版)</label><input type="checkbox" name="exheXin" value="181" /><label>RCCSE(高专核心A)(2023第七版)</label><input type="checkbox" name="exheXin" value="182" /><label>RCCSE(高专核心A-)(2023第七版)</label><input type="checkbox" name="exheXin" value="187" /><label>RCCSE(高专B+)(2023第七版)</label></li><li>8.<input type="checkbox" name="exheXin" value="241" /><label>CACJ-权威（武大应用型评价2025版）</label><input type="checkbox" name="exheXin" value="242" /><label>CACJ-核心（武大应用型评价2025版）</label><input type="checkbox" name="exheXin" value="243" /><label>CACJ-扩展（武大应用型评价2025版）</label><input type="checkbox" name="exheXin" value="249" /><label>CACJ-入库（武大应用型评价2025版）</label><input type="checkbox" name="exheXin" value="245" /><label>CACJ-权威（武大应用型评价专科学报类2025版）</label><input type="checkbox" name="exheXin" value="246" /><label>CACJ-核心（武大应用型评价专科学报类2025版）</label><input type="checkbox" name="exheXin" value="247" /><label>CACJ-扩展（武大应用型评价专科学报类2025版）</label></li><li>9.<input type="checkbox" name="exheXin" value="217" /><label>高质量科技期刊（T1-2025）</label><input type="checkbox" name="exheXin" value="218" /><label>高质量科技期刊（T2-2025）</label><input type="checkbox" name="exheXin" value="219" /><label>高质量科技期刊（T3-2025）</label><input type="checkbox" name="exheXin" value="220" /><label>高质量科技期刊（T4-2025）</label><input type="checkbox" name="exheXin" value="221" /><label>高质量科技期刊（优秀科普-2025）</label><input type="checkbox" name="exheXin" value="222" /><label>高质量科技期刊（交叉领域推荐-2025）</label></li><li>10.<input type="checkbox" name="exheXin" value="197" /><label>SCIE核心（20260817更新）</label><input type="checkbox" name="exheXin" value="196" /><label>SSCI核心（20260817更新）</label><input type="checkbox" name="exheXin" value="195" /><label>AHCI核心（20260817更新）</label></li><li>11.<input type="checkbox" name="exheXin" value="199" /><label>EI 中国期刊</label><input type="checkbox" name="exheXin" value="207" /><label>EI 外国期刊</label></li>
+                    </ul>
+                </div>
+                <div id="hxr" class="r">
+                    <a title="点击收缩/展开" class="toggle-button-hx">收缩<i class="unexpend"></i></a>
+                </div>
+            </li>
+            <li id="li_pukan" style="display: none; background-color: #dee;">
+                <div class="l">普刊：</div>
+                <div class="m">
+                    <input type="radio" name="puKan" value="0" checked="checked" /><label class="current">不限定</label>
+                    <input type="radio" name="puKan" value="226" /><label>省部级</label>
+                    <input type="radio" name="puKan" value="227" /><label>国家级</label>
+                    <input type="radio" name="puKan" value="228" /><label>地市级</label>
+                    <input type="radio" name="puKan" value="229" /><label>普刊</label>
+                </div>
+            </li>
+            <li>
+                <div class="l">认定学术期刊：</div>
+                <div class="m">
+                    <input name="first" type="radio" value="0" checked="checked" /><label class="current">不限定</label>
+                    <input name="first" type="radio" value="1" /><label>第一批认定学术期刊</label>
+                    <input name="first" type="radio" value="2" /><label>第二批认定学术期刊</label>
+                </div>
+            </li>
+            
+            <li>
+                <div class="l">学报分类：</div>
+                <div class="m">
+                    <input type="radio" name="college" value="0" checked="checked" /><label class="current">不限定</label>
+                    <input type="radio" name="college" value="1" /><label>专科学报</label>
+                    <input type="radio" name="college" value="2" /><label>本科学报</label>
+                </div>
+            </li>
+            <li>
+                <div class="l">影响因子：</div>
+                <div class="m">
+                    <input type="checkbox" name="yxyz" value="0" checked="checked" /><label class="current">不限定</label>
+                    <input type="checkbox" name="yxyz" value="1" /><label>复合影响因子</label>
+                    <input type="checkbox" name="yxyz" value="2" /><label>扩刊版影响因子</label>
+                </div>
+            </li>
+            <li style="display: none;">
+                <div class="l">期刊荣誉：</div>
+                <div class="m">
+                    <input type="checkbox" name="hornor" value="0" checked="checked" /><label class="current">不限定</label>
+                    
+                </div>
+            </li>
+            <li>
+                <div class="l">收录网站：</div>
+                <div class="m text-container expanded">
+                    <input type="checkbox" name="contentIncluded" value="0" checked="checked" /><label class="current">不限定</label>
+                    <input type="checkbox" name="contentIncluded" value="12" /><label>知网收录</label><input type="checkbox" name="contentIncluded" value="11" /><label>万方收录</label><input type="checkbox" name="contentIncluded" value="10" /><label>维普收录</label><input type="checkbox" name="contentIncluded" value="18" /><label>超星收录</label><input type="checkbox" name="contentIncluded" value="28" /><label>NCPSSD（国哲社文献库）</label><input type="checkbox" name="contentIncluded" value="20" /><label>目次收录（知网）</label><input type="checkbox" name="contentIncluded" value="17" /><label>目次收录（万方）</label><input type="checkbox" name="contentIncluded" value="16" /><label>目次收录（维普）</label><input type="checkbox" name="contentIncluded" value="19" /><label>目次收录（超星）</label><input type="checkbox" name="contentIncluded" value="27" /><label>只有超星收录</label><input type="checkbox" name="contentIncluded" value="26" /><label>只有龙源收录</label><input type="checkbox" name="contentIncluded" value="25" /><label>只有维普收录</label><input type="checkbox" name="contentIncluded" value="24" /><label>只有万方收录</label><input type="checkbox" name="contentIncluded" value="30" /><label>北大法宝</label><input type="checkbox" name="contentIncluded" value="23" /><label>官网发布</label><input type="checkbox" name="contentIncluded" value="22" /><label>公众号发布</label><input type="checkbox" name="contentIncluded" value="29" /><label>知网外文库</label><input type="checkbox" name="contentIncluded" value="9" /><label>龙源收录</label><input type="checkbox" name="contentIncluded" value="21" /><label>博看网</label><input type="checkbox" name="contentIncluded" value="13" /><label>读览天下</label>
+
+                    <fieldset class="fset">
+                        <legend>排除项</legend>
+                        <input type="checkbox" name="excontentIncluded" value="12" /><label>知网收录</label><input type="checkbox" name="excontentIncluded" value="11" /><label>万方收录</label><input type="checkbox" name="excontentIncluded" value="10" /><label>维普收录</label><input type="checkbox" name="excontentIncluded" value="18" /><label>超星收录</label><input type="checkbox" name="excontentIncluded" value="28" /><label>NCPSSD（国哲社文献库）</label><input type="checkbox" name="excontentIncluded" value="20" /><label>目次收录（知网）</label><input type="checkbox" name="excontentIncluded" value="17" /><label>目次收录（万方）</label><input type="checkbox" name="excontentIncluded" value="16" /><label>目次收录（维普）</label><input type="checkbox" name="excontentIncluded" value="19" /><label>目次收录（超星）</label><input type="checkbox" name="excontentIncluded" value="27" /><label>只有超星收录</label><input type="checkbox" name="excontentIncluded" value="26" /><label>只有龙源收录</label><input type="checkbox" name="excontentIncluded" value="25" /><label>只有维普收录</label><input type="checkbox" name="excontentIncluded" value="24" /><label>只有万方收录</label><input type="checkbox" name="excontentIncluded" value="30" /><label>北大法宝</label><input type="checkbox" name="excontentIncluded" value="23" /><label>官网发布</label><input type="checkbox" name="excontentIncluded" value="22" /><label>公众号发布</label><input type="checkbox" name="excontentIncluded" value="29" /><label>知网外文库</label><input type="checkbox" name="excontentIncluded" value="9" /><label>龙源收录</label><input type="checkbox" name="excontentIncluded" value="21" /><label>博看网</label><input type="checkbox" name="excontentIncluded" value="13" /><label>读览天下</label>
+                    </fieldset>
+                </div>
+                <div class="r">
+                    <a title="点击收缩/展开" class="toggle-button">展开<i class="expend"></i></a>
+                </div>
+            </li>
+            <li>
+                <div class="l">审稿类型：</div>
+                <div class="m">
+                    <input type="radio" name="doubleAnonymous" value="0" checked /><label class="current">不限定</label>
+                    <input type="radio" name="doubleAnonymous" value="1" /><label>匿名审稿期刊</label>
+                </div>
+            </li>
+            <li>
+                <div class="l">点评情况：</div>
+                <div class="m">
+                    <input type="radio" name="comment" value="0" checked="checked" /><label class="current">不限定</label>
+                    <input type="radio" name="comment" value="1" /><label>有点评的期刊</label>
+                    <input type="radio" name="comment" value="2" /><label>无点评的期刊</label>
+                </div>
+            </li>
+            <li>
+                <div class="l">选刊类型：</div>
+                <div class="m">  
+                    
+                           <input type="radio" name="canPublish" value="0" /><label class="current">默认</label>
+                    
+                           <input type="radio" name="canPublish" value="1" /><label class="">在读硕士独作可发</label>
+                    
+                           <input type="radio" name="canPublish" value="2" /><label class="">偏重副高博士及以上</label>
+                    
+                           <input type="radio" name="canPublish" value="3" /><label class="">在读博士独作可发</label>
+                    
+                           <input type="radio" name="canPublish" value="4" /><label class="">在读本科独作可发</label>
+                    
+                           <input type="radio" name="canPublish" value="5" /><label class="">硕1导2可发</label>
+                    
+                           <input type="radio" name="canPublish" value="6" /><label class="">博1导2可发</label>
+                    
+                           <input type="radio" name="canPublish" value="7" /><label class="">在读硕士独作不发</label>
+                    
+                           <input type="radio" name="canPublish" value="8" /><label class="">偏重正高及以上</label>
+                    
+                           <input type="radio" name="canPublish" value="9" /><label class="">须带省及以上课题</label>
+                    
+                           <input type="radio" name="canPublish" value="10" /><label class="">约稿为主</label>
+                    
+                           <input type="radio" name="canPublish" value="11" /><label class="">本1导2可发</label>
+                    
+                           <input type="radio" name="canPublish" value="12" /><label class="">在读硕+项目可发</label>
+                    
+                           <input type="radio" name="canPublish" value="13" /><label class="">在读博+项目可发</label>
+                    
+                           <input type="radio" name="canPublish" value="14" /><label class="">在读本+项目可发</label>
+                    
+                           <input type="radio" name="canPublish" value="15" /><label class="">本1导2+项目可发</label>
+                    
+                           <input type="radio" name="canPublish" value="16" /><label class="">硕1导2+项目可发</label>
+                    
+                           <input type="radio" name="canPublish" value="17" /><label class="">博1导2+项目可发</label>
+                    
+                           <input type="radio" name="canPublish" value="18" /><label class="">高职高专可发</label>
+                    
+                           <input type="radio" name="canPublish" value="19" /><label class="">硕1导2不可发</label>
+                    
+                </div>
+            </li>
+            <li>
+                <div class="l">(审)稿费：</div>
+                <div class="m">
+                    <input type="radio" name="gaoFei" value="0" checked="checked" /><label class="current">不限定</label>
+                    <input type="radio" name="gaoFei" value="1" /><label>有审稿费期刊</label>
+                    <input type="radio" name="gaoFei" value="2" /><label>有稿费期刊</label>
+                </div>
+            </li>
+            <li>
+                <div class="l banMianFei">每版费用：</div>
+                <div class="m">
+                    <input type="radio" name="banMianFei" value="0" checked="checked" /><label class="current">不限定</label>
+                    <input type="radio" name="banMianFei" value="1" /><label>无版面费</label>
+                    <input type="radio" name="banMianFei" value="2" /><label>不收版面费且不通知作者就可能发表文章的期刊</label>
+                </div>
+            </li>
+            <li>
+                <div class="l">每版费用区间：</div>
+                <div class="m">
+                    <input type="radio" name="banMianFeiArea" value="0" checked="checked" /><label class="current">不限定</label>
+                    <input type="radio" name="banMianFeiArea" value="1" /><label>1-1000</label>
+                    <input type="radio" name="banMianFeiArea" value="2" /><label>1001-2000</label>
+                    <input type="radio" name="banMianFeiArea" value="3" /><label>2001-3000</label>
+                    <input type="radio" name="banMianFeiArea" value="4" /><label>3001-4000</label>
+                    <input type="radio" name="banMianFeiArea" value="5" /><label>4001-5000</label>
+                    <input type="radio" name="banMianFeiArea" value="6" /><label>5001-6000</label>
+                    <input type="radio" name="banMianFeiArea" value="7" /><label>6001-7000</label>
+                    <input type="radio" name="banMianFeiArea" value="8" /><label>7001以上</label>（仅供参考）
+                </div>
+            </li>
+
+            <li>
+                <div class="l">审稿时间：</div>
+                <div class="m">  
+                    <input type="radio" name="shenGaoTime" value="-1" checked="checked" /><label class="current">不限定</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="29" /><label>5日内</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="30" /><label>10日内</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="6" /><label>15日内</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="5" /><label>1个月</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="7" /><label>2个月</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="4" /><label>3个月</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="8" /><label>4个月</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="9" /><label>5个月</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="10" /><label>6个月</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="11" /><label>7个月</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="12" /><label>8个月</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="13" /><label>9个月</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="14" /><label>10个月</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="15" /><label>11个月</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="2" /><label>1年+</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="16" /><label>至今15天</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="17" /><label>至今1个月</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="18" /><label>至今2个月</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="19" /><label>至今3个月</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="20" /><label>至今4个月</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="21" /><label>至今5个月</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="22" /><label>至今6个月</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="23" /><label>至今7个月</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="24" /><label>至今8个月</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="25" /><label>至今9个月</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="26" /><label>至今10个月</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="27" /><label>至今11个月</label>
+                    
+                          <input type="radio" name="shenGaoTime" value="28" /><label>至今1年+</label>
+                    
+                </div>
+            </li>
+
+
+            <li>
+                <div class="l">发表排期：</div>
+                <div class="m">  
+                    <input type="radio" name="fabiaoPQ" value="-1" checked="checked" /><label class="current">不限定</label>
+                    
+                          <input type="radio" name="fabiaoPQ" value="1个月" /><label>1个月</label>
+                    
+                          <input type="radio" name="fabiaoPQ" value="2个月" /><label>2个月</label>
+                    
+                          <input type="radio" name="fabiaoPQ" value="3个月" /><label>3个月</label>
+                    
+                          <input type="radio" name="fabiaoPQ" value="4个月" /><label>4个月</label>
+                    
+                          <input type="radio" name="fabiaoPQ" value="5个月" /><label>5个月</label>
+                    
+                          <input type="radio" name="fabiaoPQ" value="6个月" /><label>6个月</label>
+                    
+                          <input type="radio" name="fabiaoPQ" value="7个月" /><label>7个月</label>
+                    
+                          <input type="radio" name="fabiaoPQ" value="8个月" /><label>8个月</label>
+                    
+                          <input type="radio" name="fabiaoPQ" value="9个月" /><label>9个月</label>
+                    
+                          <input type="radio" name="fabiaoPQ" value="10个月" /><label>10个月</label>
+                    
+                          <input type="radio" name="fabiaoPQ" value="11个月" /><label>11个月</label>
+                    
+                          <input type="radio" name="fabiaoPQ" value="12个月" /><label>12个月</label>
+                    
+                          <input type="radio" name="fabiaoPQ" value="13个月" /><label>13个月</label>
+                    
+                          <input type="radio" name="fabiaoPQ" value="14个月" /><label>14个月</label>
+                    
+                          <input type="radio" name="fabiaoPQ" value="15个月" /><label>15个月</label>
+                    
+                          <input type="radio" name="fabiaoPQ" value="15个月以上" /><label>15个月以上</label>
+                    
+                          <input type="radio" name="fabiaoPQ" value="不清楚" /><label>不清楚</label>
+                    
+                </div>
+            </li>
+
+            <li>
+                <div class="l">字数要求：</div>
+                <div class="m">
+                    <input type="radio" name="wordCount" value="0" checked="checked" /><label class="current">不限定</label>
+                    <input type="radio" name="wordCount" value="1" /><label>5000以下</label>
+                    <input type="radio" name="wordCount" value="2" /><label>5001-7000</label>
+                    <input type="radio" name="wordCount" value="3" /><label>7001-9000</label>
+                    <input type="radio" name="wordCount" value="4" /><label>9001-12000</label>
+                    <input type="radio" name="wordCount" value="5" /><label>12001-15000</label>
+                    <input type="radio" name="wordCount" value="6" /><label>15000以上</label>
+                </div>
+            </li>
+
+            <li>
+                <div class="l">查重率：</div>
+                <div class="m">
+                    <input type="radio" name="repeatRate" value="0" checked="checked" /><label class="current">不限定</label>
+                    <input type="radio" name="repeatRate" value="1" /><label>≤5%</label>
+                    <input type="radio" name="repeatRate" value="2" /><label>≤10%</label>
+                    <input type="radio" name="repeatRate" value="3" /><label>≤15%</label>
+                    <input type="radio" name="repeatRate" value="4" /><label>≤20%</label>
+                    <input type="radio" name="repeatRate" value="5" /><label>≤25%</label>
+                    <input type="radio" name="repeatRate" value="6" /><label>≤30%</label>
+                    <input type="radio" name="repeatRate" value="7" /><label>≤35%</label>
+                    <input type="radio" name="repeatRate" value="8" /><label>35%+</label>
+                    <input type="radio" name="repeatRate" value="9" /><label>暂无数据</label>
+                </div>
+            </li>
+
+            <li>
+                <div class="l">是否可加急：</div>
+                <div class="m">
+                    <input type="radio" name="hasKJJ" value="-1" checked="checked" /><label class="current">不限定</label>
+                    <input type="radio" name="hasKJJ" value="0" /><label>否</label>
+                    <input type="radio" name="hasKJJ" value="1" /><label>是</label>
+                </div>
+            </li>
+            <li>
+                <div class="l">首发类型：</div>
+                <div class="m">
+                    <input type="checkbox" name="onlineFirst" value="-1" checked="checked" /><label class="current">不限定</label>
+                    <input type="checkbox" name="onlineFirst" value="知网网络首发" /><label>知网网络首发</label>
+                    
+                </div>
+                <em class="iconfont icon-bangzhu hover-tips" style="float:right;" data-tips="温馨提示：<br>①知网网络首发：是指该期刊被知网收录且可以网络首发论文。<br>②常规出版：指该期刊没有开通平台的论文网络首发服务。"></em>
+            </li>
+            <li>
+                <div class="l">点击量排行：</div>
+                <div class="m">
+                    <input type="radio" name="hot" value="-1" checked="checked" /><label class="current">不限定</label>
+                    <input type="radio" name="hot" value="0" /><label>降序（由高到低）</label>
+                    <input type="radio" name="hot" value="1" /><label>升序（由低到高）</label>
+                </div>
+            </li>
+            <li>
+                <div class="l">投稿方式：</div>
+                <div class="m">
+                    <input type="checkbox" name="method" value="0" checked="checked" /><label class="current">不限定</label>
+                    <input type="checkbox" name="method" value="官网投稿" /><label>官网投稿</label>
+                    <input type="checkbox" name="method" value="Email投稿" /><label>邮箱投稿</label>
+                    <input type="checkbox" name="method" value="纸质投稿" /><label>纸质投稿</label>
+                    <input type="checkbox" name="method" value="打印稿" /><label>打印稿</label>
+                    <input type="checkbox" name="method" value="Email附打印稿" /><label>Email附打印稿</label>
+                    <input type="checkbox" name="method" value="Email附纸质稿" /><label>Email附纸质稿</label>
+                    <input type="checkbox" name="method" value="在线附纸质稿" /><label>在线附纸质稿</label>
+                    <input type="checkbox" name="method" value="在线附打印稿" /><label>在线附打印稿</label>
+                    <input type="checkbox" name="method" value="停刊" /><label>停刊	</label>
+                    <input type="checkbox" name="method" value="暂停收稿" /><label>暂停收稿</label>
+                    <input type="checkbox" name="method" value="不接收投稿" /><label>不接收投稿</label>
+                    <input type="checkbox" name="method" value="无标注" /><label>无标注</label>
+                    <input type="checkbox" name="method" value="知网系统投稿" /><label>知网系统投稿</label>
+                    <input type="checkbox" name="method" value="勤云系统投稿" /><label>勤云系统投稿</label>
+                    <input type="checkbox" name="method" value="玛格泰克系统投稿" /><label>玛格泰克系统投稿</label>
+                    <input type="checkbox" name="method" value="三才系统投稿" /><label>三才系统投稿</label>
+                    <input type="checkbox" name="method" value="仁和云系统投稿" /><label>仁和云系统投稿</label>
+                    <input type="checkbox" name="method" value="方正电子系统投稿" /><label>方正电子系统投稿</label>
+                    <input type="checkbox" name="method" value="SciCloud系统投稿" /><label>SciCloud系统投稿</label>
+                    <input type="checkbox" name="method" value="小程序投稿" /><label>小程序投稿</label>
+                </div>
+                
+            </li>
+            <li>
+                <div class="l"></div>
+                <div class="m">
+                    <input type="submit" class="btn blue" value="搜 索" style="width: 200px;" />
+                </div>
+            </li>
+        </ul>
+        <div style="line-height: 26px; border: 1px solid #ccc; padding: 10px;">
+            <span style="color: red; font-weight: bold;">注：</span>
+            <p style="text-indent: 2em;">
+                关于期刊被哪家学术网站收录（知网、万方、维普），由于时有变动，一切以作者实际查证为准。需要说明的是，电子版上网时间一般比纸质出版时间滞后2-3个月，请登录以下官网查询，确定不了的，请直接咨询编辑部。<br />
+                知网：<a href="http://epub.cnki.net/kns/oldnavi/n_list.aspx?NaviID=1&Field=cykm$%" target="_blank">http://epub.cnki.net/kns/oldnavi/n_list.aspx?NaviID=1&Field=cykm$%</a><br />
+                万方：<a href="http://c.wanfangdata.com.cn/PeriodicalSubject.aspx?NodeId=B" target="_blank">http://c.wanfangdata.com.cn/PeriodicalSubject.aspx?NodeId=B</a><br />
+                维普：<a href="http://www.cqvip.com/" target="_blank">http://www.cqvip.com/</a>
+                <br />
+                龙源：<a href="http://www.qikan.com.cn" target="_blank">http://www.qikan.com.cn </a>
+            </p>
+        </div>
+    </form>
+
+    <script>
+        $('.toggle-button').on('click', function () {
+            var dom = $(this).parent().prev();
+            dom.toggleClass("expanded");
+            $(this).html(dom.prop('class').indexOf('expanded') > -1 ? '收缩<i class="unexpend"></i>' : '展开<i class="expend"></i>');
+        });
+
+        $('.toggle-button-hx').on('click', function () {
+            var dom = $(this);
+            var ahtml = dom.html();
+            if (ahtml.indexOf('收缩') > -1) {
+                $('.toggle-button-hx').html('展开<i class="expend"></i>')
+                $(".hx-container").attr("style", "");
+            } else {
+                $('.toggle-button-hx').html('收缩<i class="unexpend"></i>')
+                $(".hx-container").attr("style", "height:0; overflow:hidden;");
+            }
+        });
+
+        function mShow(t) {
+            if (t == 2) {
+                $('#hx-a1').removeClass('cur');
+                $('#hx-a2').addClass('cur');
+                $('#hx-container1').addClass('hxnone');
+                $('#hx-container2').removeClass('hxnone');
+            } else {
+                $('#hx-a1').addClass('cur');
+                $('#hx-a2').removeClass('cur');
+                $('#hx-container1').removeClass('hxnone');
+                $('#hx-container2').addClass('hxnone');
+            }
+        }
+    </script>
+
+
+        
+<div id="bottom" style="margin-top: 10px; width: 900px; margin: 0px auto; clear: both;">
+    
+    <!--sengine-->
+    <div id="footer">
+        <ul>
+            <li><a href="/displaynews.aspx?nid=23">关于本站</a></li>
+            <li>|</li>
+            <li><a href="/HelpCenter.aspx">帮助中心</a></li>
+            
+            <li>|</li>
+            <li><a href="/displaynews.aspx?nid=25">欢迎合作</a></li>
+            
+            
+            <li>|</li>
+            <li><a href="/displaynews.aspx?nid=26">版权所有</a></li>
+            <li>|</li>
+            <li><a href="/displaynews.aspx?nid=155">免责声明</a></li>
+            <li>|</li>
+            <li><a href="/puser_disms.aspx?nav=8&senderUid=1606" target="_blank">用户反馈</a></li>
+            <li>|</li>
+            <li><a href="/newslist.aspx?ntypeid=12">期刊知识</a></li>
+            <li>|</li>
+            <li><a href="/oahome.aspx?etype=1">开放阅读</a></li>
+        </ul>
+    </div>
+    <div id="version">
+        <ul>
+            <li>
+                <p>
+	<span style="color:#337FE5;"><a href="http://www.eshukan.com/displaynews.aspx?nid=351"><span style="color:#337FE5;">万维QQ投稿交流群</span></a>&nbsp; &nbsp;</span> <a href="/Volunteer.aspx" target="_blank"><span style="color:#337FE5;">招募志愿者</span></a> 
+</p>
+<p>
+	版权所有&nbsp;<a href="mailto:Copyright@2009-2015">Copyright@2009-2015</a>|&nbsp;<a target="_blank" href="https://beian.miit.gov.cn/"><span style="color:#333333;font-family:微软雅黑, &quot;font-size:14px;background-color:#FFFFFF;">豫ICP备2021036211号</span></a> 
+</p>
+<p>
+	&nbsp;纯自助论文投稿平台&nbsp;&nbsp; &nbsp;E-mail：1121090112@qq.com；eshukan@163.com
+</p>
+<p>
+	<br />
+</p>
+                
+                <script type="text/javascript">
+                    var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+                    document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F3b573c36c9420e79162ace1d7d1011fc' type='text/javascript'%3E%3C/script%3E"));
+                </script>
+                
+            </li>
+        </ul>
+    </div>
+</div>
+<script type="text/javascript" charset="utf-8" src="/js/10095500.js?v=2.2" rel="nofollow"></script>
+    </div>
+</body>
+</html>

@@ -1,0 +1,276 @@
+{
+  "schemaVersion": 1,
+  "description": "METIS unified reliability gate tiers. Tier 1 = PR required (fast & deterministic), Tier 2 = Desktop (real Electron, built output), Tier 3 = Nightly/RC (stress & high-cost), Tier 4 = Release (package/install/trust chain). Checks are commands run from the repo root. 'requires' lists paths that must exist or the check is reported NOT RUN (required checks failing preconditions fail the gate).",
+  "tiers": {
+    "1": "PR required",
+    "2": "Desktop acceptance",
+    "3": "Nightly / RC stress",
+    "4": "Release gate"
+  },
+  "reportPath": "logs/reliability-gate-report.json",
+  "logDir": "logs/reliability-gate",
+  "checks": [
+    {
+      "id": "typecheck",
+      "name": "TypeScript type-check (all projects)",
+      "tiers": [
+        1
+      ],
+      "command": "npm run typecheck",
+      "timeoutMinutes": 10,
+      "required": true
+    },
+    {
+      "id": "lint",
+      "name": "Lint — no regression against baseline (build/lint-baseline.json)",
+      "tiers": [
+        1
+      ],
+      "command": "node scripts/lint-gate.mjs",
+      "timeoutMinutes": 10,
+      "required": true
+    },
+    {
+      "id": "audit",
+      "name": "npm audit — SECURITY ADVISORY REPORT (non-blocking)",
+      "tiers": [
+        1
+      ],
+      "command": "npm audit --omit=dev",
+      "timeoutMinutes": 5,
+      "required": true,
+      "blocking": false
+    },
+    {
+      "id": "host-abi",
+      "name": "better-sqlite3 host ABI check",
+      "tiers": [
+        1
+      ],
+      "command": "node scripts/check-host-abi.cjs",
+      "timeoutMinutes": 2,
+      "required": true
+    },
+    {
+      "id": "vitest-contract-schema",
+      "name": "Critical contract + schema/migration tests",
+      "tiers": [
+        1
+      ],
+      "command": "npx vitest run tests/electron/SessionIpcBoundary.test.ts tests/electron/preload.test.ts tests/electron/ExperimentOwnershipIpc.test.ts tests/engine/MigrationRunner.test.ts tests/engine/Persistence.test.ts",
+      "timeoutMinutes": 15,
+      "required": true
+    },
+    {
+      "id": "vitest-security",
+      "name": "Security test suite",
+      "tiers": [
+        1
+      ],
+      "command": "npx vitest run tests/security",
+      "timeoutMinutes": 15,
+      "required": true
+    },
+    {
+      "id": "vitest-ipc-snapshot",
+      "name": "IPC contract snapshot (handlers / preload invokes / send events / contract versions)",
+      "tiers": [
+        1
+      ],
+      "command": "npx vitest run tests/electron/IpcContractSnapshot.test.ts",
+      "timeoutMinutes": 5,
+      "required": true
+    },
+    {
+      "id": "vitest-update-trust",
+      "name": "Update trust model (channel policy, signature gate, stable fail-safe)",
+      "tiers": [
+        1
+      ],
+      "command": "npx vitest run tests/electron/UpdateChannelPolicy.test.ts tests/electron/AutoUpdaterService.test.ts tests/electron/UpdateCheckerService.test.ts",
+      "timeoutMinutes": 5,
+      "required": true
+    },
+    {
+      "id": "acceptance-layout",
+      "name": "Layout acceptance (surfaces x viewport matrix, screenshots)",
+      "tiers": [
+        2
+      ],
+      "command": "npm run acceptance:layout",
+      "timeoutMinutes": 20,
+      "requires": [
+        "dist-electron/electron/main.js"
+      ],
+      "evidence": [
+        "logs/layout-acceptance-current"
+      ],
+      "required": true
+    },
+    {
+      "id": "acceptance-shutdown-relaunch",
+      "name": "Shutdown/relaunch approval E2E (real Electron)",
+      "tiers": [
+        2
+      ],
+      "command": "npm run acceptance:shutdown-relaunch-approval",
+      "timeoutMinutes": 15,
+      "requires": [
+        "dist-electron/electron/main.js"
+      ],
+      "required": true
+    },
+    {
+      "id": "vitest-scale-perf",
+      "name": "Large DB scale/performance unit gate",
+      "tiers": [
+        3
+      ],
+      "command": "npx vitest run tests/engine/ScalePerformance.test.ts",
+      "timeoutMinutes": 15,
+      "required": true
+    },
+    {
+      "id": "release-chain",
+      "name": "Full Windows release chain (provenance/build/package/SBOM/scan/verify)",
+      "tiers": [
+        4
+      ],
+      "command": "npm run release:windows",
+      "timeoutMinutes": 60,
+      "required": true
+    },
+    {
+      "id": "vitest-provider-matrix",
+      "name": "Provider failure matrix (401/403/404/429/500/502/timeout/SSE/cancel)",
+      "tiers": [
+        1
+      ],
+      "command": "npx vitest run tests/engine/ProviderFailureMatrix.test.ts",
+      "timeoutMinutes": 10,
+      "required": true
+    },
+    {
+      "id": "vitest-context-isolation",
+      "name": "Wire-level Project A/B request isolation + scope binding",
+      "tiers": [
+        1
+      ],
+      "command": "npx vitest run tests/engine/ProviderRequestIsolation.test.ts",
+      "timeoutMinutes": 5,
+      "required": true
+    },
+    {
+      "id": "vitest-schema-gate",
+      "name": "Release schema gate (old DB migrate/reopen, quick_check + FK)",
+      "tiers": [
+        1
+      ],
+      "command": "npx vitest run tests/electron/ReleaseSchemaGate.test.ts",
+      "timeoutMinutes": 5,
+      "required": true
+    },
+    {
+      "id": "vitest-backup-system",
+      "name": "Backup/restore system acceptance (roundtrip + corrupt-backup fail-safe)",
+      "tiers": [
+        1
+      ],
+      "command": "npx vitest run tests/electron/BackupRestoreSystemAcceptance.test.ts",
+      "timeoutMinutes": 5,
+      "required": true
+    },
+    {
+      "id": "vitest-health-diagnostics",
+      "name": "Startup health report + diagnostic bundle privacy gate",
+      "tiers": [
+        1
+      ],
+      "command": "npx vitest run tests/electron/StartupHealthService.test.ts tests/electron/DiagnosticBundlePrivacy.test.ts",
+      "timeoutMinutes": 5,
+      "required": true
+    },
+    {
+      "id": "vitest-mcp-leak",
+      "name": "MCP stdio child-process leak gate (20 cycles + OS census)",
+      "tiers": [
+        2
+      ],
+      "command": "npx vitest run tests/electron/ChildProcessLeakGate.test.ts",
+      "timeoutMinutes": 5,
+      "required": true
+    },
+    {
+      "id": "child-process-leak-gate",
+      "name": "Terminal PTY + GenOffice sidecar leak gate (real cycles, ports, file locks)",
+      "tiers": [
+        2
+      ],
+      "command": "node scripts/child-process-leak-gate.cjs --cycles=20 --focus=terminal,genoffice",
+      "timeoutMinutes": 15,
+      "required": true
+    },
+    {
+      "id": "crash-relaunch-harness",
+      "name": "Crash/relaunch harness (hard kill + relaunch + health assertions)",
+      "tiers": [
+        2
+      ],
+      "command": "node scripts/crash-relaunch-harness.cjs",
+      "timeoutMinutes": 20,
+      "requires": [
+        "dist-electron/electron/main.js"
+      ],
+      "required": true
+    },
+    {
+      "id": "browser-failure-drill",
+      "name": "Network/browser failure isolation (real Electron main process)",
+      "tiers": [
+        3
+      ],
+      "command": "node scripts/browser-failure-drill.cjs",
+      "timeoutMinutes": 10,
+      "required": true,
+      "requires": [
+        "dist-electron/electron/main.js"
+      ]
+    },
+    {
+      "id": "perf-baseline",
+      "name": "Performance baseline regression check (startup, sessions, outcomes)",
+      "tiers": [
+        3
+      ],
+      "command": "node scripts/perf-baseline.mjs --check",
+      "timeoutMinutes": 15,
+      "requires": [
+        "dist-electron/electron/main.js"
+      ],
+      "required": true
+    },
+    {
+      "id": "vitest-conversation-stress",
+      "name": "Conversation stress (fixture-driven volume/stop/scroll)",
+      "tiers": [
+        3
+      ],
+      "command": "npx vitest run tests/conversation",
+      "timeoutMinutes": 20,
+      "required": true
+    },
+    {
+      "id": "install-upgrade-smoke",
+      "name": "Windows NSIS install/upgrade/uninstall smoke on real installers",
+      "tiers": [
+        4
+      ],
+      "command": "node scripts/install-upgrade-smoke.cjs",
+      "timeoutMinutes": 25,
+      "requires": [
+        "release4"
+      ],
+      "required": true
+    }
+  ]
+}
