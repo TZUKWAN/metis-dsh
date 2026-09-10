@@ -1,77 +1,84 @@
 /**
- * 第一条垂直链路集成测试（Phase 14 / 任务清单 §15，Gate D 核心）。
+ * Persistence vertical slice: a real Crossref response enters the same SQLite
+ * transaction as the project's Literature and Evidence records, then survives
+ * a close/reopen cycle. This is not a Cordis loader or Agent E2E test.
  *
- * 链路：真实 Provider API → normalize → Evidence 登记 → literature_save
- * → 项目关联 → 查询回读。
- *
- * 说明：模型自主发现工具与 Web UI 环节需要 API key / 浏览器交互，
- * 此处以直接驱动插件服务的方式验证同一条数据链路；
- * 「模型自主调用工具」的端到端复验待 DEEPSEEK_API_KEY 配置后执行（见 FINAL_ACCEPTANCE_REPORT）。
- *
- * @vitest-environment jsdom
+ * @vitest-environment node
  */
 
-import fs from 'node:fs';
-import path from 'node:path';
-import { describe, expect, it } from 'vitest';
-import { MetisEvidence } from '../../plugins/evidence/src/index.ts';
-import { MetisLiterature } from '../../plugins/literature/src/index.ts';
-import { CrossrefProvider } from '../../plugins/literature-crossref/src/index.js';
-import { OpenAlexProvider } from '../../plugins/literature-openalex/src/index.js';
+import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
+import { afterEach, describe, expect, it } from 'vitest'
+import { MetisDataStore } from '../../shared/data/src/index.ts'
+import { CrossrefProvider } from '../../plugins/literature-crossref/src/index.ts'
+import { OpenAlexProvider } from '../../plugins/literature-openalex/src/index.ts'
+import { ProviderUnavailableError } from '../../plugins/literature/src/domain.ts'
 
-/** PLOS ONE 早期注册 DOI（真实、长期稳定）。 */
-const KNOWN_DOI = '10.1371/journal.pone.0000001';
+const KNOWN_DOI = '10.1371/journal.pone.0000001'
+const temporaryRoots: string[] = []
 
-describe('vertical slice: real provider → evidence → save → project (Gate D)', () => {
-  it('resolves a real DOI via Crossref, registers evidence, saves into project, and reads it back', async () => {
-    const dataFile = path.join(process.cwd(), `.test-vertical-${Date.now()}.json`);
-    const fakeCtx = { reflect: { provide: () => {} } } as unknown as ConstructorParameters<typeof MetisEvidence>[0];
-    const evidence = new MetisEvidence(fakeCtx, dataFile);
+function temporaryDatabasePath(): string {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'metis-literature-vertical-'))
+  temporaryRoots.push(root)
+  return path.join(root, 'metis-data', 'metis.db')
+}
 
-    const provider = new CrossrefProvider();
-    const record = await provider.getByDoi(KNOWN_DOI);
+afterEach(() => {
+  for (const root of temporaryRoots.splice(0)) fs.rmSync(root, { recursive: true, force: true })
+})
 
-    // 真实来源断言：记录存在、DOI 规范一致、标题非空。
-    expect(record).not.toBeNull();
-    expect(record!.doi).toBe(KNOWN_DOI);
-    expect(record!.title.length).toBeGreaterThan(0);
-    expect(record!.source).toBe('crossref');
+describe('Literature/Evidence SQLite persistence vertical slice', () => {
+  it('persists a real Crossref DOI as project literature and evidence across restart', async () => {
+    const provider = new CrossrefProvider()
+    const sourceRecord = await provider.getByDoi(KNOWN_DOI)
 
-    // 科研项目关联（core 服务）。
-    const project = { id: 'rp-vertical', workspaceId: null, createdAt: Date.now(), updatedAt: Date.now() };
-    const research = { updateProject: (patch: object) => ({ ...project, ...patch, updatedAt: Date.now() }) };
+    expect(sourceRecord).not.toBeNull()
+    expect(sourceRecord?.doi).toBe(KNOWN_DOI)
+    expect(sourceRecord?.title.length).toBeGreaterThan(0)
+    expect(sourceRecord?.source).toBe('crossref')
 
-    // literature_save：登记证据 + 保存进项目。
-    const literature = new MetisLiterature(
-      { metisEvidence: evidence, reflect: { provide: () => {} } } as unknown as ConstructorParameters<typeof MetisLiterature>[0],
-      {},
-    );
-    void research;
-    const saved = literature.save([record!], project.id);
-    expect(saved).toHaveLength(1);
-    expect(saved[0]!.projectId).toBe(project.id);
-    expect(saved[0]!.evidenceId).toBeTruthy();
+    const databasePath = temporaryDatabasePath()
+    const first = await MetisDataStore.open(databasePath)
+    const project = first.createProject({ title: 'Crossref persistence verification' }, 'workspace-vertical', 'session-vertical')
 
-    // Evidence 可按 DOI 追溯（规格十四）。
-    const evidenceRecords = evidence.storeService.queryByDoi(KNOWN_DOI);
-    expect(evidenceRecords).toHaveLength(1);
-    expect(evidenceRecords[0]!.source.provider).toBe('crossref');
+    const saved = first.saveLiteratureWithEvidence({
+      record: sourceRecord!,
+      projectId: project.id,
+      createdByTool: 'literature_save',
+    })
 
-    // 项目内可查（重启恢复由持久化 reload 语义覆盖，同 evidence store 测试）。
-    const reloaded = new MetisEvidence(fakeCtx, dataFile);
-    expect(reloaded.storeService.queryByDoi(KNOWN_DOI)).toHaveLength(1);
-    fs.rmSync(dataFile, { force: true });
-  });
+    expect(saved.projectId).toBe(project.id)
+    expect(saved.evidenceId).toBeTruthy()
+    expect(first.listLiterature(project.id)).toHaveLength(1)
+    expect(first.queryEvidence({ doi: KNOWN_DOI })).toHaveLength(1)
+    first.close()
 
-  it('openalex provider remains independent when crossref fails (T15-019)', async () => {
-    // Crossref 用注定失败的 baseURL 模拟（provider 换成 openalex 仍能独立工作）。
-    const openalex = new OpenAlexProvider();
-    const records = await openalex.search({ query: 'generative artificial intelligence knowledge workers', limit: 3 });
-    // 真实 API：结果可能为空（查询词无命中概率低），但调用本身不得抛"伪成功"以外的错误。
-    expect(Array.isArray(records)).toBe(true);
-    for (const record of records) {
-      expect(record.source).toBe('openalex');
-      expect(record.title.length).toBeGreaterThan(0);
+    const reopened = await MetisDataStore.open(databasePath)
+    const restoredLiterature = reopened.listLiterature(project.id)
+    const restoredEvidence = reopened.queryEvidence({ doi: KNOWN_DOI })
+
+    expect(restoredLiterature).toHaveLength(1)
+    expect(restoredLiterature[0]?.id).toBe(saved.id)
+    expect(restoredLiterature[0]?.evidenceId).toBe(saved.evidenceId)
+    expect(restoredEvidence).toHaveLength(1)
+    expect(restoredEvidence[0]?.id).toBe(saved.evidenceId)
+    expect(restoredEvidence[0]?.source.provider).toBe('crossref')
+    reopened.close()
+  }, 40_000)
+
+  it('either returns OpenAlex records or exposes an explicit provider failure', async () => {
+    const openalex = new OpenAlexProvider()
+    try {
+      const records = await openalex.search({ query: 'generative artificial intelligence knowledge workers', limit: 3 })
+      expect(Array.isArray(records)).toBe(true)
+      for (const record of records) {
+        expect(record.source).toBe('openalex')
+        expect(record.title.length).toBeGreaterThan(0)
+      }
+    } catch (error) {
+      expect(error).toBeInstanceOf(ProviderUnavailableError)
+      expect((error as ProviderUnavailableError).provider).toBe('openalex')
     }
-  }, 40_000);
-});
+  }, 40_000)
+})

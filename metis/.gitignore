@@ -1,0 +1,5 @@
+# Local runtime/test residue — never commit.
+.runtime-verify-state.json
+.test-*
+metis-data/
+node_modules/

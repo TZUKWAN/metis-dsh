@@ -20,11 +20,19 @@
     "paths": {
       // 类型来自 DSH 构建产物（pnpm build 已生成 lib/types）。运行期模块解析
       // 由 DSH 加载器在真实安装树完成（与 typecheck 解耦）。
-      "@deepseek-ai/cordis": ["../vendor/cordis/lib/index.js"],
+      "@deepseek-ai/cordis": ["../vendor/cordis/lib/types/index.d.ts"],
       "@deepseek-ai/cordis/*": ["../vendor/cordis/lib/types/*.d.ts"],
-      "@deepseek-ai/dsh-tools": ["../packages/core/tools/lib/index.js"],
+      "@deepseek-ai/dsh-tools": ["../packages/core/tools/lib/types/index.d.ts"],
       "@deepseek-ai/dsh-tools/*": ["../packages/core/tools/lib/types/*.d.ts"],
-      "@deepseek-ai/dsh-util-values": ["../packages/util/values/lib/index.js"],
+      "@deepseek-ai/dsh-util-values": ["../packages/util/values/lib/types/index.d.ts"],
+      "@deepseek-ai/dsh-agent": ["../packages/core/agent/lib/types/index.d.ts"],
+      "@deepseek-ai/dsh-agent/*": ["../packages/core/agent/lib/types/*.d.ts"],
+      "@deepseek-ai/dsh-goal": ["../packages/goal/goal/lib/types/index.d.ts"],
+      "@deepseek-ai/dsh-goal/*": ["../packages/goal/goal/lib/types/*.d.ts"],
+      "@deepseek-ai/dsh-workspace": ["../packages/workspace/workspace/lib/types/index.d.ts"],
+      "@deepseek-ai/dsh-workspace/*": ["../packages/workspace/workspace/lib/types/*.d.ts"],
+      "@deepseek-ai/dsh-system-prompt": ["../packages/core/system-prompt/lib/types/index.d.ts"],
+      "@deepseek-ai/dsh-system-prompt/*": ["../packages/core/system-prompt/lib/types/*.d.ts"],
       "@deepseek-ai/dsh-session": ["../packages/core/session/lib/types/index.d.ts"],
       "@deepseek-ai/dsh-llm": ["../packages/llm/llm/lib/types/index.d.ts"],
       "@deepseek-ai/dsh-brand": ["../packages/util/brand/lib/types/index.d.ts"],

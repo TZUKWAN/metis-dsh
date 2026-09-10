@@ -13,6 +13,10 @@ export const ARTIFACT_TYPES = [
 
 export type ArtifactType = (typeof ARTIFACT_TYPES)[number]
 
+export function isArtifactType(value: string): value is ArtifactType {
+  return (ARTIFACT_TYPES as readonly string[]).includes(value)
+}
+
 export type ArtifactStatus = 'draft' | 'review' | 'final'
 
 export interface ArtifactVersionEntry {

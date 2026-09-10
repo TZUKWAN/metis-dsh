@@ -1,88 +1,167 @@
-/**
- * dsh-metis-scenario — 科研方法学场景插件（Phase 17 / T17）。
- *
- * Scenario = 科研方法学任务模板（声明式）。运行时复用 DSH 原生
- * Goal/Plan/Skills/Workflow；本插件只负责：
- * - 目录（list/get/activate，T17-012~014）；
- * - 激活后经 systemPrompt.section 注入该方法学 instructions（按需注入——
- *   未激活场景零 instructions，R0-025/026）；
- * - 激活时校验 requiredTools 是否已注册（缺失 fail-loud，T17-017）。
- *
- * Known Limitations：scenario_activation 状态第一版为进程内存态
- * （激活语义=当前会话的方法学注入），跨重启持久化列入后续。
- */
-
 import { Service, type Context } from '@deepseek-ai/cordis'
-import { defineTool } from '@deepseek-ai/dsh-tools'
+import { defineTool, type ToolRunContext } from '@deepseek-ai/dsh-tools'
+import type { Agent } from '@deepseek-ai/dsh-agent'
+import type { AssembleContext } from '@deepseek-ai/dsh-system-prompt'
+import type { GoalService } from '@deepseek-ai/dsh-goal'
+import type { JsonValue } from '@deepseek-ai/dsh-util-values'
+import {
+  MetisDataStore,
+  resolveMetisDatabasePath,
+  type ScenarioActivationRecord,
+} from '../../../shared/data/src/index.ts'
+import type { MetisResearch } from '../../core/src/index.ts'
 import { BUILTIN_SCENARIOS, type ScenarioDefinition } from './definitions.ts'
 
-import type { JsonValue } from '@deepseek-ai/dsh-util-values'
+export interface Config {
+  databasePath?: string
+}
 
-/** 领域对象 → 无损 JSON（canonical 输出）。 */
 function toJson(value: unknown): JsonValue {
   return JSON.parse(JSON.stringify(value)) as JsonValue
 }
 
+function sessionIdFor(agent?: Agent): string {
+  if (!agent) throw new Error('Scenario 操作要求真实 DSH Agent Session，不能使用进程级全局状态。')
+  return agent.id
+}
+
+function goalObjective(definition: ScenarioDefinition, projectTitle?: string): string {
+  const topic = projectTitle?.trim() || '当前研究主题'
+  return definition.goalTemplate.replace('{{topic}}', topic)
+}
+
+/**
+ * Scenario only owns the durable association between a DSH session and a
+ * methodology template. Goal lifecycle remains entirely in `ctx.goals`; METIS
+ * never creates a parallel planner or Agent loop.
+ */
 export class MetisScenario extends Service {
-  static inject = ['tools', 'systemPrompt']
+  static inject = ['tools', 'systemPrompt', 'goals', 'metisResearch']
 
   private readonly definitions = new Map<string, ScenarioDefinition>()
-  private activeId: string | null = null
+  private readonly ready: Promise<MetisDataStore>
+  private data: MetisDataStore | undefined
+  private readonly research: MetisResearch
+  private readonly goals: GoalService
 
-  constructor(ctx: Context) {
+  constructor(ctx: Context, config: Config = {}) {
     super(ctx, 'metisScenario')
-    for (const definition of BUILTIN_SCENARIOS) {
-      this.definitions.set(definition.id, definition)
-    }
+    for (const definition of BUILTIN_SCENARIOS) this.definitions.set(definition.id, definition)
+    this.ready = MetisDataStore.open(resolveMetisDatabasePath(config.databasePath)).then((data) => {
+      this.data = data
+      ctx.effect(() => () => data.close(), 'metisScenario.databaseClose')
+      return data
+    })
+    this.research = ctx.metisResearch
+    this.goals = ctx.goals
+    this.registerTools(ctx)
 
-    // 激活场景的方法学经官方 section 机制注入（provider 每次装配评估当前激活态）。
     ctx.systemPrompt.section({
       name: 'metis:scenario-instructions',
       order: 510,
-      text: () => this.activeInstructions(),
+      text: (assembly: AssembleContext) => this.instructionsFor(assembly.agent),
     })
+  }
 
+  async dataStore(): Promise<MetisDataStore> {
+    return await this.ready
+  }
+
+  getDefinition(id: string): ScenarioDefinition | undefined {
+    return this.definitions.get(id)
+  }
+
+  async getActivation(agent?: Agent): Promise<ScenarioActivationRecord | null> {
+    return (await this.dataStore()).getScenarioActivation(sessionIdFor(agent))
+  }
+
+  /** Prompt assembly is synchronous: no data means no instructions, never a guess. */
+  instructionsFor(agent?: Agent): string {
+    if (!agent || !this.data) return ''
+    const activation = this.data.getScenarioActivation(agent.id)
+    return activation ? this.definitions.get(activation.scenarioId)?.instructions ?? '' : ''
+  }
+
+  private requiredToolValidation(definition: ScenarioDefinition, agent?: Agent): { state: 'validated'; missingTools: string[] } | { state: 'runtime'; missingTools: string[] } {
+    if (!agent) return { state: 'runtime', missingTools: [] }
+    const missingTools = definition.requiredTools.filter((tool) => this.ctx.tools.get(tool, agent) === undefined)
+    return { state: 'validated', missingTools }
+  }
+
+  private async activate(definition: ScenarioDefinition, exec: ToolRunContext): Promise<{
+    ok: boolean
+    activeId: string
+    missingTools: string[]
+    validationState: 'validated' | 'runtime'
+    goal: JsonValue | null
+  }> {
+    const validation = this.requiredToolValidation(definition, exec.agent)
+    if (validation.state === 'validated' && validation.missingTools.length > 0) {
+      return { ok: false, activeId: '', missingTools: validation.missingTools, validationState: validation.state, goal: null }
+    }
+
+    const agent = exec.agent
+    if (!agent) {
+      return { ok: false, activeId: '', missingTools: [], validationState: 'runtime', goal: null }
+    }
+    const project = await this.research.requireCurrentProject(agent)
+    const currentGoal = this.goals.get(agent)
+    if (currentGoal && currentGoal.phase !== 'complete') {
+      return {
+        ok: false,
+        activeId: '',
+        missingTools: [],
+        validationState: validation.state,
+        goal: toJson(currentGoal),
+      }
+    }
+    const goal = this.goals.create(agent, { objective: goalObjective(definition, project.title) })
+    const activation = (await this.dataStore()).setScenarioActivation(agent.id, project.id, definition.id)
+    return {
+      ok: true,
+      activeId: activation.scenarioId,
+      missingTools: [],
+      validationState: validation.state,
+      goal: toJson(goal),
+    }
+  }
+
+  private registerTools(ctx: Context): void {
     ctx.tools.register(defineTool({
       name: 'scenario_list',
-      description: '列出全部可用的科研方法学场景（文献综述/实证论文/理论论文/CSSCI 论文/论文审读）。',
+      description: '列出 METIS 可用的科研方法学场景，以及当前 DSH Session 的持久化激活状态。',
       parameters: {},
       output: {
         schema: {
           type: 'object',
           additionalProperties: true,
-          properties: {
-            total: { type: 'integer', description: '场景数量' },
-            activeId: { type: 'string', description: '当前激活的场景 id（无则空）' },
-            scenarios: { type: 'array', items: { type: 'json' }, description: '场景清单' },
-          },
+          properties: { total: { type: 'integer' }, activeId: { type: 'string' }, scenarios: { type: 'array', items: { type: 'json' } } },
         },
         render: (_args, value) => [{ type: 'text', text: JSON.stringify(value) }],
       },
-      execute: () => Promise.resolve({
-        total: this.definitions.size,
-        activeId: this.activeId ?? '',
-        scenarios: [...this.definitions.values()].map((definition) => ({
-          id: definition.id,
-          name: definition.name,
-          description: definition.description,
-        })),
-      }),
+      execute: async (_args, exec: ToolRunContext) => {
+        const activation = exec.agent ? await this.getActivation(exec.agent) : null
+        return {
+          total: this.definitions.size,
+          activeId: activation?.scenarioId ?? '',
+          scenarios: [...this.definitions.values()].map((definition) => toJson({
+            id: definition.id,
+            name: definition.name,
+            description: definition.description,
+          })),
+        }
+      },
     }))
 
     ctx.tools.register(defineTool({
       name: 'scenario_get',
-      description: '读取一个场景的完整定义（方法学指令/必需工具/证据政策/成果契约）。',
-      parameters: {
-        id: { type: 'string', description: '场景 id', required: true },
-      },
+      description: '读取一个场景的完整方法学定义、必需工具、证据政策和成果契约。',
+      parameters: { id: { type: 'string', description: '场景 id', required: true } },
       output: {
         schema: {
           type: 'object',
           additionalProperties: true,
-          properties: {
-            found: { type: 'boolean', description: '是否存在' },
-            definition: { type: 'json', description: '场景定义' },
-          },
+          properties: { found: { type: 'boolean' }, definition: { type: 'json' } },
         },
         render: (_args, value) => [{ type: 'text', text: JSON.stringify(value) }],
       },
@@ -94,80 +173,41 @@ export class MetisScenario extends Service {
 
     ctx.tools.register(defineTool({
       name: 'scenario_activate',
-      description: '激活一个科研方法学场景：校验必需工具后，把方法学指令注入当前会话的系统提示。',
-      parameters: {
-        id: { type: 'string', description: '场景 id', required: true },
-      },
+      description: '为当前 DSH Session 激活持久化科研方法学场景。它验证当前 agent 可见工具，并通过 DSH 原生 Goal 服务创建目标。',
+      parameters: { id: { type: 'string', description: '场景 id', required: true } },
       output: {
         schema: {
           type: 'object',
           additionalProperties: true,
           properties: {
-            ok: { type: 'boolean', description: '是否激活成功' },
-            activeId: { type: 'string', description: '激活的场景 id' },
-            missingTools: { type: 'array', items: { type: 'string' }, description: '缺失的必需工具' },
+            ok: { type: 'boolean' },
+            activeId: { type: 'string' },
+            missingTools: { type: 'array', items: { type: 'string' } },
+            validationState: { type: 'string' },
+            goal: { type: 'json' },
           },
         },
         render: (_args, value) => [{ type: 'text', text: JSON.stringify(value) }],
       },
-      execute: async (args) => {
+      execute: async (args, exec: ToolRunContext) => {
         const definition = this.definitions.get(args.id)
-        if (!definition) return { ok: false, activeId: '', missingTools: [] as string[] }
-        const missingTools = definition.requiredTools.filter((tool) => !this.isToolRegistered(ctx, tool))
-        if (missingTools.length > 0) {
-          // T17-017：必需插件/工具缺失时明确报错，不静默降级。
-          return { ok: false, activeId: '', missingTools }
+        if (!definition) {
+          return { ok: false, activeId: '', missingTools: [], validationState: 'validated', goal: null }
         }
-        this.activeId = definition.id
-        return { ok: true, activeId: definition.id, missingTools: [] }
+        return await this.activate(definition, exec)
       },
     }))
   }
-
-  /** 激活的场景 id；null 表示无激活场景（未激活 → 零 instructions 注入）。 */
-  get activeScenarioId(): string | null {
-    return this.activeId
-  }
-
-  getDefinition(id: string): ScenarioDefinition | undefined {
-    return this.definitions.get(id)
-  }
-
-  /**
-   * 激活场景（服务级入口；工具与调用方共用）：设置 activeId，
-   * section provider 在下次装配时注入该方法学指令。
-   */
-  activate(id: string): { ok: boolean; missingTools: string[] } {
-    const definition = this.definitions.get(id)
-    if (!definition) return { ok: false, missingTools: definition ? [] : [] }
-    // 必需工具的真实可用性由 DSH 工具执行层在调用时暴露（第一版不读注册表）。
-    this.activeId = id
-    return { ok: true, missingTools: [] }
-  }
-
-  /** 当前激活场景的方法学指令（供 section provider 读取）。 */
-  activeInstructions(): string {
-    if (!this.activeId) return ''
-    return this.definitions.get(this.activeId)?.instructions ?? ''
-  }
-
-  /**
-   * 工具注册检查：无法在 Service 内直接读注册表（DSH tools registry
-   * 无公开列举 API），第一版以「scenario_activate 的工具注册检查」委托给
-   * DSH 工具执行层的真实失败路径；此处返回空实现占位。
-   */
-  private isToolRegistered(_ctx: Context, _tool: string): boolean {
-    // Known Limitation：DSH tools registry 无公开列举 API（DEFERRED_DSH_GAPS 候选）。
-    // 场景的必需工具校验在真实执行失败时由 DSH 的工具查找错误自然暴露。
-    return true
-  }
 }
 
-export default function apply(ctx: Context): void {
-  ctx.plugin(MetisScenario)
+export default {
+  name: 'metis-scenario',
+  inject: ['tools', 'systemPrompt', 'goals', 'metisResearch'],
+  apply(ctx: Context, config?: Config): void {
+    ctx.plugin(MetisScenario, config ?? {})
+  },
 }
 
-// 服务声明合并：ctx.metisScenario。
 declare module '@deepseek-ai/cordis' {
   interface Context {
     metisScenario: MetisScenario

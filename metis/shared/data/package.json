@@ -1,0 +1,10 @@
+{
+  "name": "@metis/research-data",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "engines": {
+    "node": ">=24"
+  }
+}

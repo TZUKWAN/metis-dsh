@@ -1,257 +1,253 @@
-/**
- * dsh-metis-literature — Literature 能力核心（Phase 11）。
- *
- * 职责：统一 LiteratureRecord 模型、provider 注册表、面向模型的检索/保存工具。
- * 不绑定具体来源——来源由 literature-crossref / literature-openalex /
- * literature-ncpssd 等 provider 插件提供。
- *
- * Evidence 联动（T11-037 / T10-022）：literature_save 通过 `metisEvidence`
- * 服务显式登记证据（inject 声明依赖），不做全局 hook 拦截。
- */
-
 import { Service, type Context } from '@deepseek-ai/cordis'
-import { defineTool } from '@deepseek-ai/dsh-tools'
-import { LiteratureRegistry } from './registry.ts'
-
+import { defineTool, type ToolRunContext } from '@deepseek-ai/dsh-tools'
 import type { JsonValue } from '@deepseek-ai/dsh-util-values'
-
-/** 领域记录 → 无损 JSON（canonical 输出，显式 JsonValue 形态）。 */
-function toJson(value: unknown): JsonValue {
-  return JSON.parse(JSON.stringify(value)) as JsonValue
-}
+import { MetisDataStore, resolveMetisDatabasePath } from '../../../shared/data/src/index.ts'
+import type { MetisResearch } from '../../core/src/index.ts'
+import { LiteratureRegistry } from './registry.ts'
 import { normalizeDoi, SEARCH_HARD_CAP, type LiteratureRecord } from './domain.ts'
 
-// 领域契约再导出（provider 插件从此处导入，形成 literature ← provider 依赖方向）。
 export { normalizeDoi, ProviderUnavailableError, SEARCH_HARD_CAP } from './domain.ts'
 export type { LiteratureProvider, LiteratureRecord, LiteratureSearchOptions } from './domain.ts'
 
 export interface Config {
-  /** 单次检索默认返回条数。 */
+  /** Single source of truth shared with core/evidence/artifact services. */
+  databasePath?: string
+  /** Maximum default count returned by one provider search. */
   defaultLimit?: number
 }
 
-
-/** evidence 插件的最小桥接口（避免跨插件硬依赖；运行时由 ctx 提供）。 */
-interface EvidenceRegistrationBridge {
-  storeService: {
-    registerObservation(input: {
-      projectId?: string | null
-      sourceType: 'literature'
-      source: { provider: string; sourceId?: string }
-      title: string
-      doi?: string
-      url?: string
-      createdByTool: string
-    }): { record: { id: string }; duplicate: boolean }
-  }
+function toJson(value: unknown): JsonValue {
+  return JSON.parse(JSON.stringify(value)) as JsonValue
 }
 
-export interface MetisLiteratureService {
-  registry: LiteratureRegistry
-  saved: LiteratureRecord[]
-  save(records: LiteratureRecord[], projectId?: string | null): LiteratureRecord[]
-  listSaved(projectId?: string | null): LiteratureRecord[]
+function isLiteratureRecord(value: JsonValue): value is JsonValue & LiteratureRecord {
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) return false
+  const record = value as Record<string, JsonValue>
+  if (typeof record.id !== 'string' || typeof record.title !== 'string' || typeof record.source !== 'string') return false
+  if (!Array.isArray(record.authors) || (typeof record.year !== 'number' && record.year !== null)) return false
+  return record.authors.every((author) =>
+    author !== null
+    && typeof author === 'object'
+    && !Array.isArray(author)
+    && typeof (author as Record<string, JsonValue>).name === 'string')
 }
 
+/**
+ * Literature persistence is deliberately a direct SQLite transaction. It does
+ * not invoke evidence through a cross-plugin cast, which avoids an in-process
+ * dependency and lets Literature/Evidence share one atomic domain boundary.
+ */
 export class MetisLiterature extends Service {
-  readonly registry = new LiteratureRegistry()
-  /** 已保存进项目的文献（Phase 25 迁 SQLite 持久化；当前内存态 + Known Limitations 标注）。 */
-  private readonly savedRecords: LiteratureRecord[] = []
-  private readonly defaultLimit: number
+  static inject = ['tools', 'metisResearch']
 
-  constructor(ctx: Context, config: Config) {
+  readonly registry = new LiteratureRegistry()
+  private readonly defaultLimit: number
+  private readonly ready: Promise<MetisDataStore>
+  private readonly research: MetisResearch
+
+  constructor(ctx: Context, config: Config = {}) {
     super(ctx, 'metisLiterature')
     this.defaultLimit = Math.min(Math.max(config.defaultLimit ?? 10, 1), SEARCH_HARD_CAP)
+    const databasePath = resolveMetisDatabasePath(config.databasePath)
+    this.ready = MetisDataStore.open(databasePath).then((data) => {
+      ctx.effect(() => () => data.close(), 'metisLiterature.databaseClose')
+      return data
+    })
+    this.research = ctx.metisResearch
+    this.registerTools(ctx)
   }
 
-  save(records: LiteratureRecord[], projectId?: string | null): LiteratureRecord[] {
-    const evidence = (this.ctx as unknown as { metisEvidence?: EvidenceRegistrationBridge }).metisEvidence
-    const saved: LiteratureRecord[] = []
-    for (const record of records) {
-      let evidenceId: string | undefined
-      if (evidence) {
-        const registered = evidence.storeService.registerObservation({
-          projectId: projectId ?? null,
-          sourceType: 'literature',
-          source: { provider: record.source, sourceId: record.sourceId },
-          title: record.title,
-          doi: record.doi,
-          url: record.url,
-          createdByTool: 'literature_save',
-        })
-        evidenceId = registered.record.id
-      }
-      const existingIndex = this.savedRecords.findIndex((item) => {
-        const a = normalizeDoi(item.doi)
-        const b = normalizeDoi(record.doi)
-        if (a && b) return a === b
-        return item.source === record.source && item.sourceId === record.sourceId
-      })
-      const merged: LiteratureRecord = {
-        ...record,
-        ...(projectId !== undefined ? { projectId: projectId ?? null } : {}),
-        ...(evidenceId ? { evidenceId } : {}),
-      }
-      if (existingIndex >= 0) this.savedRecords[existingIndex] = merged
-      else this.savedRecords.push(merged)
-      saved.push(merged)
-    }
-    return saved
-  }
-
-  listSaved(projectId?: string | null): LiteratureRecord[] {
-    return projectId === undefined
-      ? [...this.savedRecords]
-      : this.savedRecords.filter((record) => record.projectId === projectId)
+  async dataStore(): Promise<MetisDataStore> {
+    return await this.ready
   }
 
   get defaultLimitValue(): number {
     return this.defaultLimit
   }
-}
 
-export default function apply(ctx: Context, config?: Config): void {
-  const service = new MetisLiterature(ctx, config ?? {})
-  ctx.metisLiterature = service
+  async save(records: readonly LiteratureRecord[], projectId: string): Promise<LiteratureRecord[]> {
+    const store = await this.dataStore()
+    return records.map((record) => store.saveLiteratureWithEvidence({
+      record,
+      projectId,
+      createdByTool: 'literature_save',
+    }))
+  }
 
-  ctx.tools.register(defineTool({
-    name: 'literature_search',
-    description: '在已安装的真实文献来源（Crossref/OpenAlex/NCPSSD 等注册 provider）中检索文献。返回结构化记录（DOI/作者/年份/来源），不包含任何模型臆造的条目。',
-    parameters: {
-      query: { type: 'string', description: '检索词（主题/概念/理论/机制/学者均可）', required: true },
-      limit: { type: 'number', description: `返回条数（1-${SEARCH_HARD_CAP}）` },
-      providers: { type: 'string', description: '逗号分隔的 provider 名过滤（如 crossref,openalex）' },
-    },
-    output: {
-      schema: {
-        type: 'object',
-        additionalProperties: true,
-        properties: {
-          total: { type: 'integer', description: '返回条数' },
-          records: { type: 'array', items: { type: 'json' }, description: '文献记录' },
-          providersUsed: { type: 'array', items: { type: 'string' }, description: '实际使用的 provider' },
-        },
+  async listSaved(projectId: string): Promise<LiteratureRecord[]> {
+    return (await this.dataStore()).listLiterature(projectId)
+  }
+
+  async removeSaved(projectId: string, literatureId: string): Promise<boolean> {
+    return (await this.dataStore()).removeLiterature(projectId, literatureId)
+  }
+
+  private registerTools(ctx: Context): void {
+    ctx.tools.register(defineTool({
+      name: 'literature_search',
+      description: '在已安装的真实文献来源（Crossref/OpenAlex/NCPSSD 等）中检索文献。只返回 provider 给出的结构化记录，不编造条目。',
+      parameters: {
+        query: { type: 'string', description: '检索词（主题、概念、理论、机制或学者）', required: true },
+        limit: { type: 'number', description: `返回条数（1-${SEARCH_HARD_CAP}）` },
+        providers: { type: 'string', description: '逗号分隔的 provider 名，如 crossref,openalex' },
       },
-      render: (_args, value) => [{ type: 'text', text: JSON.stringify(value) }],
-    },
-    execute: async (args) => {
-      const limit = Math.min(Math.max(Math.floor(Number(args.limit ?? service.defaultLimitValue)) || service.defaultLimitValue, 1), SEARCH_HARD_CAP)
-      const filter = typeof args.providers === 'string' && args.providers.trim()
-        ? args.providers.split(',').map((item: string) => item.trim()).filter(Boolean)
-        : undefined
-      const providers = service.registry.resolveProviders(filter)
-      const settled = await Promise.allSettled(
-        providers.map((provider) => provider.search({ query: args.query, limit })),
-      )
-      const records: LiteratureRecord[] = []
-      const failures: string[] = []
-      settled.forEach((outcome, index) => {
-        if (outcome.status === 'fulfilled') records.push(...outcome.value)
-        else failures.push(`${providers[index]?.name ?? 'unknown'}: ${outcome.reason instanceof Error ? outcome.reason.message : String(outcome.reason)}`)
-      })
-      const merged = service.registry.merge(records).slice(0, limit)
-      return {
-        total: merged.length,
-        records: merged.map(toJson),
-        providersUsed: providers.map((provider) => provider.name),
-        ...(failures.length > 0 ? { providerFailures: failures } : {}),
-      }
-    },
-  }))
-
-  ctx.tools.register(defineTool({
-    name: 'literature_save',
-    description: '把文献保存进当前科研项目（并自动登记证据）。保存后可通过 literature_search_project 检索。',
-    parameters: {
-      projectId: { type: 'string', description: '目标科研项目 id（缺省保存为未归属）' },
-      records: { type: 'json', description: '要保存的文献记录数组（通常来自 literature_search 的 records）' },
-    },
-    output: {
-      schema: {
-        type: 'object',
-        additionalProperties: true,
-        properties: {
-          saved: { type: 'integer', description: '保存条数' },
-          records: { type: 'array', items: { type: 'json' }, description: '保存后的记录（含 evidenceId）' },
+      output: {
+        schema: {
+          type: 'object',
+          additionalProperties: true,
+          properties: {
+            total: { type: 'integer' },
+            records: { type: 'array', items: { type: 'json' } },
+            providersUsed: { type: 'array', items: { type: 'string' } },
+            providerFailures: { type: 'array', items: { type: 'string' } },
+          },
         },
+        render: (_args, value) => [{ type: 'text', text: JSON.stringify(value) }],
       },
-      render: (_args, value) => [{ type: 'text', text: JSON.stringify(value) }],
-    },
-    execute: async (args) => {
-      const input = args.records
-      if (!Array.isArray(input)) throw new Error('records 必须是文献记录数组。')
-      const saved = service.save(input as unknown as LiteratureRecord[], args.projectId ?? null)
-      return { saved: saved.length, records: saved.map(toJson) }
-    },
-  }))
-
-  ctx.tools.register(defineTool({
-    name: 'literature_search_project',
-    description: '检索当前科研项目已保存的文献。',
-    parameters: {
-      projectId: { type: 'string', description: '项目 id 过滤（缺省返回全部已保存）' },
-      query: { type: 'string', description: '标题/关键词过滤（包含匹配）' },
-    },
-    output: {
-      schema: {
-        type: 'object',
-        additionalProperties: true,
-        properties: {
-          total: { type: 'integer', description: '命中条数' },
-          records: { type: 'array', items: { type: 'json' }, description: '文献记录' },
-        },
-      },
-      render: (_args, value) => [{ type: 'text', text: JSON.stringify(value) }],
-    },
-    execute: async (args) => {
-      let records = service.listSaved(args.projectId ?? undefined)
-      if (args.query) {
-        const needle = args.query.toLowerCase()
-        records = records.filter((record) =>
-          record.title.toLowerCase().includes(needle)
-          || (record.keywords ?? []).some((keyword) => keyword.toLowerCase().includes(needle)))
-      }
-      return { total: records.length, records: records.map(toJson) }
-    },
-  }))
-
-  ctx.tools.register(defineTool({
-    name: 'literature_get',
-    description: '按 DOI 精确获取文献（走 provider 的权威接口，可用于核验 DOI 真实性）。',
-    parameters: {
-      doi: { type: 'string', description: 'DOI（支持 https://doi.org/ 前缀）', required: true },
-      providers: { type: 'string', description: 'provider 过滤（可选）' },
-    },
-    output: {
-      schema: {
-        type: 'object',
-        additionalProperties: true,
-        properties: {
-          found: { type: 'boolean', description: '是否找到' },
-          record: { type: 'json', description: '文献记录' },
-        },
-      },
-      render: (_args, value) => [{ type: 'text', text: JSON.stringify(value) }],
-    },
-    execute: async (args) => {
-      const doi = normalizeDoi(args.doi)
-      if (!doi) throw new Error('doi 不能为空。')
-      const providers = service.registry.resolveProviders(
-        typeof args.providers === 'string' && args.providers.trim()
+      execute: async (args, exec: ToolRunContext) => {
+        const limit = Math.min(
+          Math.max(Math.floor(Number(args.limit ?? this.defaultLimitValue)) || this.defaultLimitValue, 1),
+          SEARCH_HARD_CAP,
+        )
+        const filter = typeof args.providers === 'string' && args.providers.trim()
           ? args.providers.split(',').map((item: string) => item.trim()).filter(Boolean)
-          : undefined,
-      )
-      for (const provider of providers) {
-        if (!provider.getByDoi) continue
-        const record = await provider.getByDoi(doi)
-        if (record) return { found: true, record: toJson(record) }
-      }
-      return { found: false, record: null }
-    },
-  }))
+          : undefined
+        const providers = this.registry.resolveProviders(filter)
+        const settled = await Promise.allSettled(
+          providers.map((provider) => provider.search({ query: args.query, limit, signal: exec.signal })),
+        )
+        const records: LiteratureRecord[] = []
+        const failures: string[] = []
+        settled.forEach((outcome, index) => {
+          if (outcome.status === 'fulfilled') records.push(...outcome.value)
+          else failures.push(`${providers[index]?.name ?? 'unknown'}: ${outcome.reason instanceof Error ? outcome.reason.message : String(outcome.reason)}`)
+        })
+        const merged = this.registry.merge(records).slice(0, limit)
+        return {
+          total: merged.length,
+          records: merged.map(toJson),
+          providersUsed: providers.map((provider) => provider.name),
+          ...(failures.length > 0 ? { providerFailures: failures } : {}),
+        }
+      },
+    }))
+
+    ctx.tools.register(defineTool({
+      name: 'literature_save',
+      description: '把真实 provider 返回的文献保存到当前 DSH Workspace/Session 已绑定的项目；每条文献与 Evidence 在同一 SQLite 事务中登记。',
+      parameters: {
+        projectId: { type: 'string', description: '可选；只能重复当前 DSH Workspace/Session 的已绑定项目 id' },
+        records: { type: 'json', description: '文献记录数组，通常来自 literature_search', required: true },
+      },
+      output: {
+        schema: {
+          type: 'object',
+          additionalProperties: true,
+          properties: { saved: { type: 'integer' }, records: { type: 'array', items: { type: 'json' } } },
+        },
+        render: (_args, value) => [{ type: 'text', text: JSON.stringify(value) }],
+      },
+      execute: async (args, exec: ToolRunContext) => {
+        if (!Array.isArray(args.records) || !args.records.every(isLiteratureRecord)) {
+          throw new Error('records 必须是由 literature_search 返回的完整文献记录数组。')
+        }
+        const project = await this.research.requireCurrentProject(exec.agent, args.projectId)
+        const saved = await this.save(args.records, project.id)
+        return { saved: saved.length, records: saved.map(toJson) }
+      },
+    }))
+
+    ctx.tools.register(defineTool({
+      name: 'literature_search_project',
+      description: '读取当前 DSH Workspace/Session 已绑定项目中持久化保存的文献；可按标题或关键词过滤。',
+      parameters: {
+        projectId: { type: 'string', description: '可选；只能重复当前 DSH Workspace/Session 的已绑定项目 id' },
+        query: { type: 'string', description: '标题或关键词包含匹配' },
+      },
+      output: {
+        schema: {
+          type: 'object',
+          additionalProperties: true,
+          properties: { total: { type: 'integer' }, records: { type: 'array', items: { type: 'json' } } },
+        },
+        render: (_args, value) => [{ type: 'text', text: JSON.stringify(value) }],
+      },
+      execute: async (args, exec: ToolRunContext) => {
+        const project = await this.research.requireCurrentProject(exec.agent, args.projectId)
+        let records = await this.listSaved(project.id)
+        if (args.query) {
+          const needle = args.query.toLowerCase()
+          records = records.filter((record) =>
+            record.title.toLowerCase().includes(needle)
+            || (record.keywords ?? []).some((keyword) => keyword.toLowerCase().includes(needle)))
+        }
+        return { total: records.length, records: records.map(toJson) }
+      },
+    }))
+
+    ctx.tools.register(defineTool({
+      name: 'literature_remove',
+      description: '仅移除当前项目与某条文献的关联。保留全局题录与 Evidence，避免破坏其他项目的可追溯记录。',
+      parameters: {
+        projectId: { type: 'string', description: '可选；只能重复当前 DSH Workspace/Session 的已绑定项目 id' },
+        literatureId: { type: 'string', description: '项目中已保存的 literature id', required: true },
+      },
+      output: {
+        schema: {
+          type: 'object',
+          additionalProperties: true,
+          properties: { removed: { type: 'boolean' } },
+        },
+        render: (_args, value) => [{ type: 'text', text: JSON.stringify(value) }],
+      },
+      execute: async (args, exec: ToolRunContext) => {
+        const project = await this.research.requireCurrentProject(exec.agent, args.projectId)
+        return { removed: await this.removeSaved(project.id, args.literatureId) }
+      },
+    }))
+
+    ctx.tools.register(defineTool({
+      name: 'literature_get',
+      description: '按 DOI 调用 provider 的权威接口核验题录；该操作不会把网络查询自动误标为已验证结论。',
+      parameters: {
+        doi: { type: 'string', description: 'DOI，支持 https://doi.org/ 前缀', required: true },
+        providers: { type: 'string', description: 'provider 过滤（可选）' },
+      },
+      output: {
+        schema: {
+          type: 'object',
+          additionalProperties: true,
+          properties: { found: { type: 'boolean' }, record: { type: 'json' } },
+        },
+        render: (_args, value) => [{ type: 'text', text: JSON.stringify(value) }],
+      },
+      execute: async (args, exec: ToolRunContext) => {
+        const doi = normalizeDoi(args.doi)
+        if (!doi) throw new Error('doi 不能为空。')
+        const providers = this.registry.resolveProviders(
+          typeof args.providers === 'string' && args.providers.trim()
+            ? args.providers.split(',').map((item: string) => item.trim()).filter(Boolean)
+            : undefined,
+        )
+        for (const provider of providers) {
+          if (!provider.getByDoi) continue
+          const record = await provider.getByDoi(doi, exec.signal)
+          if (record) return { found: true, record: toJson(record) }
+        }
+        return { found: false, record: null }
+      },
+    }))
+  }
 }
 
-// 服务声明合并：ctx.metisLiterature。
+export default {
+  name: 'metis-literature',
+  inject: ['tools', 'metisResearch'],
+  apply(ctx: Context, config?: Config): void {
+    ctx.plugin(MetisLiterature, config ?? {})
+  },
+}
+
 declare module '@deepseek-ai/cordis' {
   interface Context {
     metisLiterature: MetisLiterature
