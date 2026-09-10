@@ -1,90 +1,157 @@
 #!/usr/bin/env node
 /**
- * check-dsh-untouched.mjs（Phase 06 / T6-001~T6-008）
+ * Enforce the DSH = upstream / METIS = metis/** boundary without requiring
+ * an upstream Git object to be present in a fresh clone.
  *
- * 守护不变量：DSH 上游源码零修改。任何 `metis/**` 之外的 tracked 变化
- * （working tree 或 staged）都导致退出码 1 并列出违例路径。
- *
- * 用法：node scripts/check-dsh-untouched.mjs [--baseline <commit>]
- * 基线 commit 读取 metis/DSH_BASELINE.json，可用 --baseline 覆盖。
+ * The checked-in manifest records every upstream path, blob id and Git mode
+ * from the declared official baseline. This checker verifies the current
+ * index, working tree and untracked files against that immutable snapshot.
  */
 
-import { execSync } from 'node:child_process';
-import { readFileSync, existsSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import path from 'node:path';
+import { execFileSync } from 'node:child_process'
+import { existsSync, readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import path from 'node:path'
 
-const metisRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const repoRoot = path.resolve(metisRoot, '..');
+const metisRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
+const repoRoot = path.resolve(metisRoot, '..')
+const manifestPath = path.join(metisRoot, 'UPSTREAM_MANIFEST.json')
+const baselinePath = path.join(metisRoot, 'DSH_BASELINE.json')
 
-function readBaseline(override) {
-  if (override) return override;
-  const file = path.join(metisRoot, 'DSH_BASELINE.json');
-  if (!existsSync(file)) {
-    console.error('[check-dsh-untouched] 缺少 metis/DSH_BASELINE.json——无法确定基线 commit。');
-    process.exit(1);
+const GIT_OUTPUT_MAX_BUFFER = 32 * 1024 * 1024
+
+function git(args, allowFailure = false) {
+  try {
+    return execFileSync('git', args, {
+      cwd: repoRoot,
+      encoding: 'utf8',
+      maxBuffer: GIT_OUTPUT_MAX_BUFFER,
+    })
+  } catch (error) {
+    if (allowFailure) return null
+    const detail = error instanceof Error ? error.message : String(error)
+    throw new Error(`git ${args.join(' ')} failed: ${detail}`)
   }
-  const baseline = JSON.parse(readFileSync(file, 'utf8'));
-  if (!baseline.commit) {
-    console.error('[check-dsh-untouched] DSH_BASELINE.json 缺少 commit 字段。');
-    process.exit(1);
-  }
-  return baseline.commit;
 }
 
-function git(args) {
-  return execSync(`git ${args}`, { cwd: repoRoot, encoding: 'utf8' });
+function isMetisPath(filePath) {
+  return filePath === 'metis' || filePath.startsWith('metis/')
 }
 
-function collectViolations(baselineCommit) {
-  // 只比较 tracked 变化：diff 名字集合（不含 untracked；metis/** 由调用方过滤，
-  // untracked 的新文件不属于"修改上游文件"）。
-  const ranges = [
-    ['working tree', `diff --name-only ${baselineCommit} -- .`],
-    ['staged', `diff --cached --name-only ${baselineCommit} -- .`],
-  ];
-  const violations = [];
-  for (const [scope, command] of ranges) {
-    const output = git(command);
-    for (const line of output.split('\n')) {
-      const file = line.trim();
-      if (!file) continue;
-      // T6-003：metis/** 是 METIS 的唯一开发位置，允许新增/修改。
-      if (file === 'metis' || file.startsWith('metis/')) continue;
-      violations.push({ scope, file });
+function readJson(filePath, label) {
+  if (!existsSync(filePath)) throw new Error(`missing ${label}: ${filePath}`)
+  try {
+    return JSON.parse(readFileSync(filePath, 'utf8'))
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error)
+    throw new Error(`invalid ${label}: ${detail}`)
+  }
+}
+
+function parseIndex() {
+  const raw = execFileSync('git', ['ls-files', '--stage', '-z'], {
+    cwd: repoRoot,
+    encoding: 'buffer',
+    maxBuffer: GIT_OUTPUT_MAX_BUFFER,
+  })
+  const entries = new Map()
+  for (const entry of raw.toString('utf8').split('\0')) {
+    if (!entry) continue
+    const separator = entry.indexOf('\t')
+    if (separator < 0) throw new Error(`unexpected Git index entry: ${entry}`)
+    const [mode, blob, stage] = entry.slice(0, separator).split(' ')
+    const filePath = entry.slice(separator + 1)
+    if (isMetisPath(filePath)) continue
+    if (stage !== '0') throw new Error(`unmerged upstream path: ${filePath}`)
+    entries.set(filePath, { mode, blob })
+  }
+  return entries
+}
+
+function parseManifest(manifest) {
+  if (manifest.schemaVersion !== 1 || !Array.isArray(manifest.entries)) {
+    throw new Error('UPSTREAM_MANIFEST.json must contain schemaVersion 1 and entries[]')
+  }
+  const entries = new Map()
+  for (const entry of manifest.entries) {
+    if (!entry || typeof entry.path !== 'string' || typeof entry.mode !== 'string' || typeof entry.blob !== 'string') {
+      throw new Error('UPSTREAM_MANIFEST.json contains an invalid entry')
+    }
+    if (isMetisPath(entry.path)) throw new Error(`manifest must not contain METIS path: ${entry.path}`)
+    if (entries.has(entry.path)) throw new Error(`manifest contains duplicate path: ${entry.path}`)
+    entries.set(entry.path, { mode: entry.mode, blob: entry.blob })
+  }
+  return entries
+}
+
+function compareIndex(expected, actual) {
+  const violations = []
+  for (const [filePath, expectedEntry] of expected) {
+    const actualEntry = actual.get(filePath)
+    if (!actualEntry) {
+      violations.push(`${filePath}: missing from Git index`)
+      continue
+    }
+    if (actualEntry.mode !== expectedEntry.mode || actualEntry.blob !== expectedEntry.blob) {
+      violations.push(
+        `${filePath}: expected mode/blob ${expectedEntry.mode}/${expectedEntry.blob}, ` +
+        `got ${actualEntry.mode}/${actualEntry.blob}`,
+      )
     }
   }
-  return violations;
+  for (const filePath of actual.keys()) {
+    if (!expected.has(filePath)) violations.push(`${filePath}: not present in upstream manifest`)
+  }
+  return violations
+}
+
+function listUntrackedUpstreamFiles() {
+  const raw = execFileSync('git', ['ls-files', '--others', '--exclude-standard', '-z'], {
+    cwd: repoRoot,
+    encoding: 'buffer',
+    maxBuffer: GIT_OUTPUT_MAX_BUFFER,
+  })
+  return raw.toString('utf8').split('\0').filter((filePath) => filePath && !isMetisPath(filePath))
+}
+
+function hasWorkingTreeChangesOutsideMetis() {
+  const pathspec = ['.', ':(exclude)metis/**']
+  return git(['diff', '--quiet', '--no-ext-diff', '--', ...pathspec], true) === null
 }
 
 function main() {
-  const argv = process.argv.slice(2);
-  const overrideIndex = argv.indexOf('--baseline');
-  const baselineCommit = readBaseline(overrideIndex >= 0 ? argv[overrideIndex + 1] : undefined);
-
-  let violations;
-  try {
-    violations = collectViolations(baselineCommit);
-  } catch (error) {
-    console.error('[check-dsh-untouched] git 命令失败：', error instanceof Error ? error.message : error);
-    process.exit(1);
+  const baseline = readJson(baselinePath, 'DSH_BASELINE.json')
+  const manifest = readJson(manifestPath, 'UPSTREAM_MANIFEST.json')
+  if (!baseline.commit || manifest.commit !== baseline.commit) {
+    throw new Error('baseline commit and manifest commit do not match')
   }
 
-  if (violations.length === 0) {
-    console.log(`[check-dsh-untouched] OK — DSH 上游自基线 ${baselineCommit} 起零修改（仅 metis/** 变动）。`);
-    process.exit(0);
+  const expected = parseManifest(manifest)
+  const actual = parseIndex()
+  const violations = compareIndex(expected, actual)
+  for (const filePath of listUntrackedUpstreamFiles()) {
+    violations.push(`${filePath}: untracked path outside metis/**`)
+  }
+  if (hasWorkingTreeChangesOutsideMetis()) {
+    violations.push('working tree contains non-index upstream changes outside metis/**')
   }
 
-  console.error(`[check-dsh-untouched] 违例：检测到 ${violations.length} 处 metis/** 之外的上游修改（基线 ${baselineCommit}）：`);
-  const seen = new Set();
-  for (const { scope, file } of violations) {
-    const entry = `${file}  [${scope}]`;
-    if (!seen.has(entry)) {
-      seen.add(entry);
-      console.error(`  ${entry}`);
-    }
+  if (violations.length > 0) {
+    console.error(`[check-dsh-untouched] FAILED: ${violations.length} upstream-integrity violation(s).`)
+    for (const violation of violations) console.error(`  - ${violation}`)
+    process.exitCode = 1
+    return
   }
-  process.exit(1);
+
+  console.log(
+    `[check-dsh-untouched] OK: ${expected.size} upstream paths match ` +
+    `manifest commit ${manifest.commit} (content + Git mode + worktree).`,
+  )
 }
 
-main();
+try {
+  main()
+} catch (error) {
+  console.error(`[check-dsh-untouched] FAILED: ${error instanceof Error ? error.message : String(error)}`)
+  process.exitCode = 1
+}
