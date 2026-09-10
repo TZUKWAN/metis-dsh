@@ -12,7 +12,9 @@
     "test:integration": "vitest run tests/integration",
     "lint": "eslint plugins shared tests --ext .ts",
     "pack": "pnpm -r --if-present run pack",
-    "check:dsh-untouched": "node scripts/check-dsh-untouched.mjs"
+    "check:dsh-untouched": "node scripts/check-dsh-untouched.mjs",
+    "build:plugins": "node scripts/build-plugins.mjs",
+    "pack:plugins": "node scripts/pack-plugins.mjs"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",

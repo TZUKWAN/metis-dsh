@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-10T16:59:08.405Z",
+  "gitHead": "8c8b23bcccdfd01f8b4eef8562fcbccdcd14afcb",
+  "upstreamGuard": "PASS",
+  "checks": [
+    {
+      "check": "upstream untouched guard",
+      "command": "node metis/scripts/check-dsh-untouched.mjs",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationMs": 991,
+      "evidenceTail": "[check-dsh-untouched] OK: 9080 upstream paths match manifest commit d347e703908d0406b7a7ef80e3a0e594d86b2215 (content + Git mode + worktree)."
+    },
+    {
+      "check": "typecheck against real DSH declarations",
+      "command": "pnpm --dir metis exec tsc -p tsconfig.json --noEmit",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationMs": 3030,
+      "evidenceTail": ""
+    },
+    {
+      "check": "unit + integration suite",
+      "command": "pnpm --dir metis exec vitest run tests",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationMs": 5037,
+      "evidenceTail": " Test Files  10 passed (10)\n      Tests  41 passed (41)\n   Start at  00:59:13\n   Duration  3.86s (transform 1.60s, setup 0ms, import 2.35s, tests 5.95s, environment 3ms)"
+    },
+    {
+      "check": "build plugin bundles",
+      "command": "pnpm --dir metis run build:plugins",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationMs": 774,
+      "evidenceTail": "> metis-research-plugins@0.1.0 build:plugins D:\\LATEXTEST\\METIS4DSH\\deepseek-harness\\metis\n> node scripts/build-plugins.mjs\n\n[build-plugins] artifact -> dist/index.js\n[build-plugins] core -> dist/index.js\n[build-plugins] evidence -> dist/index.js\n[build-plugins] funding -> dist/index.js\n[build-plugins] literature -> dist/index.js\n[build-plugins] literature-crossref -> dist/index.js\n[build-plugins] literature-ncpssd -> dist/index.js\n[build-plugins] literature-openalex -> dist/index.js\n[build-plugins] scenario -> dist/index.js\n[build-plugins] submission -> dist/index.js\n[build-plugins] 10 plugins built"
+    },
+    {
+      "check": "pack plugin tarballs",
+      "command": "pnpm --dir metis run pack:plugins",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationMs": 5031,
+      "evidenceTail": "> metis-research-plugins@0.1.0 pack:plugins D:\\LATEXTEST\\METIS4DSH\\deepseek-harness\\metis\n> node scripts/pack-plugins.mjs\n\n📦  dsh-metis-core@0.1.0\nTarball Contents\ncordis.patch.yml\ndist/index.js\npackage.json\nTarball Details\nD:\\LATEXTEST\\METIS4DSH\\deepseek-harness\\metis\\dist-tarballs\\dsh-metis-core-0.1.0.tgz\n📦  dsh-metis-evidence@0.1.0\nTarball Contents\ncordis.patch.yml\ndist/index.js\npackage.json\nTarball Details\nD:\\LATEXTEST\\METIS4DSH\\deepseek-harness\\metis\\dist-tarballs\\dsh-metis-evidence-0.1.0.tgz\n📦  dsh-metis-literature@0.1.0\nTarball Contents\ncordis.patch.yml\ndist/index.js\npackage.json\nTarball Details\nD:\\LATEXTEST\\METIS4DSH\\deepseek-harness\\metis\\dist-tarballs\\dsh-metis-literature-0.1.0.tgz\n📦  dsh-metis-scenario@0.1.0\nTarball Contents\ncordis.patch.yml\ndist/index.js\npackage.json\nTarball Details\nD:\\LATEXTEST\\METIS4DSH\\deepseek-harness\\metis\\dist-tarballs\\dsh-metis-scenario-0.1.0.tgz\n📦  dsh-metis-artifact@0.1.0\nTarball Contents\ncordis.patch.yml\ndist/index.js\npackage.json\nTarball Details\nD:\\LATEXTEST\\METIS4DSH\\deepseek-harness\\metis\\dist-tarballs\\dsh-metis-artifact-0.1.0.tgz\n📦  dsh-metis-funding@0.1.0\nTarball Contents\ncordis.patch.yml\ndist/index.js\npackage.json\nTarball Details\nD:\\LATEXTEST\\METIS4DSH\\deepseek-harness\\metis\\dist-tarballs\\dsh-metis-funding-0.1.0.tgz\n📦  dsh-metis-submission@0.1.0\nTarball Contents\ncordis.patch.yml\ndist/index.js\npackage.json\nTarball Details\nD:\\LATEXTEST\\METIS4DSH\\deepseek-harness\\metis\\dist-tarballs\\dsh-metis-submission-0.1.0.tgz\n📦  dsh-metis-literature-crossref@0.1.0\nTarball Contents\ncordis.patch.yml\ndist/index.js\npackage.json\nTarball Details\nD:\\LATEXTEST\\METIS4DSH\\deepseek-harness\\metis\\dist-tarballs\\dsh-metis-literature-crossref-0.1.0.tgz\n📦  dsh-metis-literature-openalex@0.1.0\nTarball Contents\ncordis.patch.yml\ndist/index.js\npackage.json\nTarball Details\nD:\\LATEXTEST\\METIS4DSH\\deepseek-harness\\metis\\dist-tarballs\\dsh-metis-literature-openalex-0.1.0.tgz\n📦  dsh-metis-literature-ncpssd@0.1.0\nTarball Contents\ncordis.patch.yml\ndist/index.js\npackage.json\nTarball Details\nD:\\LATEXTEST\\METIS4DSH\\deepseek-harness\\metis\\dist-tarballs\\dsh-metis-literature-ncpssd-0.1.0.tgz\n[pack-plugins] 10 tarballs in D:\\LATEXTEST\\METIS4DSH\\deepseek-harness\\metis\\dist-tarballs"
+    },
+    {
+      "check": "runtime verification: setup (real loader, live agent, real tools)",
+      "command": "node --import tsx/esm metis/scripts/verify-dsh-runtime.ts setup C:\\Users\\lauze\\AppData\\Local\\Temp\\metis-status-1789059563432.json",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationMs": 4189,
+      "evidenceTail": "PASS 01 service mounted: metisResearch\n  PASS 02 service mounted: metisEvidence\n  PASS 03 service mounted: metisLiterature\n  PASS 04 service mounted: metisScenario\n  PASS 05 service mounted: metisArtifact\n  PASS 06 tool registered: research_project_get\n  PASS 07 tool registered: research_project_update\n  PASS 08 tool registered: literature_search\n  PASS 09 tool registered: literature_save\n  PASS 10 tool registered: literature_search_project\n  PASS 11 tool registered: literature_remove\n  PASS 12 tool registered: literature_get\n  PASS 13 tool registered: evidence_query\n  PASS 14 tool registered: evidence_claim_create\n  PASS 15 tool registered: evidence_claim_link\n  PASS 16 tool registered: scenario_list\n  PASS 17 tool registered: scenario_get\n  PASS 18 tool registered: scenario_activate\n  PASS 19 tool registered: artifact_register\n  PASS 20 tool registered: artifact_list\n  PASS 21 tool registered: artifact_get\n  PASS 22 tool registered: artifact_version\n  PASS 23 tool registered: artifact_update_metadata\n  PASS 24 research_project_update creates bound project\n  PASS 25 literature_save persists with evidence id\n  PASS 26 evidence_query finds the saved literature evidence\n  PASS 27 artifact_register registers a real workspace file\n[verify-dsh-runtime] tool failure detail: {\n  \"isError\": true,\n  \"error\": {\n    \"message\": \"Artifact 文件必须位于当前 DSH Workspace 内，不能登记 workspace 根目录或外部路径。\"\n  },\n  \"content\": [\n    {\n      \"type\": \"text\",\n      \"text\": \"Error: Artifact 文件必须位于当前 DSH Workspace 内，不能登记 workspace 根目录或外部路径。\"\n    }\n  ]\n}\n  PASS 28 artifact_register rejects workspace traversal\n  PASS 29 scenario_activate persists and arms a DSH Goal\n  PASS 30 ctx.goals reports the scenario objective\n  PASS 31 scenario_activate fails loud on missing ncpssd_search\n\n[verify-dsh-runtime] setup: all checks passed"
+    },
+    {
+      "check": "runtime verification: verify (fresh process restart recovery)",
+      "command": "node --import tsx/esm metis/scripts/verify-dsh-runtime.ts verify C:\\Users\\lauze\\AppData\\Local\\Temp\\metis-status-1789059563432.json",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationMs": 4239,
+      "evidenceTail": "PASS 01 project survives process restart\n  PASS 02 literature survives restart with evidence link\n  PASS 03 evidence survives restart\n  PASS 04 artifact survives restart with versions and evidence link\n  PASS 05 scenario activation survives restart for the original session\n  PASS 06 new session in the same workspace resolves the persisted project\n  PASS 07 literature_search_project reads persisted literature\n  PASS 08 scenario activation is session-scoped (new session starts inactive)\n\n[verify-dsh-runtime] verify: all checks passed"
+    },
+    {
+      "check": "distribution gate (tarball clean-install into fresh profile + real boot)",
+      "command": "node --import tsx/esm metis/scripts/verify-dsh-dist.ts metis\\dist-tarballs\\dsh-metis-artifact-0.1.0.tgz metis\\dist-tarballs\\dsh-metis-core-0.1.0.tgz metis\\dist-tarballs\\dsh-metis-evidence-0.1.0.tgz metis\\dist-tarballs\\dsh-metis-funding-0.1.0.tgz metis\\dist-tarballs\\dsh-metis-literature-0.1.0.tgz metis\\dist-tarballs\\dsh-metis-literature-crossref-0.1.0.tgz metis\\dist-tarballs\\dsh-metis-literature-ncpssd-0.1.0.tgz metis\\dist-tarballs\\dsh-metis-literature-openalex-0.1.0.tgz metis\\dist-tarballs\\dsh-metis-scenario-0.1.0.tgz metis\\dist-tarballs\\dsh-metis-submission-0.1.0.tgz",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationMs": 5108,
+      "evidenceTail": "[verify-dsh-dist] installing 10 tarball(s) via dsh plugin add\n[verify-dsh-dist] profile bundles: @deepseek-ai/dsh-base, dsh-metis-artifact, dsh-metis-core, dsh-metis-evidence, dsh-metis-funding, dsh-metis-literature, dsh-metis-literature-crossref, dsh-metis-literature-ncpssd, dsh-metis-literature-openalex, dsh-metis-scenario, dsh-metis-submission\n  PASS 01 profile carries dsh-base and the ten METIS bundles\n  PASS 02 service mounted: metisResearch\n  PASS 03 service mounted: metisEvidence\n  PASS 04 service mounted: metisLiterature\n  PASS 05 service mounted: metisScenario\n  PASS 06 service mounted: metisArtifact\n  PASS 07 tool registered: research_project_get\n  PASS 08 tool registered: research_project_update\n  PASS 09 tool registered: literature_search\n  PASS 10 tool registered: literature_save\n  PASS 11 tool registered: literature_search_project\n  PASS 12 tool registered: literature_remove\n  PASS 13 tool registered: literature_get\n  PASS 14 tool registered: evidence_query\n  PASS 15 tool registered: evidence_claim_create\n  PASS 16 tool registered: evidence_claim_link\n  PASS 17 tool registered: scenario_list\n  PASS 18 tool registered: scenario_get\n  PASS 19 tool registered: scenario_activate\n  PASS 20 tool registered: artifact_register\n  PASS 21 tool registered: artifact_list\n  PASS 22 tool registered: artifact_get\n  PASS 23 tool registered: artifact_version\n  PASS 24 tool registered: artifact_update_metadata\n  PASS 25 tool registered: funding_template_parse\n  PASS 26 tool registered: funding_template_requirements\n  PASS 27 tool registered: funding_template_check\n  PASS 28 tool registered: funding_template_diff\n  PASS 29 tool registered: journal_search\n  PASS 30 tool registered: journal_targeting_match\n  PASS 31 literature providers registered from dist bundles\n  PASS 32 dist plugin executes through the real tool pipeline\n\n[verify-dsh-dist] all 32 checks passed"
+    },
+    {
+      "check": "fresh-clone upstream guard (git clone + guard in a new worktree)",
+      "command": "git clone . <tmp> && node metis/scripts/check-dsh-untouched.mjs",
+      "status": "PASS",
+      "evidenceTail": "[check-dsh-untouched] OK: 9080 upstream paths match manifest commit d347e703908d0406b7a7ef80e3a0e594d86b2215 (content + Git mode + worktree)."
+    }
+  ],
+  "artifacts": {
+    "pluginBundles": [
+      "plugins\\artifact\\dist\\index.js",
+      "plugins\\core\\dist\\index.js",
+      "plugins\\evidence\\dist\\index.js",
+      "plugins\\funding\\dist\\index.js",
+      "plugins\\literature\\dist\\index.js",
+      "plugins\\literature-crossref\\dist\\index.js",
+      "plugins\\literature-ncpssd\\dist\\index.js",
+      "plugins\\literature-openalex\\dist\\index.js",
+      "plugins\\scenario\\dist\\index.js",
+      "plugins\\submission\\dist\\index.js"
+    ],
+    "tarballs": [
+      "dsh-metis-artifact-0.1.0.tgz",
+      "dsh-metis-core-0.1.0.tgz",
+      "dsh-metis-evidence-0.1.0.tgz",
+      "dsh-metis-funding-0.1.0.tgz",
+      "dsh-metis-literature-0.1.0.tgz",
+      "dsh-metis-literature-crossref-0.1.0.tgz",
+      "dsh-metis-literature-ncpssd-0.1.0.tgz",
+      "dsh-metis-literature-openalex-0.1.0.tgz",
+      "dsh-metis-scenario-0.1.0.tgz",
+      "dsh-metis-submission-0.1.0.tgz"
+    ],
+    "sharedDataStore": true
+  },
+  "externalBlockers": [],
+  "knownIncomplete": [
+    "funding plugin internal registry still uses a JSON file (migration to MetisDataStore pending)",
+    "submission has no persisted lifecycle state yet",
+    "Real Agent E2E (model-driven) is blocked externally until DEEPSEEK_API_KEY is configured",
+    "public GitHub remote has not received the local upstream-ancestry repair (history rewrite needs owner confirmation)"
+  ],
+  "summary": {
+    "totalChecks": 9,
+    "passed": 9,
+    "failed": 0,
+    "skipped": 0,
+    "verdict": "PASS"
+  }
+}

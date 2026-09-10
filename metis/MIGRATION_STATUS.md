@@ -1,3 +1,7 @@
+> **历史材料**：本文件是分阶段迁移日志，其中「已完成」等表述反映写作时点的局部状态，
+> 不代表当前架构（领域状态已迁移至 SQLite，验证体系见 docs/ARCHITECTURE.md）。
+> 当前交付状态以 ENGINEERING_STATUS.json 为准。
+
 # MIGRATION_STATUS
 
 ```text

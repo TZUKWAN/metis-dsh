@@ -33,9 +33,12 @@ export interface Config {
 }
 
 export class MetisSubmission extends Service {
+  static inject = ['tools']
+
   constructor(ctx: Context, config?: Config) {
     super(ctx, 'metisSubmission')
     void config
+    registerTools(ctx, this)
   }
 
   /**
@@ -56,10 +59,15 @@ export class MetisSubmission extends Service {
   }
 }
 
-export default function apply(ctx: Context, config?: Config): void {
-  const service = new MetisSubmission(ctx, config)
-  ctx.metisSubmission = service
+export default {
+  name: 'metis-submission',
+  inject: ['tools'],
+  apply(ctx: Context, config?: Config): void {
+    ctx.plugin(MetisSubmission, config ?? {})
+  },
+}
 
+function registerTools(ctx: Context, service: MetisSubmission): void {
   ctx.tools.register(defineTool({
     name: 'journal_search',
     description: '在真实期刊目录（LetPub）中按名称/主题检索期刊。返回结构化条目；指标类信息只透出来源字段，不用模型记忆补充。',
@@ -196,8 +204,3 @@ function toJson(value: unknown): JsonValue {
 }
 
 // 服务声明合并：ctx.metisSubmission。
-declare module '@deepseek-ai/cordis' {
-  interface Context {
-    metisSubmission: MetisSubmission
-  }
-}

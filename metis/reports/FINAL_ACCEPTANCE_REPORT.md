@@ -1,3 +1,7 @@
+> **历史材料**：本报告含早期验收口径，其中部分「已验证」声明（如基于 fakeCtx 的集成、
+> JSON 文件持久化）已被后续真实 Loader/Runtime/分发验证取代。当前状态以
+> ENGINEERING_STATUS.json 与 docs/ARCHITECTURE.md 为准。
+
 # FINAL ACCEPTANCE REPORT — METIS4DSH 全量验收（第一版）
 
 > 验收时间：2026-09-10。DSH 基线：`d347e70`（master）。

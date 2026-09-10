@@ -68,3 +68,11 @@ export class NcpssdProvider implements LiteratureProvider {
     return records
   }
 }
+
+export default {
+  name: 'metis-literature-ncpssd',
+  inject: ['metisLiterature'],
+  apply(ctx: import('@deepseek-ai/cordis').Context): void {
+    ctx.metisLiterature.registry.registerProvider(new NcpssdProvider())
+  },
+}

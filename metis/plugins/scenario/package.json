@@ -3,10 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "main": "./src/index.ts",
+  "main": "./dist/index.js",
   "files": [
-    "./src/index.ts",
-    "./src/definitions.ts",
+    "./dist/index.js",
     "./cordis.patch.yml"
   ],
   "dsh": {
@@ -15,5 +14,8 @@
     }
   },
   "peerDependencies": {},
-  "devDependencies": {}
+  "devDependencies": {},
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --platform=node --format=esm --target=node24 --outfile=dist/index.js --sourcemap=external --legal-comments=none --external:@deepseek-ai/* --external:dsh-metis-literature --external:zod --external:node:*"
+  }
 }

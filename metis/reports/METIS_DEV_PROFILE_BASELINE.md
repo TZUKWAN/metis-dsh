@@ -1,3 +1,7 @@
+> **历史材料**：本报告含早期验收口径，其中部分「已验证」声明（如基于 fakeCtx 的集成、
+> JSON 文件持久化）已被后续真实 Loader/Runtime/分发验证取代。当前状态以
+> ENGINEERING_STATUS.json 与 docs/ARCHITECTURE.md 为准。
+
 # METIS-DEV PROFILE BASELINE（Phase 07 / T7-007）
 
 > 生成：2026-09-10。对应 DSH commit `d347e70`（master）。

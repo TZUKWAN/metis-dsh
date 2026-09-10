@@ -3,12 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "main": "./src/index.ts",
+  "main": "./dist/index.js",
   "files": [
-    "./src/index.ts",
-    "./src/journal-catalog.ts",
-    "./src/journal-targeting.ts",
-    "./src/submission-contract.ts",
+    "./dist/index.js",
     "./cordis.patch.yml"
   ],
   "dsh": {
@@ -23,5 +20,8 @@
   "devDependencies": {
     "@deepseek-ai/cordis": "*",
     "@deepseek-ai/dsh-tools": "*"
+  },
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --platform=node --format=esm --target=node24 --outfile=dist/index.js --sourcemap=external --legal-comments=none --external:@deepseek-ai/* --external:dsh-metis-literature --external:zod --external:node:*"
   }
 }

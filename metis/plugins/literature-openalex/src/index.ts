@@ -114,3 +114,11 @@ export class OpenAlexProvider implements LiteratureProvider {
     }
   }
 }
+
+export default {
+  name: 'metis-literature-openalex',
+  inject: ['metisLiterature'],
+  apply(ctx: import('@deepseek-ai/cordis').Context): void {
+    ctx.metisLiterature.registry.registerProvider(new OpenAlexProvider())
+  },
+}

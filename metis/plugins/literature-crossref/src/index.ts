@@ -142,3 +142,11 @@ export class CrossrefProvider implements LiteratureProvider {
     }
   }
 }
+
+export default {
+  name: 'metis-literature-crossref',
+  inject: ['metisLiterature'],
+  apply(ctx: import('@deepseek-ai/cordis').Context): void {
+    ctx.metisLiterature.registry.registerProvider(new CrossrefProvider())
+  },
+}

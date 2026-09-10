@@ -15,18 +15,17 @@ import { createFundingTools } from './tools.ts'
 export { createFundingTools, MetisFunding } from './tools.ts'
 export type { Config, RawToolDefinition } from './tools.ts'
 
-export const name = 'metis-funding'
-
-export const inject = ['tools']
-
-export function apply(ctx: Context): void {
-  for (const tool of createFundingTools(ctx?.metisDataFile)) {
-    ctx.tools.register(tool)
-  }
+export interface PluginConfig {
+  /** 解析结果登记库（JSON）位置，默认 metis-data/funding-templates.json。 */
+  dataFile?: string
 }
 
-declare module '@deepseek-ai/cordis' {
-  interface Context {
-    metisDataFile?: string
-  }
+export default {
+  name: 'metis-funding',
+  inject: ['tools'],
+  apply(ctx: Context, config?: PluginConfig): void {
+    for (const tool of createFundingTools(config?.dataFile)) {
+      ctx.tools.register(tool)
+    }
+  },
 }

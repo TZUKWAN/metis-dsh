@@ -3,3 +3,7 @@
 .test-*
 metis-data/
 node_modules/
+
+# Build outputs (reproducible via pnpm run build:plugins / pack:plugins)
+dist/
+dist-tarballs/
