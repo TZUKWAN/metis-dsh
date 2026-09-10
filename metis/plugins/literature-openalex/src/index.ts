@@ -10,7 +10,7 @@ import {
   type LiteratureProvider,
   type LiteratureRecord,
   type LiteratureSearchOptions,
-} from 'dsh-metis-literature'
+} from '../../literature/src/domain.ts'
 
 const BASE_URL = 'https://api.openalex.org/works'
 const DEFAULT_TIMEOUT_MS = 20_000

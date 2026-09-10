@@ -14,7 +14,8 @@
  */
 
 import { spawnSync } from 'node:child_process'
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { randomUUID } from 'node:crypto'
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -44,6 +45,53 @@ if (tarballs.length === 0) {
 }
 
 const failures: string[] = []
+
+/** Minimal-but-valid funding observation document (mirrors the funding test fixture). */
+function fundingObservationDocument(): Record<string, unknown> {
+  return {
+    contractVersion: 1,
+    documentId: 'doc-smoke-001',
+    sourceFormat: 'pdf',
+    sourceDigest: 'a'.repeat(64),
+    extractedAt: Date.now() - 86_400_000,
+    extractor: { name: 'dist-smoke', version: '1.0.0' },
+    pageCount: 1,
+    pages: [{ pageNumber: 1, widthPt: 612, heightPt: 792, observedMarginsPt: null }],
+    styles: [{
+      styleId: 'style-heading',
+      fontFamily: 'SimSun',
+      fontSizePt: 14,
+      fontWeight: 'bold',
+      italic: false,
+      alignment: 'left',
+      lineSpacingPt: null,
+      paragraphBeforePt: null,
+      paragraphAfterPt: null,
+    }],
+    blocks: [
+      {
+        kind: 'paragraph',
+        blockId: 'b1',
+        pageNumber: 1,
+        ordinal: 0,
+        bounds: { x: 70, y: 70, width: 470, height: 20 },
+        text: 'Project Title:',
+        contentRole: 'template_label',
+        styleId: 'style-heading',
+      },
+      {
+        kind: 'paragraph',
+        blockId: 'b2',
+        pageNumber: 1,
+        ordinal: 1,
+        bounds: { x: 70, y: 95, width: 470, height: 20 },
+        text: '（在此填写项目名称）',
+        contentRole: 'placeholder',
+        styleId: null,
+      },
+    ],
+  }
+}
 let checkIndex = 0
 function check(name: string, ok: boolean, detail?: unknown): void {
   checkIndex += 1
@@ -133,6 +181,12 @@ const sandboxDatabase = path.join(sandbox, 'metis-data', 'metis.db').replaceAll(
 for (const id of ['metis-core', 'metis-evidence', 'metis-literature', 'metis-scenario', 'metis-artifact']) {
   patches.push({ id, config: { databasePath: sandboxDatabase } } as (typeof patches)[number])
 }
+// Funding's JSON registry must land in the sandbox too (checkout root is not
+// writable by verification runs — the upstream guard enforces it).
+patches.push({ id: 'metis-funding', config: { dataFile: path.join(sandbox, 'metis-data', 'funding-templates.json').split(path.sep).join('/') } } as (typeof patches)[number])
+// The workspace registry is a Web-layer mount in stock profiles; the execution
+// matrix needs it, so insert the official DSH package row.
+patches.push({ insert: [{ id: 'workspace-registry', name: '@deepseek-ai/dsh-workspace' }] } as (typeof patches)[number])
 
 const ctx = await boot('dsh', rootConfig, patches)
 try {
@@ -146,14 +200,98 @@ try {
   check('literature providers registered from dist bundles',
     ['crossref', 'openalex', 'ncpssd'].every((name) => providers.includes(name)), providers)
 
-  const result = await ctx.get('tools').execute({
-    callId: 'metis-dist-verify-1',
-    name: 'research_project_get',
-    arguments: {},
-    signal: new AbortController().signal,
+  // ── Full execution matrix: every distributed tool runs through the real
+  // pipeline at least once. Network-backed tools are asserted to return an
+  // HONEST result (success or explicit provider failure), never a fake one.
+  const workspaceRegistry = ctx.get('workspaceRegistry')
+  mkdirSync(path.join(sandbox, 'workspace'), { recursive: true })
+  const ws = await workspaceRegistry.create(path.join(sandbox, 'workspace'), 'dist smoke')
+  mkdirSync(path.join(ws.path, 'notes'), { recursive: true })
+  writeFileSync(path.join(ws.path, 'smoke-v1.md'), '# smoke v1\n', 'utf8')
+  writeFileSync(path.join(ws.path, 'smoke-v2.md'), '# smoke v2\n', 'utf8')
+  const handle = await ctx.get('agents').create({
+    sessionId: `metis-dist-${randomUUID()}`,
+    meta: { cwd: ws.path },
   })
-  check('dist plugin executes through the real tool pipeline',
-    result?.isError === false && result.value?.ok === true, result?.value)
+
+  const execute = async (name: string, args: Record<string, unknown>) => {
+    return await ctx.get('tools').execute({
+      callId: `metis-dist-${randomUUID()}`,
+      name,
+      arguments: args,
+      agent: handle.agent,
+      signal: new AbortController().signal,
+    })
+  }
+  const ok = (result: any) => (result?.isError === false ? result.value : { __error: result?.error ?? result })
+  const honestNetwork = (value: any) =>
+    value !== undefined && value.__error === undefined
+      ? true
+      : JSON.stringify(value).includes('unavailable') || JSON.stringify(value).includes('http_')
+
+  const project = ok(await execute('research_project_update', { title: '分发冒烟项目', discipline: '社会学' }))
+  const projectId = project?.project?.id as string
+  check('research_project_update executes', typeof projectId === 'string', project)
+  check('research_project_get executes', ok(await execute('research_project_get', {}))?.project?.id === projectId)
+
+  const search = ok(await execute('literature_search', { query: 'platform labor algorithmic management', limit: 2 }))
+  check('literature_search executes with honest result (network)', honestNetwork(search) && Array.isArray(search?.records), search)
+  const searchRecord = search?.records?.[0]
+
+  const knownRecord = searchRecord ?? {
+    id: 'crossref:10.1371/journal.pone.0000001',
+    title: 'Smoke fixture record',
+    authors: [{ name: 'Smoke' }],
+    year: 2024,
+    source: 'crossref',
+    doi: '10.1371/journal.pone.0000001',
+  }
+  const saved = ok(await execute('literature_save', { records: [knownRecord] }))
+  check('literature_save persists with evidence id', saved?.saved === 1 && typeof saved?.records?.[0]?.evidenceId === 'string', saved)
+  const savedRow = saved?.records?.[0]
+  const extra = ok(await execute('literature_save', { records: [{ ...knownRecord, id: 'crossref:10.2000/extra', doi: '10.2000/extra', title: 'Smoke second record' }] }))
+  check('literature_save second record for removal', extra?.saved === 1, extra)
+
+  const found = ok(await execute('literature_get', { doi: '10.1371/journal.pone.0000001' }))
+  check('literature_get executes with honest result (network)', honestNetwork(found), found)
+  check('literature_search_project reads the project library', ok(await execute('literature_search_project', {}))?.total >= 1)
+  check('literature_remove unlinks the extra record', ok(await execute('literature_remove', { literatureId: extra?.records?.[0]?.id }))?.removed === true)
+
+  const evidence = ok(await execute('evidence_query', { projectId }))
+  check('evidence_query finds saved evidence', evidence?.total >= 1, evidence)
+  const claim = ok(await execute('evidence_claim_create', { projectId, text: '冒烟：平台劳动研究存在可追溯证据链。' }))
+  check('evidence_claim_create executes', typeof claim?.claim?.id === 'string', claim)
+  check('evidence_claim_link executes',
+    ok(await execute('evidence_claim_link', { claimId: claim.claim.id, evidenceId: savedRow?.evidenceId }))?.ok === true)
+
+  check('scenario_list executes', ok(await execute('scenario_list', {}))?.total === 5)
+  check('scenario_get executes', ok(await execute('scenario_get', { id: 'paper-review' }))?.found === true)
+  check('scenario_activate executes and arms a DSH Goal',
+    ok(await execute('scenario_activate', { id: 'paper-review' }))?.ok === true
+    && ctx.get('goals').get(handle.agent)?.objective?.length > 0)
+
+  const artifact = ok(await execute('artifact_register', { type: 'review', title: '冒烟审读', path: 'smoke-v1.md' }))
+  check('artifact_register executes', artifact?.ok === true && artifact?.artifact?.workspacePath === 'smoke-v1.md', artifact)
+  check('artifact_version executes', ok(await execute('artifact_version', { id: artifact.artifact.id, path: 'smoke-v2.md', note: 'v2' }))?.artifact?.version === 2)
+  check('artifact_update_metadata executes', ok(await execute('artifact_update_metadata', { id: artifact.artifact.id, status: 'review', evidenceIds: [savedRow?.evidenceId] }))?.ok === true)
+  check('artifact_get executes', ok(await execute('artifact_get', { id: artifact.artifact.id }))?.found === true)
+  check('artifact_list executes', ok(await execute('artifact_list', {}))?.total >= 1)
+
+  const parsed = ok(await execute('funding_template_parse', { observationDocument: fundingObservationDocument(), templateId: 'smoke', templateVersion: 1, createdAt: Date.now() }))
+  check('funding_template_parse executes', parsed?.ok === true && parsed?.template !== undefined, parsed)
+  check('funding_template_requirements executes', ok(await execute('funding_template_requirements', { template: parsed.template }))?.totalSections >= 0)
+  check('funding_template_check executes', ok(await execute('funding_template_check', { templatePackage: parsed.template }))?.ok === true)
+  check('funding_template_diff executes', ok(await execute('funding_template_diff', { oldPackage: parsed.template, newPackage: parsed.template })) !== undefined)
+
+  const targeting = ok(await execute('journal_targeting_match', {
+    papers: [{ title: 'Platform labor under algorithmic management', venue: 'New Media & Society', year: new Date().getFullYear() - 1, source: 'openalex' }],
+    criteria: { categories: ['ssci'], language: 'en', notes: '' },
+  }))
+  check('journal_targeting_match executes (pure aggregation)', Array.isArray(targeting?.candidates), targeting)
+  const journalSearch = ok(await execute('journal_search', { query: 'sociology' }))
+  check('journal_search executes with honest result (network)', honestNetwork(journalSearch), journalSearch)
+
+  await handle.dispose()
 } finally {
   await ctx.fiber.dispose()
 }

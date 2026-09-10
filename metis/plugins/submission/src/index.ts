@@ -98,7 +98,10 @@ function registerTools(ctx: Context, service: MetisSubmission): void {
     name: 'journal_targeting_match',
     description: '基于「主题相关近期论文的发表期刊」聚合选刊候选。输入一组论文（题名/期刊/年份），输出候选期刊与核心层级标注（白名单判定，非模型推断）。',
     parameters: {
-      papers: { type: 'json', description: '选刊请求 { papers: [{ title, venue, year, source, doi?, issn? }], criteria: { categories, language, notes }, currentYear?, limit? }', required: true },
+      papers: { type: 'json', description: '论文数组 [{ title, venue, year, source, doi?, issn? }]', required: true },
+      criteria: { type: 'json', description: '选刊条件 { categories, language, notes }', required: true },
+      currentYear: { type: 'number', description: '当前年份（缺省取运行年份）' },
+      limit: { type: 'number', description: '返回候选上限（缺省 20）' },
     },
     output: {
       schema: {
@@ -111,44 +114,21 @@ function registerTools(ctx: Context, service: MetisSubmission): void {
       render: (_args, value) => [{ type: 'text', text: JSON.stringify(value) }],
     },
     execute: async (args) => {
-      const request = parseTargetingRequest(args.papers)
-      const candidates = aggregateVenueCandidates(request)
+      if (!Array.isArray(args.papers)) throw new Error('papers 必须是论文数组。')
+      const papers = args.papers.map((paper: JsonValue, index: number) => parseMatchPaper(paper, index))
+      if (args.criteria === null || typeof args.criteria !== 'object' || Array.isArray(args.criteria)) {
+        throw new Error('criteria 必须是 { categories, language, notes } 对象。')
+      }
+      const criteria = parseCriteria(args.criteria as Record<string, JsonValue>)
+      const candidates = aggregateVenueCandidates({
+        papers,
+        criteria,
+        ...(typeof args.currentYear === 'number' ? { currentYear: args.currentYear } : {}),
+        ...(typeof args.limit === 'number' ? { limit: args.limit } : {}),
+      })
       return { candidates: candidates.map(toJson) }
     },
   }))
-}
-
-function parseTargetingRequest(value: JsonValue): {
-  papers: MatchInputPaper[]
-  criteria: TargetingCriteria
-  currentYear?: number
-  limit?: number
-} {
-  if (value === null || typeof value !== 'object' || Array.isArray(value)) {
-    throw new Error('papers 必须是 { papers, criteria } 形式的选刊匹配请求。')
-  }
-  const request = value as Record<string, JsonValue>
-  const rawPapers = request['papers']
-  const rawCriteria = request['criteria']
-  if (!Array.isArray(rawPapers) || rawCriteria === null || typeof rawCriteria !== 'object' || Array.isArray(rawCriteria)) {
-    throw new Error('选刊请求必须包含 papers 数组和 criteria 对象。')
-  }
-  const papers = rawPapers.map((paper, index) => parseMatchPaper(paper, index))
-  const criteria = parseCriteria(rawCriteria as Record<string, JsonValue>)
-  const currentYear = request['currentYear']
-  const limit = request['limit']
-  if (currentYear !== undefined && (typeof currentYear !== 'number' || !Number.isInteger(currentYear) || currentYear < 1)) {
-    throw new Error('currentYear 必须是正整数。')
-  }
-  if (limit !== undefined && (typeof limit !== 'number' || !Number.isInteger(limit) || limit < 1 || limit > 100)) {
-    throw new Error('limit 必须是 1-100 的整数。')
-  }
-  return {
-    papers,
-    criteria,
-    ...(typeof currentYear === 'number' ? { currentYear } : {}),
-    ...(typeof limit === 'number' ? { limit } : {}),
-  }
 }
 
 function parseMatchPaper(value: JsonValue, index: number): MatchInputPaper {

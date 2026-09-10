@@ -45,13 +45,12 @@ METIS shared（纯领域库，打包进各插件 bundle，不单独分发）
 |---|---|---|
 | L1 单元/集成 | 持久化、隔离、生命周期、截断、损坏 fail-loud、真实 provider API | `pnpm test`（metis 目录，41 项） |
 | L2 真实 Loader + Runtime | 真实 boot(dsh-base + METIS overlay) → 真实 agent → 真实工具管线 → 跨进程重启恢复 | `node --import tsx/esm metis/scripts/verify-dsh-runtime.ts setup|verify <state.json>`（31+8 项） |
-| L3 分发 | tarball clean-install 到全新 profile（官方 `dsh plugin add`）→ 真实 boot → 服务/工具/provider/执行断言 | `node --import tsx/esm metis/scripts/verify-dsh-dist.ts metis/dist-tarballs/*.tgz`（32 项） |
-| L4 Real Agent E2E | 模型自主调用全链路 | **BLOCKED_EXTERNAL**：需 DEEPSEEK_API_KEY（见 `docs/EXTERNAL_BLOCKERS.md`） |
+| L3 分发 | tarball clean-install 到全新 profile（官方 `dsh plugin add`）→ 真实 boot → 服务/工具/provider 注册 + **全部 24 个工具的真实执行矩阵**（网络类工具断言「成功或诚实失败」） | `node --import tsx/esm metis/scripts/verify-dsh-dist.ts metis/dist-tarballs/*.tgz`（56 项） |
+| L4 Real Agent E2E | 模型自主调用全链路（真实 LLM 经 llm-pi-ai 路由） | `CLOUDLOB_API_KEY=… node --import tsx/esm metis/scripts/verify-real-agent.ts`（7 项；密钥仅经环境变量注入，不入库；DeepSeek 官方路由亦可配置） |
 | 上游守卫 | 9080 个 upstream path 的内容 + Git mode + worktree 校验 | `node metis/scripts/check-dsh-untouched.mjs` |
 
 ## 当前已知未完成事项（如实声明）
 
 - funding 插件内部登记仍为 JSON 文件（`metis-data/funding-templates.json`），待迁移到 MetisDataStore；
 - submission 无持久化状态，完整投稿生命周期未实现；
-- L4 Real Agent E2E 等待凭据；
 - 公共 GitHub 远端尚未接收本地 upstream 血缘修复（涉及公开历史重写，待确认后执行）。

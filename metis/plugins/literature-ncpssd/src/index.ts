@@ -15,7 +15,7 @@ import {
   type LiteratureProvider,
   type LiteratureRecord,
   type LiteratureSearchOptions,
-} from 'dsh-metis-literature'
+} from '../../literature/src/domain.ts'
 import { buildSearchForm, parseNcpssdPayload } from './ncpssd-parser.ts'
 
 const SEARCH_URL = 'https://www.ncpssd.org/searchHandler/search'

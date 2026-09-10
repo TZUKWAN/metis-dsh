@@ -58,7 +58,6 @@ const status = {
   knownIncomplete: [
     'funding plugin internal registry still uses a JSON file (migration to MetisDataStore pending)',
     'submission has no persisted lifecycle state yet',
-    'Real Agent E2E (model-driven) is blocked externally until DEEPSEEK_API_KEY is configured',
     'public GitHub remote has not received the local upstream-ancestry repair (history rewrite needs owner confirmation)',
   ],
 }
@@ -69,6 +68,8 @@ if (gitHead.status === 0) status.gitHead = gitHead.stdout.trim()
 const guard = run('upstream untouched guard', 'node', ['metis/scripts/check-dsh-untouched.mjs'])
 status.upstreamGuard = guard.status
 status.checks.push(guard)
+
+status.checks.push(run('fresh-clone upstream guard', 'node', ['metis/scripts/verify-fresh-clone.mjs'], { cwd: CHECKOUT_ROOT }))
 
 status.checks.push(run('typecheck against real DSH declarations', 'pnpm', ['--dir', 'metis', 'exec', 'tsc', '-p', 'tsconfig.json', '--noEmit'], { cwd: CHECKOUT_ROOT }))
 status.checks.push(run('unit + integration suite', 'pnpm', ['--dir', 'metis', 'exec', 'vitest', 'run', 'tests'], { cwd: CHECKOUT_ROOT, tailLines: 4 }))
@@ -86,6 +87,17 @@ if (FULL) {
     status.checks.push({ check: 'runtime verification: verify (fresh process restart recovery)', command: 'skipped', status: 'SKIPPED', reason: 'setup failed' })
   }
   try { require('node:fs').rmSync(stateFile, { force: true }) } catch {}
+
+  if (process.env.CLOUDLOB_API_KEY) {
+    status.checks.push(run(
+      'real agent E2E (model-driven tools via user-supplied endpoint)',
+      'node',
+      ['--import', 'tsx/esm', 'metis/scripts/verify-real-agent.ts'],
+      { cwd: CHECKOUT_ROOT, timeoutMs: 900_000, env: { ...process.env } },
+    ))
+  } else {
+    status.checks.push({ check: 'real agent E2E', command: 'skipped', status: 'SKIPPED', reason: 'CLOUDLOB_API_KEY not set in environment' })
+  }
 
   const tarballs = readdirSafe(path.join(METIS_ROOT, 'dist-tarballs')).filter((name) => name.endsWith('.tgz'))
   if (tarballs.length === 10) {

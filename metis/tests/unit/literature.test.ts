@@ -5,7 +5,7 @@
 
 import { describe, expect, it, vi } from 'vitest';
 import { LiteratureRegistry } from '../../plugins/literature/src/registry.ts';
-import { normalizeDoi, ProviderUnavailableError, SEARCH_HARD_CAP } from '../../plugins/literature/src/domain.ts';
+import { normalizeDoi, SEARCH_HARD_CAP } from '../../plugins/literature/src/domain.ts';
 import { CrossrefProvider, crossrefWorkToRecord } from '../../plugins/literature-crossref/src/index.ts';
 import { openalexWorkToRecord } from '../../plugins/literature-openalex/src/index.ts';
 
@@ -77,7 +77,9 @@ describe('CrossrefProvider normalization', () => {
     const provider = new CrossrefProvider();
     // mock fetch 返回 429 → ProviderUnavailableError。
     const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('', { status: 429 }));
-    return expect(provider.search({ query: 'x' })).rejects.toThrow(ProviderUnavailableError).finally(() => fetchMock.mockRestore());
+    // providers bundle their own domain copy, so match the stable domain error
+    // by name+message instead of class identity.
+    return expect(provider.search({ query: 'x' })).rejects.toMatchObject({ name: 'ProviderUnavailableError' }).finally(() => fetchMock.mockRestore());
   });
 });
 

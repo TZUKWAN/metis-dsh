@@ -20,7 +20,7 @@ function toJson(value: unknown): JsonValue {
   return JSON.parse(JSON.stringify(value)) as JsonValue
 }
 
-function isLiteratureRecord(value: JsonValue): value is JsonValue & LiteratureRecord {
+function isLiteratureRecord(value: unknown): value is LiteratureRecord {
   if (value === null || typeof value !== 'object' || Array.isArray(value)) return false
   const record = value as Record<string, JsonValue>
   if (typeof record.id !== 'string' || typeof record.title !== 'string' || typeof record.source !== 'string') return false
@@ -148,11 +148,21 @@ export class MetisLiterature extends Service {
         render: (_args, value) => [{ type: 'text', text: JSON.stringify(value) }],
       },
       execute: async (args, exec: ToolRunContext) => {
-        if (!Array.isArray(args.records) || !args.records.every(isLiteratureRecord)) {
-          throw new Error('records 必须是由 literature_search 返回的完整文献记录数组。')
+        // Models frequently pass one record as a JSON-encoded string or as a
+        // bare object; normalize at the boundary, then validate strictly.
+        let input: unknown = args.records
+        if (typeof input === 'string') {
+          try { input = JSON.parse(input) } catch { throw new Error('records 字符串不是合法 JSON。') }
+        }
+        const candidates: readonly unknown[] = Array.isArray(input) ? input : [input]
+        if (candidates.length === 0 || !candidates.every(isLiteratureRecord)) {
+          throw new Error('records 必须是至少一条真实文献（来自 literature_search 的完整记录：id/title/authors/year/source）。')
         }
         const project = await this.research.requireCurrentProject(exec.agent, args.projectId)
-        const saved = await this.save(args.records, project.id)
+        const saved = await this.save(candidates as readonly LiteratureRecord[], project.id)
+        if (saved.length !== candidates.length) {
+          throw new Error(`literature_save 只持久化了 ${saved.length}/${candidates.length} 条记录，拒绝伪成功。`)
+        }
         return { saved: saved.length, records: saved.map(toJson) }
       },
     }))

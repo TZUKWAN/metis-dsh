@@ -9,7 +9,7 @@
  */
 
 import { isChineseCoreJournal } from './core-journals.ts'
-import type { LiteratureRecord } from 'dsh-metis-literature'
+import type { LiteratureRecord } from '../../literature/src/domain.ts'
 
 export interface NcpssdRow {
   data_id?: unknown
