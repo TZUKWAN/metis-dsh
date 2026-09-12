@@ -1,4 +1,9 @@
 import {
+  type ClaimEvidenceLink,
+  type ClaimEvidenceRelation,
+  type ClaimType,
+  type EvidenceExcerptRecord,
+  type EvidenceLocatorType,
   MetisDataStore,
   type EvidenceRecord,
   type EvidenceSourceType,
@@ -59,16 +64,40 @@ export class EvidenceStore {
     return this.data.queryEvidence()
   }
 
-  createClaim(projectId: string, text: string) {
-    return this.data.createClaim(projectId, text)
+  createClaim(projectId: string, text: string, options: { claimType?: ClaimType; artifactId?: string } = {}) {
+    return this.data.createClaim(projectId, text, options)
   }
 
-  linkClaimEvidence(claimId: string, evidenceId: string, relation?: string): void {
-    this.data.linkClaimEvidence(claimId, evidenceId, relation)
+  getClaim(id: string) {
+    return this.data.getClaim(id) ?? undefined
+  }
+
+  listClaims(filter: { projectId?: string; artifactId?: string } = {}) {
+    return this.data.listClaims(filter)
+  }
+
+  setClaimStatus(id: string, state: Parameters<MetisDataStore['setClaimStatus']>[1]) {
+    return this.data.setClaimStatus(id, state) ?? undefined
+  }
+
+  linkClaimEvidence(claimId: string, evidenceId: string, relation?: ClaimEvidenceRelation, confidence?: number): ClaimEvidenceLink {
+    return this.data.linkClaimEvidence(claimId, evidenceId, relation, confidence)
   }
 
   listClaimEvidence(claimId: string): EvidenceRecord[] {
     return this.data.listClaimEvidence(claimId)
+  }
+
+  addEvidenceExcerpt(input: { evidenceId: string; content: string; locatorType?: EvidenceLocatorType; locatorValue?: string }): EvidenceExcerptRecord {
+    return this.data.addEvidenceExcerpt(input)
+  }
+
+  listEvidenceExcerpts(evidenceId: string): EvidenceExcerptRecord[] {
+    return this.data.listEvidenceExcerpts(evidenceId)
+  }
+
+  artifactEvidenceCheck(artifactId: string) {
+    return this.data.artifactEvidenceCheck(artifactId)
   }
 }
 

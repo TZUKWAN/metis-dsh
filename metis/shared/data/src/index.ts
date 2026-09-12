@@ -3,8 +3,9 @@ import { existsSync } from 'node:fs'
 import { mkdir, open } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { DatabaseSync } from 'node:sqlite'
+import type { JsonValue } from '@deepseek-ai/dsh-util-values'
 
-export const METIS_DATABASE_SCHEMA_VERSION = 1
+export const METIS_DATABASE_SCHEMA_VERSION = 2
 export const DEFAULT_METIS_DATABASE_PATH = 'metis-data/metis.db'
 
 export function resolveMetisDatabasePath(configuredPath?: string): string {
@@ -88,13 +89,39 @@ export interface EvidenceExcerptRecord {
   createdAt: number
 }
 
+export const EVIDENCE_LOCATOR_TYPES = [
+  'abstract', 'page', 'section', 'paragraph', 'table', 'figure', 'dataset_row', 'web_fragment', 'metadata',
+] as const
+
+export type EvidenceLocatorType = (typeof EVIDENCE_LOCATOR_TYPES)[number]
+
+export const CLAIM_TYPES = [
+  'factual', 'literature_finding', 'theoretical_proposition', 'statistical_result', 'web_fact', 'user_provided_fact',
+] as const
+
+export type ClaimType = (typeof CLAIM_TYPES)[number]
+
+export const CLAIM_EVIDENCE_RELATIONS = ['supports', 'contradicts', 'context'] as const
+
+export type ClaimEvidenceRelation = (typeof CLAIM_EVIDENCE_RELATIONS)[number]
+
 export interface EvidenceClaimRecord {
   id: string
   projectId: string
+  artifactId?: string
+  claimType: ClaimType
   text: string
   verificationState: EvidenceVerificationState
   createdAt: number
   updatedAt: number
+}
+
+export interface ClaimEvidenceLink {
+  claimId: string
+  evidenceId: string
+  relation: ClaimEvidenceRelation
+  confidence: number | null
+  createdAt: number
 }
 
 export interface LiteratureAuthor {
@@ -139,6 +166,8 @@ export interface ArtifactVersionRecord {
   artifactId: string
   version: number
   workspacePath: string
+  contentHash?: string
+  createdBy?: string
   createdAt: number
   note?: string
 }
@@ -155,6 +184,7 @@ export interface ArtifactRecord {
   source: string
   status: ArtifactStatus
   mimeType?: string
+  finalizedAt?: number
   evidenceIds: string[]
   versions: ArtifactVersionRecord[]
 }
@@ -184,6 +214,50 @@ export interface SaveLiteratureInput {
   createdByTool: string
 }
 
+export interface FundingTemplateRecord {
+  templateId: string
+  projectId: string | null
+  version: number
+  template: JsonValue
+  createdAt: number
+  updatedAt: number
+}
+
+export interface FundingSectionDraftRecord {
+  id: string
+  projectId: string
+  templateId: string
+  sectionId: string
+  draftText: string
+  usedEvidenceIds: string[]
+  createdAt: number
+}
+
+export interface SubmissionCaseRecord {
+  id: string
+  projectId: string | null
+  artifactId: string | null
+  journalId: string | null
+  status: SubmissionCaseStatus
+  notes: string | null
+  createdAt: number
+  updatedAt: number
+}
+
+export const SUBMISSION_CASE_STATUSES = [
+  'researching', 'candidate', 'preparing', 'ready', 'submitted', 'revision', 'accepted', 'rejected', 'withdrawn',
+] as const
+
+export type SubmissionCaseStatus = (typeof SUBMISSION_CASE_STATUSES)[number]
+
+export interface JournalRequirementRecord {
+  id: string
+  journalId: string
+  requirements: JsonValue
+  verificationState: EvidenceVerificationState
+  updatedAt: number
+}
+
 export interface RegisterArtifactInput {
   type: ArtifactType
   title: string
@@ -193,6 +267,8 @@ export interface RegisterArtifactInput {
   status?: ArtifactStatus
   mimeType?: string
   note?: string
+  contentHash?: string
+  createdBy?: string
   evidenceIds?: readonly string[]
 }
 
@@ -304,194 +380,38 @@ export class MetisDataStore {
     return this.db
   }
 
+  /**
+   * Versioned migration framework. Every schema change lands as a numbered
+   * migration applied inside one transaction (migration body + version bump +
+   * bookkeeping row). A failing migration rolls back completely and fails
+   * loud — partial schema states can never be committed.
+   */
   private migrate(db: DatabaseSync): void {
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS schema_migrations (
+        version INTEGER PRIMARY KEY,
+        name TEXT NOT NULL,
+        applied_at INTEGER NOT NULL
+      ) STRICT;
+    `)
     const row = db.prepare('PRAGMA user_version').get() as { user_version: number }
     if (row.user_version > METIS_DATABASE_SCHEMA_VERSION) {
       throw new Error(
         `METIS database schema ${row.user_version} is newer than this runtime (${METIS_DATABASE_SCHEMA_VERSION})`,
       )
     }
-    if (row.user_version === 0) {
-      db.exec(`
-        BEGIN IMMEDIATE;
-        CREATE TABLE research_projects (
-          id TEXT PRIMARY KEY,
-          title TEXT,
-          discipline TEXT,
-          research_question TEXT,
-          research_object TEXT,
-          methodology TEXT,
-          stage TEXT,
-          keywords_json TEXT NOT NULL,
-          publication_intent TEXT,
-          notes TEXT,
-          created_at INTEGER NOT NULL,
-          updated_at INTEGER NOT NULL
-        ) STRICT;
-        CREATE TABLE workspace_project_bindings (
-          workspace_id TEXT PRIMARY KEY,
-          project_id TEXT NOT NULL REFERENCES research_projects(id) ON DELETE CASCADE,
-          created_at INTEGER NOT NULL,
-          updated_at INTEGER NOT NULL
-        ) STRICT;
-        CREATE TABLE session_project_bindings (
-          session_id TEXT PRIMARY KEY,
-          workspace_id TEXT,
-          project_id TEXT NOT NULL REFERENCES research_projects(id) ON DELETE CASCADE,
-          created_at INTEGER NOT NULL,
-          updated_at INTEGER NOT NULL
-        ) STRICT;
-        CREATE TABLE literature_records (
-          id TEXT PRIMARY KEY,
-          dedupe_key TEXT NOT NULL UNIQUE,
-          title TEXT NOT NULL,
-          authors_json TEXT NOT NULL,
-          year INTEGER,
-          journal TEXT,
-          abstract TEXT,
-          doi TEXT,
-          url TEXT,
-          source TEXT NOT NULL,
-          source_id TEXT,
-          keywords_json TEXT NOT NULL,
-          citation_count INTEGER,
-          core_status TEXT,
-          verification_state TEXT,
-          created_at INTEGER NOT NULL,
-          updated_at INTEGER NOT NULL
-        ) STRICT;
-        CREATE TABLE project_literature (
-          project_id TEXT NOT NULL REFERENCES research_projects(id) ON DELETE CASCADE,
-          literature_id TEXT NOT NULL REFERENCES literature_records(id) ON DELETE CASCADE,
-          evidence_id TEXT,
-          saved_at INTEGER NOT NULL,
-          PRIMARY KEY (project_id, literature_id)
-        ) STRICT;
-        CREATE TABLE evidence_sources (
-          id TEXT PRIMARY KEY,
-          provider TEXT NOT NULL,
-          source_id TEXT,
-          url TEXT,
-          retrieved_at INTEGER,
-          doi TEXT,
-          dedupe_key TEXT NOT NULL UNIQUE,
-          created_at INTEGER NOT NULL
-        ) STRICT;
-        CREATE TABLE evidence_records (
-          id TEXT PRIMARY KEY,
-          project_id TEXT REFERENCES research_projects(id) ON DELETE SET NULL,
-          source_id TEXT NOT NULL REFERENCES evidence_sources(id) ON DELETE RESTRICT,
-          source_type TEXT NOT NULL,
-          title TEXT NOT NULL,
-          observation TEXT,
-          observed_at INTEGER NOT NULL,
-          verification_state TEXT NOT NULL,
-          created_by_tool TEXT NOT NULL,
-          truncated INTEGER NOT NULL DEFAULT 0,
-          created_at INTEGER NOT NULL,
-          updated_at INTEGER NOT NULL,
-          dedupe_key TEXT NOT NULL UNIQUE
-        ) STRICT;
-        CREATE TABLE evidence_excerpts (
-          id TEXT PRIMARY KEY,
-          evidence_id TEXT NOT NULL REFERENCES evidence_records(id) ON DELETE CASCADE,
-          content TEXT NOT NULL,
-          locator TEXT,
-          created_at INTEGER NOT NULL
-        ) STRICT;
-        CREATE TABLE evidence_claims (
-          id TEXT PRIMARY KEY,
-          project_id TEXT NOT NULL REFERENCES research_projects(id) ON DELETE CASCADE,
-          text TEXT NOT NULL,
-          verification_state TEXT NOT NULL,
-          created_at INTEGER NOT NULL,
-          updated_at INTEGER NOT NULL
-        ) STRICT;
-        CREATE TABLE claim_evidence_links (
-          claim_id TEXT NOT NULL REFERENCES evidence_claims(id) ON DELETE CASCADE,
-          evidence_id TEXT NOT NULL REFERENCES evidence_records(id) ON DELETE CASCADE,
-          relation TEXT NOT NULL,
-          created_at INTEGER NOT NULL,
-          PRIMARY KEY (claim_id, evidence_id)
-        ) STRICT;
-        CREATE TABLE scenario_activations (
-          session_id TEXT PRIMARY KEY,
-          project_id TEXT REFERENCES research_projects(id) ON DELETE SET NULL,
-          scenario_id TEXT NOT NULL,
-          activated_at INTEGER NOT NULL,
-          updated_at INTEGER NOT NULL
-        ) STRICT;
-        CREATE TABLE artifacts (
-          id TEXT PRIMARY KEY,
-          type TEXT NOT NULL,
-          title TEXT NOT NULL,
-          workspace_path TEXT NOT NULL,
-          project_id TEXT REFERENCES research_projects(id) ON DELETE SET NULL,
-          version INTEGER NOT NULL,
-          source TEXT NOT NULL,
-          status TEXT NOT NULL,
-          mime_type TEXT,
-          created_at INTEGER NOT NULL,
-          updated_at INTEGER NOT NULL
-        ) STRICT;
-        CREATE TABLE artifact_versions (
-          artifact_id TEXT NOT NULL REFERENCES artifacts(id) ON DELETE CASCADE,
-          version INTEGER NOT NULL,
-          workspace_path TEXT NOT NULL,
-          note TEXT,
-          created_at INTEGER NOT NULL,
-          PRIMARY KEY (artifact_id, version)
-        ) STRICT;
-        CREATE TABLE artifact_evidence_links (
-          artifact_id TEXT NOT NULL REFERENCES artifacts(id) ON DELETE CASCADE,
-          evidence_id TEXT NOT NULL REFERENCES evidence_records(id) ON DELETE RESTRICT,
-          created_at INTEGER NOT NULL,
-          PRIMARY KEY (artifact_id, evidence_id)
-        ) STRICT;
-        CREATE TABLE funding_templates (
-          id TEXT PRIMARY KEY,
-          project_id TEXT REFERENCES research_projects(id) ON DELETE SET NULL,
-          template_json TEXT NOT NULL,
-          created_at INTEGER NOT NULL,
-          updated_at INTEGER NOT NULL
-        ) STRICT;
-        CREATE TABLE funding_projects (
-          id TEXT PRIMARY KEY,
-          project_id TEXT REFERENCES research_projects(id) ON DELETE CASCADE,
-          template_id TEXT REFERENCES funding_templates(id) ON DELETE SET NULL,
-          state_json TEXT NOT NULL,
-          created_at INTEGER NOT NULL,
-          updated_at INTEGER NOT NULL
-        ) STRICT;
-        CREATE TABLE journal_records (
-          id TEXT PRIMARY KEY,
-          source TEXT NOT NULL,
-          source_id TEXT,
-          journal_json TEXT NOT NULL,
-          verification_state TEXT NOT NULL,
-          created_at INTEGER NOT NULL,
-          updated_at INTEGER NOT NULL
-        ) STRICT;
-        CREATE TABLE journal_requirements (
-          id TEXT PRIMARY KEY,
-          journal_id TEXT NOT NULL REFERENCES journal_records(id) ON DELETE CASCADE,
-          requirements_json TEXT NOT NULL,
-          verification_state TEXT NOT NULL,
-          created_at INTEGER NOT NULL,
-          updated_at INTEGER NOT NULL
-        ) STRICT;
-        CREATE TABLE submission_cases (
-          id TEXT PRIMARY KEY,
-          project_id TEXT REFERENCES research_projects(id) ON DELETE SET NULL,
-          artifact_id TEXT REFERENCES artifacts(id) ON DELETE SET NULL,
-          journal_id TEXT REFERENCES journal_records(id) ON DELETE SET NULL,
-          state_json TEXT NOT NULL,
-          created_at INTEGER NOT NULL,
-          updated_at INTEGER NOT NULL
-        ) STRICT;
-        PRAGMA user_version = ${METIS_DATABASE_SCHEMA_VERSION};
-        COMMIT;
-      `)
+    for (const migration of SCHEMA_MIGRATIONS.filter((entry) => entry.version > row.user_version)) {
+      db.exec('BEGIN IMMEDIATE')
+      try {
+        migration.up(db)
+        db.prepare('INSERT INTO schema_migrations (version, name, applied_at) VALUES (?, ?, ?)')
+          .run(migration.version, migration.name, Date.now())
+        db.prepare(`PRAGMA user_version = ${migration.version}`).run()
+        db.exec('COMMIT')
+      } catch (error) {
+        try { db.exec('ROLLBACK') } catch { /* original error is reported instead */ }
+        throw new Error(`METIS migration ${migration.version} (${migration.name}) failed: ${error instanceof Error ? error.message : String(error)}`, { cause: error })
+      }
     }
   }
 
@@ -856,27 +776,118 @@ export class MetisDataStore {
     return result.changes === 0 ? null : this.getEvidence(id)
   }
 
-  createClaim(projectId: string, text: string): EvidenceClaimRecord {
+  createClaim(
+    projectId: string,
+    text: string,
+    options: { claimType?: ClaimType; artifactId?: string } = {},
+  ): EvidenceClaimRecord {
     if (!this.getProject(projectId)) throw new Error(`cannot create claim for unknown research project: ${projectId}`)
+    const claimType = options.claimType ?? 'factual'
+    if (!(CLAIM_TYPES as readonly string[]).includes(claimType)) {
+      throw new Error(`unknown claim type: ${claimType}`)
+    }
+    if (options.artifactId && !this.getArtifact(options.artifactId)) {
+      throw new Error(`cannot attach claim to unknown artifact: ${options.artifactId}`)
+    }
     const normalized = text.trim()
     if (!normalized) throw new Error('claim text cannot be empty')
     const now = Date.now()
     const id = `claim-${randomUUID()}`
     this.requireDb().prepare(`
-      INSERT INTO evidence_claims (id, project_id, text, verification_state, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `).run(id, projectId, normalized, 'unverified', now, now)
-    return { id, projectId, text: normalized, verificationState: 'unverified', createdAt: now, updatedAt: now }
+      INSERT INTO evidence_claims (id, project_id, text, verification_state, created_at, updated_at, claim_type, artifact_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(id, projectId, normalized, 'unverified', now, now, claimType, options.artifactId ?? null)
+    const record = this.getClaim(id)
+    if (!record) throw new Error(`claim ${id} was not readable after insert`)
+    return record
   }
 
-  linkClaimEvidence(claimId: string, evidenceId: string, relation = 'supports'): void {
+  getClaim(id: string): EvidenceClaimRecord | null {
+    const row = this.requireDb().prepare('SELECT * FROM evidence_claims WHERE id = ?').get(id)
+    return row ? claimFromRow(row) : null
+  }
+
+  listClaims(filter: { projectId?: string; artifactId?: string } = {}): EvidenceClaimRecord[] {
+    let sql = 'SELECT * FROM evidence_claims'
+    const params: string[] = []
+    if (filter.artifactId) {
+      sql += ' WHERE artifact_id = ?'
+      params.push(filter.artifactId)
+    } else if (filter.projectId) {
+      sql += ' WHERE project_id = ?'
+      params.push(filter.projectId)
+    }
+    sql += ' ORDER BY created_at ASC, id ASC'
+    return this.requireDb().prepare(sql).all(...params).map(claimFromRow)
+  }
+
+  setClaimStatus(id: string, state: EvidenceVerificationState): EvidenceClaimRecord | null {
+    const result = this.requireDb().prepare(
+      'UPDATE evidence_claims SET verification_state = ?, updated_at = ? WHERE id = ?',
+    ).run(state, Date.now(), id)
+    return result.changes === 0 ? null : this.getClaim(id)
+  }
+
+  addEvidenceExcerpt(input: {
+    evidenceId: string
+    content: string
+    locatorType?: EvidenceLocatorType
+    locatorValue?: string
+  }): EvidenceExcerptRecord {
+    if (!this.getEvidence(input.evidenceId)) throw new Error(`cannot attach excerpt to unknown evidence: ${input.evidenceId}`)
+    const content = input.content.trim()
+    if (!content) throw new Error('excerpt content cannot be empty')
+    const locatorType = input.locatorType ?? 'metadata'
+    if (!(EVIDENCE_LOCATOR_TYPES as readonly string[]).includes(locatorType)) {
+      throw new Error(`unknown locator type: ${locatorType}`)
+    }
+    const locator = input.locatorValue === undefined ? null : `${locatorType}:${input.locatorValue}`
     const now = Date.now()
-    const result = this.requireDb().prepare(`
-      INSERT INTO claim_evidence_links (claim_id, evidence_id, relation, created_at)
-      VALUES (?, ?, ?, ?)
-      ON CONFLICT(claim_id, evidence_id) DO UPDATE SET relation = excluded.relation
-    `).run(claimId, evidenceId, relation, now)
-    if (result.changes === 0) throw new Error('claim-evidence link was not persisted')
+    const id = `exc-${randomUUID()}`
+    this.requireDb().prepare(`
+      INSERT INTO evidence_excerpts (id, evidence_id, content, locator, created_at)
+      VALUES (?, ?, ?, ?, ?)
+    `).run(id, input.evidenceId, content, locator, now)
+    return { id, evidenceId: input.evidenceId, content, locator: locator ?? undefined, createdAt: now }
+  }
+
+  listEvidenceExcerpts(evidenceId: string): EvidenceExcerptRecord[] {
+    return this.requireDb().prepare(
+      'SELECT id, evidence_id, content, locator, created_at FROM evidence_excerpts WHERE evidence_id = ? ORDER BY created_at ASC',
+    ).all(evidenceId).map((row) => {
+      const record = row as Record<string, unknown>
+      const locator = typeof record['locator'] === 'string' && record['locator'].length > 0 ? record['locator'] : undefined
+      return {
+        id: requiredString(record['id'], 'excerpt id'),
+        evidenceId: requiredString(record['evidence_id'], 'excerpt evidence_id'),
+        content: requiredString(record['content'], 'excerpt content'),
+        ...(locator ? { locator } : {}),
+        createdAt: asTimestamp(record['created_at'], 'excerpt created_at'),
+      }
+    })
+  }
+
+  linkClaimEvidence(
+    claimId: string,
+    evidenceId: string,
+    relation: ClaimEvidenceRelation = 'supports',
+    confidence?: number,
+  ): ClaimEvidenceLink {
+    if (!(CLAIM_EVIDENCE_RELATIONS as readonly string[]).includes(relation)) {
+      throw new Error(`unknown claim-evidence relation: ${relation}`)
+    }
+    if (confidence !== undefined && (!Number.isFinite(confidence) || confidence < 0 || confidence > 1)) {
+      throw new Error('confidence must be a number between 0 and 1')
+    }
+    if (!this.getClaim(claimId)) throw new Error(`cannot link unknown claim: ${claimId}`)
+    if (!this.getEvidence(evidenceId)) throw new Error(`cannot link unknown evidence: ${evidenceId}`)
+    const now = Date.now()
+    this.requireDb().prepare(`
+      INSERT INTO claim_evidence_links (claim_id, evidence_id, relation, confidence, created_at)
+      VALUES (?, ?, ?, ?, ?)
+      ON CONFLICT(claim_id, evidence_id) DO UPDATE SET relation = excluded.relation, confidence = excluded.confidence
+    `).run(claimId, evidenceId, relation, confidence ?? null, now)
+    return { claimId, evidenceId, relation, confidence: confidence ?? null, createdAt: now }
   }
 
   listClaimEvidence(claimId: string): EvidenceRecord[] {
@@ -950,29 +961,418 @@ export class MetisDataStore {
         now,
       )
       this.requireDb().prepare(`
-        INSERT INTO artifact_versions (artifact_id, version, workspace_path, note, created_at)
-        VALUES (?, ?, ?, ?, ?)
-      `).run(id, 1, input.workspacePath, nullableText(input.note), now)
+        INSERT INTO artifact_versions (artifact_id, version, workspace_path, note, created_at, content_hash, created_by)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `).run(id, 1, input.workspacePath, nullableText(input.note), now, nullableText(input.contentHash), nullableText(input.createdBy))
       this.replaceArtifactEvidence(id, input.evidenceIds ?? [])
     })
     return this.getArtifact(id) ?? fail(`artifact ${id} was not readable after insert`)
   }
 
-  addArtifactVersion(id: string, workspacePath: string, note?: string): ArtifactRecord | null {
+  addArtifactVersion(
+    id: string,
+    workspacePath: string,
+    note?: string,
+    options: { contentHash?: string; createdBy?: string } = {},
+  ): ArtifactRecord | null {
     const current = this.getArtifact(id)
     if (!current) return null
     const version = current.version + 1
     const now = Date.now()
     this.transaction(() => {
       this.requireDb().prepare(`
-        INSERT INTO artifact_versions (artifact_id, version, workspace_path, note, created_at)
-        VALUES (?, ?, ?, ?, ?)
-      `).run(id, version, workspacePath, nullableText(note), now)
+        INSERT INTO artifact_versions (artifact_id, version, workspace_path, note, created_at, content_hash, created_by)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `).run(id, version, workspacePath, nullableText(note), now, nullableText(options.contentHash), nullableText(options.createdBy))
       this.requireDb().prepare(`
         UPDATE artifacts SET workspace_path = ?, version = ?, updated_at = ? WHERE id = ?
       `).run(workspacePath, version, now, id)
     })
     return this.getArtifact(id)
+  }
+
+  setArtifactFinalized(id: string): ArtifactRecord | null {
+    const current = this.getArtifact(id)
+    if (!current) return null
+    this.requireDb().prepare(
+      "UPDATE artifacts SET status = 'final', finalized_at = ?, updated_at = ? WHERE id = ?",
+    ).run(Date.now(), Date.now(), id)
+    return this.getArtifact(id)
+  }
+
+  /**
+   * Evidence coverage for one artifact's claims (attached via
+   * evidence_claims.artifact_id). First-version heuristic, honestly labeled.
+   */
+  artifactEvidenceCheck(artifactId: string): {
+    artifactId: string
+    totalClaims: number
+    byState: Record<string, number>
+    supportedClaims: number
+    contradictedClaims: number
+    claimsWithoutEvidence: number
+    unverifiedClaims: number
+    coverageRatio: number
+    claims: Array<EvidenceClaimRecord & { evidenceCount: number }>
+  } {
+    const artifact = this.getArtifact(artifactId)
+    if (!artifact) throw new Error(`unknown artifact: ${artifactId}`)
+    const claims = this.listClaims({ artifactId })
+    const counts = new Map<string, number>()
+    for (const row of this.requireDb().prepare(
+      'SELECT claim_id, COUNT(*) AS n FROM claim_evidence_links GROUP BY claim_id',
+    ).all() as Array<Record<string, unknown>>) {
+      counts.set(String(row['claim_id']), Number(row['n']))
+    }
+    const byState: Record<string, number> = {}
+    let supported = 0
+    let contradicted = 0
+    let withoutEvidence = 0
+    let unverified = 0
+    const detailed = claims.map((claim) => {
+      const evidenceCount = counts.get(claim.id) ?? 0
+      byState[claim.verificationState] = (byState[claim.verificationState] ?? 0) + 1
+      if (evidenceCount > 0) {
+        const relations = this.requireDb().prepare(
+          'SELECT relation FROM claim_evidence_links WHERE claim_id = ?',
+        ).all(claim.id) as Array<Record<string, unknown>>
+        if (relations.some((row) => row['relation'] === 'supports')) supported += 1
+        if (relations.some((row) => row['relation'] === 'contradicts')) contradicted += 1
+      } else {
+        withoutEvidence += 1
+      }
+      if (claim.verificationState === 'unverified') unverified += 1
+      return { ...claim, evidenceCount }
+    })
+    return {
+      artifactId,
+      totalClaims: claims.length,
+      byState,
+      supportedClaims: supported,
+      contradictedClaims: contradicted,
+      claimsWithoutEvidence: withoutEvidence,
+      unverifiedClaims: unverified,
+      coverageRatio: claims.length === 0 ? 0 : supported / claims.length,
+      claims: detailed,
+    }
+  }
+
+  // ── Funding persistence (v2) ────────────────────────────────────────────
+
+  saveFundingTemplate(input: {
+    templateId: string
+    projectId?: string | null
+    version: number
+    template: JsonValue
+  }): FundingTemplateRecord {
+    if (!/^[A-Za-z0-9:_-]+$/.test(input.templateId)) throw new Error(`invalid templateId: ${input.templateId}`)
+    if (!Number.isSafeInteger(input.version) || input.version < 1) throw new Error('template version must be a positive integer')
+    const now = Date.now()
+    const projectId = nullableText(input.projectId ?? undefined)
+    if (projectId && !this.getProject(projectId)) throw new Error(`cannot attach template to unknown project: ${projectId}`)
+    this.transaction(() => {
+      this.requireDb().prepare(`
+        INSERT INTO funding_templates (id, project_id, template_json, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?)
+        ON CONFLICT(id) DO UPDATE SET
+          project_id = excluded.project_id,
+          template_json = excluded.template_json,
+          updated_at = excluded.updated_at
+      `).run(input.templateId, projectId, JSON.stringify(input.template), now, now)
+      this.requireDb().prepare(`
+        INSERT INTO funding_template_versions (template_id, version, template_json, created_at)
+        VALUES (?, ?, ?, ?)
+        ON CONFLICT(template_id, version) DO UPDATE SET template_json = excluded.template_json
+      `).run(input.templateId, input.version, JSON.stringify(input.template), now)
+    })
+    return this.getFundingTemplate(input.templateId) ?? fail('funding template was not readable after save')
+  }
+
+  getFundingTemplate(templateId: string): FundingTemplateRecord | null {
+    const row = this.requireDb().prepare('SELECT * FROM funding_templates WHERE id = ?').get(templateId)
+    if (!row) return null
+    const record = row as Record<string, unknown>
+    const versionRow = this.requireDb().prepare(
+      'SELECT MAX(version) AS v FROM funding_template_versions WHERE template_id = ?',
+    ).get(templateId) as Record<string, unknown>
+    return {
+      templateId: requiredString(record['id'], 'funding template id'),
+      projectId: typeof record['project_id'] === 'string' ? record['project_id'] : null,
+      version: typeof versionRow['v'] === 'number' ? versionRow['v'] : 0,
+      template: JSON.parse(requiredString(record['template_json'], 'funding template_json')) as JsonValue,
+      createdAt: asTimestamp(record['created_at'], 'funding template created_at'),
+      updatedAt: asTimestamp(record['updated_at'], 'funding template updated_at'),
+    }
+  }
+
+  listFundingTemplates(projectId?: string): FundingTemplateRecord[] {
+    const rows = projectId
+      ? this.requireDb().prepare('SELECT id FROM funding_templates WHERE project_id = ? ORDER BY updated_at DESC').all(projectId)
+      : this.requireDb().prepare('SELECT id FROM funding_templates ORDER BY updated_at DESC').all()
+    return rows
+      .map((row) => this.getFundingTemplate(String((row as Record<string, unknown>)['id'])))
+      .filter((value): value is FundingTemplateRecord => value !== null)
+  }
+
+  saveFundingSectionDraft(input: {
+    projectId: string
+    templateId: string
+    sectionId: string
+    draftText: string
+    usedEvidenceIds: readonly string[]
+  }): FundingSectionDraftRecord {
+    if (!this.getProject(input.projectId)) throw new Error(`cannot attach draft to unknown project: ${input.projectId}`)
+    const draftText = input.draftText.trim()
+    if (!draftText) throw new Error('draft text cannot be empty')
+    for (const evidenceId of input.usedEvidenceIds) {
+      if (!this.getEvidence(evidenceId)) throw new Error(`draft references unknown evidence: ${evidenceId}`)
+    }
+    const now = Date.now()
+    const id = `draft-${randomUUID()}`
+    const usedEvidenceIds = [...new Set(input.usedEvidenceIds)]
+    this.requireDb().prepare(`
+      INSERT INTO funding_section_drafts (id, project_id, template_id, section_id, draft_text, used_evidence_json, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(id, input.projectId, input.templateId, input.sectionId, draftText, JSON.stringify(usedEvidenceIds), now)
+    return {
+      id,
+      projectId: input.projectId,
+      templateId: input.templateId,
+      sectionId: input.sectionId,
+      draftText,
+      usedEvidenceIds,
+      createdAt: now,
+    }
+  }
+
+  listFundingSectionDrafts(projectId: string, templateId?: string): FundingSectionDraftRecord[] {
+    const rows = templateId
+      ? this.requireDb().prepare('SELECT * FROM funding_section_drafts WHERE project_id = ? AND template_id = ? ORDER BY created_at ASC').all(projectId, templateId)
+      : this.requireDb().prepare('SELECT * FROM funding_section_drafts WHERE project_id = ? ORDER BY created_at ASC').all(projectId)
+    return rows.map((row) => {
+      const record = row as Record<string, unknown>
+      return {
+        id: requiredString(record['id'], 'draft id'),
+        projectId: requiredString(record['project_id'], 'draft project_id'),
+        templateId: requiredString(record['template_id'], 'draft template_id'),
+        sectionId: requiredString(record['section_id'], 'draft section_id'),
+        draftText: requiredString(record['draft_text'], 'draft text'),
+        usedEvidenceIds: (JSON.parse(requiredString(record['used_evidence_json'], 'draft used_evidence_json')) as unknown[])
+          .filter((value): value is string => typeof value === 'string'),
+        createdAt: asTimestamp(record['created_at'], 'draft created_at'),
+      }
+    })
+  }
+
+  // ── Submission persistence (v2) ─────────────────────────────────────────
+
+  upsertJournalRecord(input: {
+    journalId?: string
+    source: string
+    sourceId?: string
+    journal: JsonValue
+    verificationState?: EvidenceVerificationState
+  }): string {
+    const now = Date.now()
+    const id = input.journalId ?? `jr-${randomUUID()}`
+    this.requireDb().prepare(`
+      INSERT INTO journal_records (id, source, source_id, journal_json, verification_state, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        journal_json = excluded.journal_json,
+        verification_state = excluded.verification_state,
+        updated_at = excluded.updated_at
+    `).run(
+      id,
+      requiredString(input.source, 'journal source'),
+      nullableText(input.sourceId),
+      JSON.stringify(input.journal),
+      input.verificationState ?? 'unverified',
+      now,
+      now,
+    )
+    return id
+  }
+
+  getJournalRecord(id: string): {
+    id: string
+    source: string
+    sourceId?: string
+    journal: JsonValue
+    verificationState: EvidenceVerificationState
+    createdAt: number
+    updatedAt: number
+  } | null {
+    const row = this.requireDb().prepare('SELECT * FROM journal_records WHERE id = ?').get(id)
+    if (!row) return null
+    const record = row as Record<string, unknown>
+    const sourceId = optionalString(record['source_id'])
+    return {
+      id: requiredString(record['id'], 'journal id'),
+      source: requiredString(record['source'], 'journal source'),
+      ...(sourceId ? { sourceId } : {}),
+      journal: JSON.parse(requiredString(record['journal_json'], 'journal_json')) as JsonValue,
+      verificationState: requiredString(record['verification_state'], 'journal verification_state') as EvidenceVerificationState,
+      createdAt: asTimestamp(record['created_at'], 'journal created_at'),
+      updatedAt: asTimestamp(record['updated_at'], 'journal updated_at'),
+    }
+  }
+
+  setJournalRequirements(journalId: string, requirements: JsonValue, verificationState: EvidenceVerificationState): string {
+    if (!this.getJournalRecord(journalId)) throw new Error(`cannot set requirements for unknown journal: ${journalId}`)
+    const now = Date.now()
+    const id = `jreq-${randomUUID()}`
+    this.requireDb().prepare(`
+      INSERT INTO journal_requirements (id, journal_id, requirements_json, verification_state, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `).run(id, journalId, JSON.stringify(requirements), verificationState, now, now)
+    return id
+  }
+
+  getJournalRequirements(journalId: string): JournalRequirementRecord[] {
+    return this.requireDb().prepare(
+      'SELECT * FROM journal_requirements WHERE journal_id = ? ORDER BY created_at DESC',
+    ).all(journalId).map((row) => {
+      const record = row as Record<string, unknown>
+      return {
+        id: requiredString(record['id'], 'journal requirement id'),
+        journalId: requiredString(record['journal_id'], 'journal requirement journal_id'),
+        requirements: JSON.parse(requiredString(record['requirements_json'], 'requirements_json')) as JsonValue,
+        verificationState: requiredString(record['verification_state'], 'requirements verification_state') as EvidenceVerificationState,
+        updatedAt: asTimestamp(record['updated_at'], 'requirements updated_at'),
+      }
+    })
+  }
+
+  createSubmissionCase(input: {
+    projectId?: string | null
+    artifactId?: string | null
+    journalId?: string | null
+    notes?: string
+  }): SubmissionCaseRecord {
+    if (input.projectId && !this.getProject(input.projectId)) throw new Error(`unknown project: ${input.projectId}`)
+    if (input.artifactId && !this.getArtifact(input.artifactId)) throw new Error(`unknown artifact: ${input.artifactId}`)
+    if (input.journalId && !this.getJournalRecord(input.journalId)) throw new Error(`unknown journal: ${input.journalId}`)
+    const now = Date.now()
+    const id = `case-${randomUUID()}`
+    this.requireDb().prepare(`
+      INSERT INTO submission_cases (id, project_id, artifact_id, journal_id, state_json, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(id, input.projectId ?? null, input.artifactId ?? null, input.journalId ?? null,
+      JSON.stringify({ status: 'researching', notes: input.notes ?? '' }), now, now)
+    return this.getSubmissionCase(id) ?? fail('submission case was not readable after insert')
+  }
+
+  getSubmissionCase(id: string): SubmissionCaseRecord | null {
+    const row = this.requireDb().prepare('SELECT * FROM submission_cases WHERE id = ?').get(id)
+    if (!row) return null
+    const record = row as Record<string, unknown>
+    const state = JSON.parse(requiredString(record['state_json'], 'case state_json')) as { status?: string; notes?: string }
+    return submissionCaseFromRow(record, state)
+  }
+
+  listSubmissionCases(projectId?: string): SubmissionCaseRecord[] {
+    const rows = projectId
+      ? this.requireDb().prepare('SELECT * FROM submission_cases WHERE project_id = ? ORDER BY updated_at DESC').all(projectId)
+      : this.requireDb().prepare('SELECT * FROM submission_cases ORDER BY updated_at DESC').all()
+    return rows.map((row) => {
+      const record = row as Record<string, unknown>
+      const state = JSON.parse(requiredString(record['state_json'], 'case state_json')) as { status?: string; notes?: string }
+      return submissionCaseFromRow(record, state)
+    })
+  }
+
+  updateSubmissionCase(id: string, patch: {
+    status?: SubmissionCaseStatus
+    notes?: string
+    journalId?: string | null
+    artifactId?: string | null
+  }): SubmissionCaseRecord | null {
+    const current = this.getSubmissionCase(id)
+    if (!current) return null
+    const status = patch.status ?? current.status
+    if (!(SUBMISSION_CASE_STATUSES as readonly string[]).includes(status)) throw new Error(`unknown submission status: ${status}`)
+    if (patch.journalId && !this.getJournalRecord(patch.journalId)) throw new Error(`unknown journal: ${patch.journalId}`)
+    if (patch.artifactId && !this.getArtifact(patch.artifactId)) throw new Error(`unknown artifact: ${patch.artifactId}`)
+    this.requireDb().prepare(`
+      UPDATE submission_cases SET
+        artifact_id = ?, journal_id = ?, state_json = ?, updated_at = ?
+      WHERE id = ?
+    `).run(
+      patch.artifactId === undefined ? current.artifactId : patch.artifactId,
+      patch.journalId === undefined ? current.journalId : patch.journalId,
+      JSON.stringify({
+        status,
+        notes: patch.notes === undefined ? current.notes ?? '' : patch.notes,
+      }),
+      Date.now(),
+      id,
+    )
+    return this.getSubmissionCase(id)
+  }
+
+  addSubmissionCheck(caseId: string, check: JsonValue): string {
+    if (!this.getSubmissionCase(caseId)) throw new Error(`unknown submission case: ${caseId}`)
+    const id = `chk-${randomUUID()}`
+    this.requireDb().prepare(
+      'INSERT INTO submission_checks (id, case_id, check_json, created_at) VALUES (?, ?, ?, ?)',
+    ).run(id, caseId, JSON.stringify(check), Date.now())
+    return id
+  }
+
+  recordArtifactJournalMatch(input: { artifactId: string; journalId: string; score?: number }): void {
+    if (!this.getArtifact(input.artifactId)) throw new Error(`unknown artifact: ${input.artifactId}`)
+    if (!this.getJournalRecord(input.journalId)) throw new Error(`unknown journal: ${input.journalId}`)
+    this.requireDb().prepare(`
+      INSERT INTO artifact_journal_matches (artifact_id, journal_id, score, created_at)
+      VALUES (?, ?, ?, ?)
+      ON CONFLICT(artifact_id, journal_id) DO UPDATE SET score = excluded.score, created_at = excluded.created_at
+    `).run(input.artifactId, input.journalId, input.score ?? null, Date.now())
+  }
+
+  /**
+   * First-version gap check: journal requirement sets' verification facts
+   * versus the artifact record. Reports unverified/conflicting requirement
+   * sets and absent artifact metadata keys; never invents conformance.
+   */
+  submissionGapCheck(caseId: string): {
+    caseRecord: SubmissionCaseRecord
+    requirementSets: Array<JournalRequirementRecord>
+    artifact: ArtifactRecord | null
+    unverifiedRequirementSets: number
+    conflictingRequirementSets: number
+    artifactMissingKeys: string[]
+  } {
+    const caseRecord = this.getSubmissionCase(caseId)
+    if (!caseRecord) throw new Error(`unknown submission case: ${caseId}`)
+    const requirementSets = caseRecord.journalId ? this.getJournalRequirements(caseRecord.journalId) : []
+    const artifact = caseRecord.artifactId ? this.getArtifact(caseRecord.artifactId) : null
+    const requirementKeys = new Set<string>()
+    for (const set of requirementSets) {
+      const value = set.requirements
+      if (Array.isArray(value)) {
+        for (const item of value) {
+          if (item !== null && typeof item === 'object' && !Array.isArray(item)) {
+            const key = (item as Record<string, JsonValue>)['key']
+            if (typeof key === 'string') requirementKeys.add(key)
+          }
+        }
+      }
+    }
+    const artifactMissingKeys: string[] = []
+    if (artifact) {
+      for (const key of requirementKeys) {
+        if ((artifact as unknown as Record<string, unknown>)[key] === undefined) artifactMissingKeys.push(key)
+      }
+    }
+    return {
+      caseRecord,
+      requirementSets,
+      artifact,
+      unverifiedRequirementSets: requirementSets.filter((set) => set.verificationState === 'unverified').length,
+      conflictingRequirementSets: requirementSets.filter((set) => set.verificationState === 'conflicting').length,
+      artifactMissingKeys,
+    }
   }
 
   updateArtifact(
@@ -1032,7 +1432,7 @@ export class MetisDataStore {
     const record = row as Record<string, unknown>
     const id = requiredString(record['id'], 'artifact id')
     const versions = this.requireDb().prepare(`
-      SELECT artifact_id, version, workspace_path, note, created_at FROM artifact_versions
+      SELECT artifact_id, version, workspace_path, note, created_at, content_hash, created_by FROM artifact_versions
       WHERE artifact_id = ? ORDER BY version ASC
     `).all(id).map((value) => artifactVersionFromRow(value))
     const evidenceIds = this.requireDb().prepare(`
@@ -1048,11 +1448,252 @@ export class MetisDataStore {
       source: requiredString(record['source'], 'artifact source'),
       status: requiredString(record['status'], 'artifact status') as ArtifactStatus,
       ...(optionalString(record['mime_type']) ? { mimeType: optionalString(record['mime_type']) } : {}),
+      ...(typeof record['finalized_at'] === 'number' ? { finalizedAt: record['finalized_at'] } : {}),
       createdAt: asTimestamp(record['created_at'], 'artifact created_at'),
       updatedAt: asTimestamp(record['updated_at'], 'artifact updated_at'),
       evidenceIds,
       versions,
     }
+  }
+}
+
+const MIGRATION_V1_UP = (db: DatabaseSync): void => {
+  db.exec(`
+        CREATE TABLE research_projects (
+          id TEXT PRIMARY KEY,
+          title TEXT,
+          discipline TEXT,
+          research_question TEXT,
+          research_object TEXT,
+          methodology TEXT,
+          stage TEXT,
+          keywords_json TEXT NOT NULL,
+          publication_intent TEXT,
+          notes TEXT,
+          created_at INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL
+        ) STRICT;
+        CREATE TABLE workspace_project_bindings (
+          workspace_id TEXT PRIMARY KEY,
+          project_id TEXT NOT NULL REFERENCES research_projects(id) ON DELETE CASCADE,
+          created_at INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL
+        ) STRICT;
+        CREATE TABLE session_project_bindings (
+          session_id TEXT PRIMARY KEY,
+          workspace_id TEXT,
+          project_id TEXT NOT NULL REFERENCES research_projects(id) ON DELETE CASCADE,
+          created_at INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL
+        ) STRICT;
+        CREATE TABLE literature_records (
+          id TEXT PRIMARY KEY,
+          dedupe_key TEXT NOT NULL UNIQUE,
+          title TEXT NOT NULL,
+          authors_json TEXT NOT NULL,
+          year INTEGER,
+          journal TEXT,
+          abstract TEXT,
+          doi TEXT,
+          url TEXT,
+          source TEXT NOT NULL,
+          source_id TEXT,
+          keywords_json TEXT NOT NULL,
+          citation_count INTEGER,
+          core_status TEXT,
+          verification_state TEXT,
+          created_at INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL
+        ) STRICT;
+        CREATE TABLE project_literature (
+          project_id TEXT NOT NULL REFERENCES research_projects(id) ON DELETE CASCADE,
+          literature_id TEXT NOT NULL REFERENCES literature_records(id) ON DELETE CASCADE,
+          evidence_id TEXT,
+          saved_at INTEGER NOT NULL,
+          PRIMARY KEY (project_id, literature_id)
+        ) STRICT;
+        CREATE TABLE evidence_sources (
+          id TEXT PRIMARY KEY,
+          provider TEXT NOT NULL,
+          source_id TEXT,
+          url TEXT,
+          retrieved_at INTEGER,
+          doi TEXT,
+          dedupe_key TEXT NOT NULL UNIQUE,
+          created_at INTEGER NOT NULL
+        ) STRICT;
+        CREATE TABLE evidence_records (
+          id TEXT PRIMARY KEY,
+          project_id TEXT REFERENCES research_projects(id) ON DELETE SET NULL,
+          source_id TEXT NOT NULL REFERENCES evidence_sources(id) ON DELETE RESTRICT,
+          source_type TEXT NOT NULL,
+          title TEXT NOT NULL,
+          observation TEXT,
+          observed_at INTEGER NOT NULL,
+          verification_state TEXT NOT NULL,
+          created_by_tool TEXT NOT NULL,
+          truncated INTEGER NOT NULL DEFAULT 0,
+          created_at INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL,
+          dedupe_key TEXT NOT NULL UNIQUE
+        ) STRICT;
+        CREATE TABLE evidence_excerpts (
+          id TEXT PRIMARY KEY,
+          evidence_id TEXT NOT NULL REFERENCES evidence_records(id) ON DELETE CASCADE,
+          content TEXT NOT NULL,
+          locator TEXT,
+          created_at INTEGER NOT NULL
+        ) STRICT;
+        CREATE TABLE evidence_claims (
+          id TEXT PRIMARY KEY,
+          project_id TEXT NOT NULL REFERENCES research_projects(id) ON DELETE CASCADE,
+          text TEXT NOT NULL,
+          verification_state TEXT NOT NULL,
+          created_at INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL
+        ) STRICT;
+        CREATE TABLE claim_evidence_links (
+          claim_id TEXT NOT NULL REFERENCES evidence_claims(id) ON DELETE CASCADE,
+          evidence_id TEXT NOT NULL REFERENCES evidence_records(id) ON DELETE CASCADE,
+          relation TEXT NOT NULL,
+          created_at INTEGER NOT NULL,
+          PRIMARY KEY (claim_id, evidence_id)
+        ) STRICT;
+        CREATE TABLE scenario_activations (
+          session_id TEXT PRIMARY KEY,
+          project_id TEXT REFERENCES research_projects(id) ON DELETE SET NULL,
+          scenario_id TEXT NOT NULL,
+          activated_at INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL
+        ) STRICT;
+        CREATE TABLE artifacts (
+          id TEXT PRIMARY KEY,
+          type TEXT NOT NULL,
+          title TEXT NOT NULL,
+          workspace_path TEXT NOT NULL,
+          project_id TEXT REFERENCES research_projects(id) ON DELETE SET NULL,
+          version INTEGER NOT NULL,
+          source TEXT NOT NULL,
+          status TEXT NOT NULL,
+          mime_type TEXT,
+          created_at INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL
+        ) STRICT;
+        CREATE TABLE artifact_versions (
+          artifact_id TEXT NOT NULL REFERENCES artifacts(id) ON DELETE CASCADE,
+          version INTEGER NOT NULL,
+          workspace_path TEXT NOT NULL,
+          note TEXT,
+          created_at INTEGER NOT NULL,
+          PRIMARY KEY (artifact_id, version)
+        ) STRICT;
+        CREATE TABLE artifact_evidence_links (
+          artifact_id TEXT NOT NULL REFERENCES artifacts(id) ON DELETE CASCADE,
+          evidence_id TEXT NOT NULL REFERENCES evidence_records(id) ON DELETE RESTRICT,
+          created_at INTEGER NOT NULL,
+          PRIMARY KEY (artifact_id, evidence_id)
+        ) STRICT;
+        CREATE TABLE funding_templates (
+          id TEXT PRIMARY KEY,
+          project_id TEXT REFERENCES research_projects(id) ON DELETE SET NULL,
+          template_json TEXT NOT NULL,
+          created_at INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL
+        ) STRICT;
+        CREATE TABLE funding_projects (
+          id TEXT PRIMARY KEY,
+          project_id TEXT REFERENCES research_projects(id) ON DELETE CASCADE,
+          template_id TEXT REFERENCES funding_templates(id) ON DELETE SET NULL,
+          state_json TEXT NOT NULL,
+          created_at INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL
+        ) STRICT;
+        CREATE TABLE journal_records (
+          id TEXT PRIMARY KEY,
+          source TEXT NOT NULL,
+          source_id TEXT,
+          journal_json TEXT NOT NULL,
+          verification_state TEXT NOT NULL,
+          created_at INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL
+        ) STRICT;
+        CREATE TABLE journal_requirements (
+          id TEXT PRIMARY KEY,
+          journal_id TEXT NOT NULL REFERENCES journal_records(id) ON DELETE CASCADE,
+          requirements_json TEXT NOT NULL,
+          verification_state TEXT NOT NULL,
+          created_at INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL
+        ) STRICT;
+        CREATE TABLE submission_cases (
+          id TEXT PRIMARY KEY,
+          project_id TEXT REFERENCES research_projects(id) ON DELETE SET NULL,
+          artifact_id TEXT REFERENCES artifacts(id) ON DELETE SET NULL,
+          journal_id TEXT REFERENCES journal_records(id) ON DELETE SET NULL,
+          state_json TEXT NOT NULL,
+          created_at INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL
+        ) STRICT;
+      `)
+}
+
+const MIGRATION_V2_UP = (db: DatabaseSync): void => {
+  db.exec(`
+    ALTER TABLE evidence_claims ADD COLUMN claim_type TEXT NOT NULL DEFAULT 'factual';
+    ALTER TABLE evidence_claims ADD COLUMN artifact_id TEXT REFERENCES artifacts(id) ON DELETE SET NULL;
+    ALTER TABLE claim_evidence_links ADD COLUMN confidence REAL;
+    ALTER TABLE artifact_versions ADD COLUMN content_hash TEXT;
+    ALTER TABLE artifact_versions ADD COLUMN created_by TEXT;
+    ALTER TABLE artifacts ADD COLUMN finalized_at INTEGER;
+    CREATE TABLE funding_template_versions (
+      template_id TEXT NOT NULL,
+      version INTEGER NOT NULL,
+      template_json TEXT NOT NULL,
+      created_at INTEGER NOT NULL,
+      PRIMARY KEY (template_id, version)
+    ) STRICT;
+    CREATE TABLE funding_section_drafts (
+      id TEXT PRIMARY KEY,
+      project_id TEXT NOT NULL REFERENCES research_projects(id) ON DELETE CASCADE,
+      template_id TEXT NOT NULL,
+      section_id TEXT NOT NULL,
+      draft_text TEXT NOT NULL,
+      used_evidence_json TEXT NOT NULL,
+      created_at INTEGER NOT NULL
+    ) STRICT;
+    CREATE TABLE submission_checks (
+      id TEXT PRIMARY KEY,
+      case_id TEXT NOT NULL REFERENCES submission_cases(id) ON DELETE CASCADE,
+      check_json TEXT NOT NULL,
+      created_at INTEGER NOT NULL
+    ) STRICT;
+    CREATE TABLE artifact_journal_matches (
+      artifact_id TEXT NOT NULL REFERENCES artifacts(id) ON DELETE CASCADE,
+      journal_id TEXT NOT NULL REFERENCES journal_records(id) ON DELETE CASCADE,
+      score REAL,
+      created_at INTEGER NOT NULL,
+      PRIMARY KEY (artifact_id, journal_id)
+    ) STRICT;
+  `)
+}
+
+const SCHEMA_MIGRATIONS: ReadonlyArray<{ version: number; name: string; up: (db: DatabaseSync) => void }> = [
+  { version: 1, name: 'initial research domain schema', up: MIGRATION_V1_UP },
+  { version: 2, name: 'claim-level evidence, artifact hardening, funding/submission persistence', up: MIGRATION_V2_UP },
+]
+
+function claimFromRow(row: unknown): EvidenceClaimRecord {
+  const record = row as Record<string, unknown>
+  const artifactId = optionalString(record['artifact_id'])
+  return {
+    id: requiredString(record['id'], 'claim id'),
+    projectId: requiredString(record['project_id'], 'claim project_id'),
+    ...(artifactId ? { artifactId } : {}),
+    claimType: requiredString(record['claim_type'], 'claim claim_type') as ClaimType,
+    text: requiredString(record['text'], 'claim text'),
+    verificationState: requiredString(record['verification_state'], 'claim verification_state') as EvidenceVerificationState,
+    createdAt: asTimestamp(record['created_at'], 'claim created_at'),
+    updatedAt: asTimestamp(record['updated_at'], 'claim updated_at'),
   }
 }
 
@@ -1143,12 +1784,29 @@ function evidenceFromRow(row: unknown): EvidenceRecord {
 
 function artifactVersionFromRow(row: unknown): ArtifactVersionRecord {
   const record = row as Record<string, unknown>
+  const contentHash = optionalString(record['content_hash'])
+  const createdBy = optionalString(record['created_by'])
   return {
     artifactId: requiredString(record['artifact_id'], 'artifact version artifact_id'),
     version: asTimestamp(record['version'], 'artifact version number'),
     workspacePath: requiredString(record['workspace_path'], 'artifact version workspace_path'),
-    ...(optionalString(record['note']) ? { note: optionalString(record['note']) } : {}),
+    ...(contentHash ? { contentHash } : {}),
+    ...(createdBy ? { createdBy } : {}),
     createdAt: asTimestamp(record['created_at'], 'artifact version created_at'),
+    ...(optionalString(record['note']) ? { note: optionalString(record['note']) } : {}),
+  }
+}
+
+function submissionCaseFromRow(record: Record<string, unknown>, state: { status?: string; notes?: string }): SubmissionCaseRecord {
+  return {
+    id: requiredString(record['id'], 'case id'),
+    projectId: typeof record['project_id'] === 'string' ? record['project_id'] : null,
+    artifactId: typeof record['artifact_id'] === 'string' ? record['artifact_id'] : null,
+    journalId: typeof record['journal_id'] === 'string' ? record['journal_id'] : null,
+    status: requiredString(state.status ?? 'researching', 'case status') as SubmissionCaseStatus,
+    notes: typeof state.notes === 'string' ? state.notes : null,
+    createdAt: asTimestamp(record['created_at'], 'case created_at'),
+    updatedAt: asTimestamp(record['updated_at'], 'case updated_at'),
   }
 }
 

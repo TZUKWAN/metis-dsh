@@ -35,6 +35,9 @@ const EXPECTED_TOOLS = [
   'scenario_list', 'scenario_get', 'scenario_activate',
   'artifact_register', 'artifact_list', 'artifact_get', 'artifact_version', 'artifact_update_metadata',
   'funding_template_parse', 'funding_template_requirements', 'funding_template_check', 'funding_template_diff',
+  'funding_material_gap', 'funding_section_draft', 'funding_draft_list', 'funding_template_list',
+  'evidence_claim_list', 'evidence_claim_status', 'evidence_excerpt_add', 'evidence_excerpt_list',
+  'artifact_evidence_check', 'artifact_finalize', 'artifact_compare',
   'journal_search', 'journal_targeting_match',
 ]
 
@@ -183,7 +186,10 @@ for (const id of ['metis-core', 'metis-evidence', 'metis-literature', 'metis-sce
 }
 // Funding's JSON registry must land in the sandbox too (checkout root is not
 // writable by verification runs — the upstream guard enforces it).
-patches.push({ id: 'metis-funding', config: { dataFile: path.join(sandbox, 'metis-data', 'funding-templates.json').split(path.sep).join('/') } } as (typeof patches)[number])
+
+// Funding joins the shared sandboxed SQLite database.
+patches.push({ id: 'metis-funding', config: { databasePath: sandboxDatabase } } as (typeof patches)[number])
+
 // The workspace registry is a Web-layer mount in stock profiles; the execution
 // matrix needs it, so insert the official DSH package row.
 patches.push({ insert: [{ id: 'workspace-registry', name: '@deepseek-ai/dsh-workspace' }] } as (typeof patches)[number])
@@ -192,6 +198,17 @@ const ctx = await boot('dsh', rootConfig, patches)
 try {
   for (const service of SERVICE_KEYS) {
     check(`service mounted: ${service}`, ctx.get(service) !== undefined)
+  }
+  if (SERVICE_KEYS.some((service) => ctx.get(service) === undefined)) {
+    try {
+      const artifactDist = pathToFileURL(path.join(profileModules, 'dsh-metis-artifact', 'dist', 'index.js')).href
+      const mod = await import(artifactDist)
+      console.log('[diagnostic] artifact dist imports OK:', Object.keys(mod))
+      await ctx.plugin(mod.default, { databasePath: sandboxDatabase })
+      console.log('[diagnostic] manual re-plugin mounted:', ctx.get('metisArtifact') !== undefined)
+    } catch (error) {
+      console.log('[diagnostic] manual re-plugin FAILED:', error instanceof Error ? error.stack : String(error))
+    }
   }
   for (const tool of EXPECTED_TOOLS) {
     check(`tool registered: ${tool}`, ctx.get('tools').get(tool) !== undefined)
@@ -282,6 +299,32 @@ try {
   check('funding_template_requirements executes', ok(await execute('funding_template_requirements', { template: parsed.template }))?.totalSections >= 0)
   check('funding_template_check executes', ok(await execute('funding_template_check', { templatePackage: parsed.template }))?.ok === true)
   check('funding_template_diff executes', ok(await execute('funding_template_diff', { oldPackage: parsed.template, newPackage: parsed.template })) !== undefined)
+  check('funding_template_list executes', ok(await execute('funding_template_list', {}))?.total >= 1)
+  const gap = ok(await execute('funding_material_gap', { templateId: 'smoke' }))
+  check('funding_material_gap executes with honest needs_user_confirmation', gap?.userFactsRequired?.every((fact: any) => fact.status === 'needs_user_confirmation') === true, gap)
+  const draft = ok(await execute('funding_section_draft', { templateId: 'smoke', sectionId: 'section-1', draftText: '第一版草稿（待核验：经费数字）。' }))
+  check('funding_section_draft executes', draft?.ok === true && typeof draft?.draft?.id === 'string', draft)
+  check('funding_draft_list executes', ok(await execute('funding_draft_list', {}))?.total >= 1)
+
+  // ── v2 claim-level / artifact integrity tools ──
+  const claimV2 = ok(await execute('evidence_claim_create', {
+    text: '平台劳动研究存在可追溯证据链。',
+    claimType: 'literature_finding',
+    artifactId: artifact.artifact.id,
+  }))
+  check('evidence_claim_create executes with project scope', typeof claim?.claim?.id === 'string', claim)
+  check('evidence_claim_status executes', ok(await execute('evidence_claim_status', { claimId: claimV2.claim.id, status: 'verified' }))?.claim?.verificationState === 'verified')
+  check('evidence_claim_link with confidence executes',
+    ok(await execute('evidence_claim_link', { claimId: claimV2.claim.id, evidenceId: savedRow?.evidenceId, relation: 'supports', confidence: 0.9 }))?.ok === true)
+  check('evidence_claim_list by artifact executes', ok(await execute('evidence_claim_list', { artifactId: artifact.artifact.id }))?.total === 1)
+  check('evidence_excerpt_add executes',
+    ok(await execute('evidence_excerpt_add', { evidenceId: savedRow?.evidenceId, content: '原文摘录冒烟', locatorType: 'abstract', locatorValue: 'abstract' }))?.ok === true)
+  check('evidence_excerpt_list executes', ok(await execute('evidence_excerpt_list', { evidenceId: savedRow?.evidenceId }))?.total >= 1)
+  const coverage = ok(await execute('artifact_evidence_check', { artifactId: artifact.artifact.id }))
+  check('artifact_evidence_check reports coverage', coverage?.report?.totalClaims === 1 && coverage?.report?.supportedClaims === 1, coverage)
+  check('artifact_finalize executes', ok(await execute('artifact_finalize', { id: artifact.artifact.id }))?.artifact?.status === 'final')
+  const compare = ok(await execute('artifact_compare', { id: artifact.artifact.id, fromVersion: 1, toVersion: 2 }))
+  check('artifact_compare executes with hashes and diff', compare?.ok === true && typeof compare?.diff?.from?.contentHash === 'string' && compare?.diff?.added >= 0, compare)
 
   const targeting = ok(await execute('journal_targeting_match', {
     papers: [{ title: 'Platform labor under algorithmic management', venue: 'New Media & Society', year: new Date().getFullYear() - 1, source: 'openalex' }],

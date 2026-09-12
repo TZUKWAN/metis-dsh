@@ -3,8 +3,14 @@
  * 覆盖：合法观察文档解析、invalid_input fail-loud、坏 payload、diff、check。
  */
 
-import { describe, expect, it } from 'vitest';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { afterEach, describe, expect, it } from 'vitest';
 import { createFundingTools } from '../src/tools.ts';
+import { MetisDataStore } from '../../../shared/data/src/index.ts';
+
+const temporaryRoots: string[] = [];
 
 /** 构造最小合法的观察文档（字段与 FundingTemplateObservationDocumentSchema 对齐）。 */
 function observationDocument(overrides: Record<string, unknown> = {}): Record<string, unknown> {
@@ -13,7 +19,7 @@ function observationDocument(overrides: Record<string, unknown> = {}): Record<st
     documentId: 'doc-001',
     sourceFormat: 'pdf',
     sourceDigest: 'a'.repeat(64),
-    extractedAt: 1_900_000_000_000,
+    extractedAt: 1_700_000_000_000,
     extractor: { name: 'test-extractor', version: '1.0.0' },
     pageCount: 1,
     pages: [{ pageNumber: 1, widthPt: 612, heightPt: 792, observedMarginsPt: null }],
@@ -60,7 +66,15 @@ function makeFunding(): {
   check: (args: any) => Promise<any>
   diff: (args: any) => Promise<any>
 } {
-  const tools = createFundingTools(`.test-funding-${Date.now()}.json`);
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'metis-funding-test-'));
+  temporaryRoots.push(root);
+  const data = MetisDataStore.open(path.join(root, 'metis-data', 'metis.db'));
+  const research = {
+    requireCurrentProject: async () => {
+      throw new Error('no project bound in this test');
+    },
+  } as never;
+  const tools = createFundingTools(research, data);
   const byName = new Map(tools.map((tool) => [tool.name, tool]));
   return {
     parse: (args) => byName.get('funding_template_parse')!.execute(args),
@@ -81,7 +95,6 @@ describe('dsh-metis-funding', () => {
       observationDocument: observationDocument(),
       templateId: 'user:test-template',
       templateVersion: 1,
-      createdAt: 1_900_000_000_001,
     });
     expect(result.ok).toBe(true);
     expect((result as { template?: { source?: { sourceDigest?: string } } }).template?.source?.sourceDigest)
@@ -94,7 +107,6 @@ describe('dsh-metis-funding', () => {
       observationDocument: { contractVersion: 1 },
       templateId: 'user:broken',
       templateVersion: 1,
-      createdAt: 1_900_000_000_001,
     });
     expect(result.ok).toBe(false);
     expect((result as { issues?: string[] }).issues!.length).toBeGreaterThan(0);
@@ -106,7 +118,6 @@ describe('dsh-metis-funding', () => {
       observationDocument: 'not-a-document',
       templateId: 'user:x',
       templateVersion: 1,
-      createdAt: 1_900_000_000_001,
     });
     expect(result.ok).toBe(false);
   });
@@ -117,7 +128,6 @@ describe('dsh-metis-funding', () => {
       observationDocument: observationDocument(),
       templateId: 'user:test-template',
       templateVersion: 1,
-      createdAt: 1_900_000_000_001,
     });
     const check = await funding.check({ templatePackage: (parsed as { template?: unknown }).template });
     expect((check as { ok: boolean }).ok).toBe(true);
@@ -136,7 +146,7 @@ describe('dsh-metis-funding', () => {
         }),
         templateId: 'user:diff',
         templateVersion: version,
-        createdAt: 1_900_000_000_001,
+        
       });
       return (result as { template?: unknown }).template;
     };
@@ -153,7 +163,6 @@ describe('dsh-metis-funding', () => {
       observationDocument: observationDocument(),
       templateId: 'user:req',
       templateVersion: 1,
-      createdAt: 1_900_000_000_001,
     });
     const template = (parsed as { template?: Record<string, unknown> }).template ?? {};
     const requirements = await funding.requirements({ template }) as {

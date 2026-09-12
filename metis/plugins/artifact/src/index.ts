@@ -1,4 +1,5 @@
-import { existsSync } from 'node:fs'
+import { createHash } from 'node:crypto'
+import { existsSync, readFileSync } from 'node:fs'
 import { relative, resolve, sep } from 'node:path'
 import { Service, type Context } from '@deepseek-ai/cordis'
 import { defineTool, type ToolRunContext } from '@deepseek-ai/dsh-tools'
@@ -123,6 +124,8 @@ export class MetisArtifact extends Service {
           projectId: project.id,
           source: 'dsh-workspace',
           ...(args.note ? { note: args.note } : {}),
+          contentHash: createHash('sha256').update(readFileSync(file.absolutePath)).digest('hex'),
+          createdBy: 'model',
           evidenceIds: args.evidenceIds ?? [],
         })
         return { ok: true, artifact: toJson(artifact), error: '' }
@@ -197,7 +200,10 @@ export class MetisArtifact extends Service {
         const workspace = resolveWorkspaceScope(ctx, exec.agent)
         const file = workspaceRelativePath(workspace.path, args.path)
         if (!existsSync(file.absolutePath)) return { ok: false, artifact: null, error: `当前 DSH Workspace 中不存在文件: ${file.relativePath}` }
-        const artifact = data.addArtifactVersion(args.id, file.relativePath, args.note)
+        const artifact = data.addArtifactVersion(args.id, file.relativePath, args.note, {
+          contentHash: createHash('sha256').update(readFileSync(file.absolutePath)).digest('hex'),
+          createdBy: 'model',
+        })
         if (!artifact) return { ok: false, artifact: null, error: `Artifact 不存在: ${args.id}` }
         return { ok: true, artifact: toJson(artifact), error: '' }
       },
@@ -239,7 +245,128 @@ export class MetisArtifact extends Service {
         return { ok: true, artifact: toJson(artifact), error: '' }
       },
     }))
+
+    this.registerIntegrityTools(ctx)
   }
+
+  private registerIntegrityTools(ctx: Context): void {
+    ctx.tools.register(defineTool({
+      name: 'artifact_finalize',
+      description: '把当前项目内 Artifact 定稿（status=final 并记录 finalized_at）。定稿后内容更新应走 artifact_version 而非覆盖历史。',
+      parameters: { id: { type: 'string', description: 'Artifact id', required: true } },
+      output: {
+        schema: { type: 'object', additionalProperties: true, properties: { ok: { type: 'boolean' }, artifact: { type: 'json' }, error: { type: 'string' } } },
+        render: (_args, value) => [{ type: 'text', text: JSON.stringify(value) }],
+      },
+      execute: async (args, exec: ToolRunContext) => {
+        const project = await this.research.requireCurrentProject(exec.agent)
+        const data = await this.dataStore()
+        const existing = data.getArtifact(args.id)
+        if (!existing || existing.projectId !== project.id) return { ok: false, artifact: null, error: `当前项目中不存在 Artifact: ${args.id}` }
+        const artifact = data.setArtifactFinalized(args.id)
+        if (!artifact) return { ok: false, artifact: null, error: `Artifact 不存在: ${args.id}` }
+        return { ok: true, artifact: toJson(artifact), error: '' }
+      },
+    }))
+
+    ctx.tools.register(defineTool({
+      name: 'artifact_evidence_check',
+      description: '报告 Artifact 的 Claim 证据覆盖率（总数/各状态/supported/contradicted/无证据数/覆盖率）。第一版启发式统计，诚实标注。',
+      parameters: { artifactId: { type: 'string', description: 'Artifact id', required: true } },
+      output: {
+        schema: { type: 'object', additionalProperties: true, properties: { report: { type: 'json' } } },
+        render: (_args, value) => [{ type: 'text', text: JSON.stringify(value) }],
+      },
+      execute: async (args, exec: ToolRunContext) => {
+        const project = await this.research.requireCurrentProject(exec.agent)
+        const data = await this.dataStore()
+        const existing = data.getArtifact(args.artifactId)
+        if (!existing || existing.projectId !== project.id) throw new Error(`当前项目中不存在 Artifact: ${args.artifactId}`)
+        return { report: toJson(data.artifactEvidenceCheck(args.artifactId)) }
+      },
+    }))
+
+    ctx.tools.register(defineTool({
+      name: 'artifact_compare',
+      description: '对比同 - Artifact 的两个版本：版本元数据、内容哈希与逐行差异（LCS）。文件必须在当前 DSH Workspace 内可读。',
+      parameters: {
+        id: { type: 'string', description: 'Artifact id', required: true },
+        fromVersion: { type: 'number', description: '起始版本号', required: true },
+        toVersion: { type: 'number', description: '目标版本号', required: true },
+      },
+      output: {
+        schema: { type: 'object', additionalProperties: true, properties: { ok: { type: 'boolean' }, diff: { type: 'json' }, error: { type: 'string' } } },
+        render: (_args, value) => [{ type: 'text', text: JSON.stringify(value) }],
+      },
+      execute: async (args, exec: ToolRunContext) => {
+        const project = await this.research.requireCurrentProject(exec.agent)
+        const data = await this.dataStore()
+        const existing = data.getArtifact(args.id)
+        if (!existing || existing.projectId !== project.id) return { ok: false, diff: null, error: `当前项目中不存在 Artifact: ${args.id}` }
+        const from = existing.versions.find((entry) => entry.version === args.fromVersion)
+        const to = existing.versions.find((entry) => entry.version === args.toVersion)
+        if (!from || !to) return { ok: false, diff: null, error: '版本不存在（使用 artifact_get 查看版本历史）。' }
+        const workspace = resolveWorkspaceScope(ctx, exec.agent)
+        const readLines = (relativePath: string): string[] => {
+          const file = workspaceRelativePath(workspace.path, relativePath)
+          if (!existsSync(file.absolutePath)) throw new Error(`文件不在当前 Workspace 或已丢失: ${relativePath}`)
+          return readFileSync(file.absolutePath, 'utf8').split(/\r?\n/)
+        }
+        const a = readLines(from.workspacePath)
+        const b = readLines(to.workspacePath)
+        const diffLines = lineDiff(a, b)
+        return {
+          ok: true,
+          diff: toJson({
+            artifactId: existing.id,
+            from: { version: from.version, workspacePath: from.workspacePath, contentHash: from.contentHash ?? null },
+            to: { version: to.version, workspacePath: to.workspacePath, contentHash: to.contentHash ?? null },
+            contentHashMatchesFile: {
+              from: from.contentHash ? createHash('sha256').update(readFileSync(resolve(workspace.path, from.workspacePath))).digest('hex') === from.contentHash : null,
+              to: to.contentHash ? createHash('sha256').update(readFileSync(resolve(workspace.path, to.workspacePath))).digest('hex') === to.contentHash : null,
+            },
+            added: diffLines.filter((line) => line.kind === 'added').length,
+            removed: diffLines.filter((line) => line.kind === 'removed').length,
+            unchanged: diffLines.filter((line) => line.kind === 'unchanged').length,
+            lines: diffLines,
+          }),
+          error: '',
+        }
+      },
+    }))
+  }
+}
+
+/** Simple LCS line diff (first-version implementation, bounded input). */
+function lineDiff(a: readonly string[], b: readonly string[]): Array<{ kind: 'unchanged' | 'added' | 'removed'; text: string }> {
+  const n = a.length
+  const m = b.length
+  if (n * m > 4_000_000) throw new Error('artifact_compare: 文件过大，第一版 LCS 差异限制为 4M 单元格。')
+  const table: number[][] = Array.from({ length: n + 1 }, () => new Array<number>(m + 1).fill(0))
+  for (let i = n - 1; i >= 0; i -= 1) {
+    for (let j = m - 1; j >= 0; j -= 1) {
+      table[i]![j] = a[i] === b[j] ? (table[i + 1]![j + 1] ?? 0) + 1 : Math.max(table[i + 1]![j] ?? 0, table[i]![j + 1] ?? 0)
+    }
+  }
+  const out: Array<{ kind: 'unchanged' | 'added' | 'removed'; text: string }> = []
+  let i = 0
+  let j = 0
+  while (i < n && j < m) {
+    if (a[i] === b[j]) {
+      out.push({ kind: 'unchanged', text: a[i] ?? '' })
+      i += 1
+      j += 1
+    } else if ((table[i + 1]![j] ?? 0) >= (table[i]![j + 1] ?? 0)) {
+      out.push({ kind: 'removed', text: a[i] ?? '' })
+      i += 1
+    } else {
+      out.push({ kind: 'added', text: b[j] ?? '' })
+      j += 1
+    }
+  }
+  while (i < n) { out.push({ kind: 'removed', text: a[i] ?? '' }); i += 1 }
+  while (j < m) { out.push({ kind: 'added', text: b[j] ?? '' }); j += 1 }
+  return out
 }
 
 export default {

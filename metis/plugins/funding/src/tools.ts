@@ -1,31 +1,39 @@
 /**
- * dsh-metis-funding — 基金申报模板领域插件（Phase 20 / T20）。
+ * dsh-metis-funding tools（SQLite 持久化形态）。
  *
- * 章节树/限字数/表格/字段映射/版本 diff 的核心分析复用 shared/funding
- * （提取自 legacy FundingTemplateAnalyzer.ts，语义不变）。
- *
- * 工具以**原始 JSON-Schema ToolDefinition** 形状注册（cookbook：ctx.tools.register
- * 直接接受 raw 定义，零 DSH 模块导入——解决独立 workspace 的运行时依赖闭包问题）。
- *
- * 纪律（T20-027/028）：本插件只处理模板结构与要求；履历/经费/成果等
- * 用户事实缺失时明确列为缺口，绝不编造。
+ * 模板包登记进 MetisDataStore（funding_templates + funding_template_versions），
+ * 章节草稿进 funding_section_drafts。material_gap 第一版为诚实启发式：
+ * 只报告模板要求、项目已知字段与「必须由用户确认」的事实类别，绝不编造。
  */
 
-import fs from 'node:fs'
-import path from 'node:path'
+import type { ToolRunContext } from '@deepseek-ai/dsh-tools'
+import {
+  MetisDataStore,
+  type FundingSectionDraftRecord,
+  type FundingTemplateRecord,
+} from '../../../shared/data/src/index.ts'
+import type { MetisResearch } from '../../core/src/index.ts'
 import { analyzeFundingTemplate, diffFundingTemplatePackages, verifyFundingTemplatePackage } from '../../../shared/funding/src/funding-template-analyzer.ts'
 
 export interface Config {
-  /** 解析结果登记库（JSON）位置，默认 metis-data/funding-templates.json。 */
-  dataFile?: string
+  /** 统一 metis.db 路径（与 core/evidence/literature/scenario/artifact 对齐）。 */
+  databasePath?: string
 }
 
-export class MetisFunding {
-  readonly dataFile: string
+/** 用户事实类别：模板可能要求，但系统无法自行核验，必须由用户确认。 */
+const USER_FACT_CATEGORIES = [
+  '负责人履历', '团队成员', '代表性成果', '研究基础', '经费预算', '时间计划', '合作单位',
+] as const
 
-  constructor(dataFile?: string) {
-    const requested = dataFile ?? 'metis-data/funding-templates.json'
-    this.dataFile = path.isAbsolute(requested) ? requested : path.resolve(process.cwd(), requested)
+export class MetisFunding {
+  private readonly data: Promise<MetisDataStore>
+
+  constructor(_research: MetisResearch, data: Promise<MetisDataStore>) {
+    this.data = data
+  }
+
+  private async store(): Promise<MetisDataStore> {
+    return await this.data
   }
 
   /** 观察文档 → 分析结果（ok 或带具体 issues）。 */
@@ -43,96 +51,104 @@ export class MetisFunding {
     return verifyFundingTemplatePackage(raw)
   }
 
-  /** 解析成功的结果登记到本地 JSON（原子写）。 */
-  persist(templateId: string, templateVersion: number, template: unknown): void {
-    fs.mkdirSync(path.dirname(this.dataFile), { recursive: true })
-    const existing: Array<Record<string, unknown>> = fs.existsSync(this.dataFile)
-      ? (JSON.parse(fs.readFileSync(this.dataFile, 'utf8')) as Array<Record<string, unknown>>)
-      : []
-    const record = { templateId, templateVersion, savedAt: Date.now(), template }
-    const index = existing.findIndex((item) => item['templateId'] === templateId)
-    if (index >= 0) existing[index] = record
-    else existing.push(record)
-    const tmp = `${this.dataFile}.tmp-${Date.now()}`
-    fs.writeFileSync(tmp, JSON.stringify(existing, null, 2), 'utf8')
-    fs.renameSync(tmp, this.dataFile)
+  async persist(input: { templateId: string; templateVersion: number; template: unknown; projectId?: string | null }): Promise<FundingTemplateRecord> {
+    return (await this.store()).saveFundingTemplate({
+      templateId: input.templateId,
+      ...(input.projectId === undefined ? {} : { projectId: input.projectId }),
+      version: input.templateVersion,
+      template: JSON.parse(JSON.stringify(input.template)) as import('@deepseek-ai/dsh-util-values').JsonValue,
+    })
+  }
+
+  async getTemplate(templateId: string): Promise<FundingTemplateRecord | null> {
+    return (await this.store()).getFundingTemplate(templateId)
+  }
+
+  async listTemplates(projectId?: string): Promise<FundingTemplateRecord[]> {
+    return (await this.store()).listFundingTemplates(projectId)
+  }
+
+  async saveSectionDraft(input: {
+    projectId: string
+    templateId: string
+    sectionId: string
+    draftText: string
+    usedEvidenceIds: readonly string[]
+  }): Promise<FundingSectionDraftRecord> {
+    return (await this.store()).saveFundingSectionDraft(input)
+  }
+
+  async listSectionDrafts(projectId: string, templateId?: string): Promise<FundingSectionDraftRecord[]> {
+    return (await this.store()).listFundingSectionDrafts(projectId, templateId)
   }
 }
 
-/** 原始 JSON-Schema 工具定义（ctx.tools.register 直接接受的形状）。 */
-export interface RawToolDefinition {
-  name: string
-  description: string
-  parameters: Record<string, unknown>
-  output: {
-    schema: Record<string, unknown>
-    render: (args: any, value: any) => Array<{ type: 'text'; text: string }>
-  }
-  execute: (args: any, exec?: unknown) => Promise<any>
-}
+const OUTPUT_SCHEMA = { type: 'object', additionalProperties: true } as const
 
-const OUTPUT_SCHEMA: Record<string, unknown> = {
-  type: 'object',
-  additionalProperties: true,
-  properties: {
-    ok: { type: 'boolean', description: '操作是否成功' },
-    template: { type: 'object', description: '模板包' },
-    issues: { type: 'array', items: { type: 'string' }, description: '失败时的具体问题' },
-  },
-}
+export function createFundingTools(research: MetisResearch, data: Promise<MetisDataStore>): Array<Record<string, unknown>> {
+  const service = new MetisFunding(research, data)
+  const toJson = (value: unknown): unknown => JSON.parse(JSON.stringify(value))
 
-export function createFundingTools(dataFile?: string): RawToolDefinition[] {
-  const service = new MetisFunding(dataFile)
-
-  const parseTool: RawToolDefinition = {
+  const parseTool = {
     name: 'funding_template_parse',
-    description: '把申报书模板的观察文档（PDF/DOCX 解析产物：页/样式/文本块/表格）解析为结构化模板包：章节树、填写指令、限字数、表格要求、字段映射。解析失败时返回具体 issues，不猜测。',
+    description: '把申报书模板的观察文档（PDF/DOCX 解析产物：页/样式/文本块/表格）解析为结构化模板包：章节树、填写指令、限字数、表格要求、字段映射。解析成功后登记进 SQLite（可带 projectId 关联当前项目）。解析失败时返回具体 issues，不猜测。',
     parameters: {
-      type: 'object',
-      properties: {
-        observationDocument: { type: 'object', description: '模板观察文档（contractVersion=1，含 pages/styles/blocks）' },
-        templateId: { type: 'string', description: '模板 id' },
-        templateVersion: { type: 'number', description: '模板版本号' },
-        createdAt: { type: 'number', description: '创建时间戳' },
-      },
-      required: ['observationDocument', 'templateId', 'templateVersion', 'createdAt'],
+      observationDocument: { type: 'object', description: '模板观察文档（contractVersion=1，含 pages/styles/blocks）', required: true },
+      createdAt: { type: 'number', description: '模板创建时间戳（缺省当前时间）' },
+      templateId: { type: 'string', description: '模板 id（字母/数字/: _ -）', required: true },
+      templateVersion: { type: 'number', description: '模板版本（正整数）', required: true },
+      projectId: { type: 'string', description: '可选；关联当前科研项目' },
     },
-    output: { schema: OUTPUT_SCHEMA, render: (_args, value) => [{ type: 'text', text: JSON.stringify(value) }] },
+    output: { schema: OUTPUT_SCHEMA, render: (_args: unknown, value: unknown) => [{ type: 'text', text: JSON.stringify(value) }] },
     execute: async (args: any) => {
-      const request = {
-        templateId: String(args.templateId),
-        templateVersion: Number(args.templateVersion),
-        createdAt: Number(args.createdAt),
-        document: args.observationDocument,
+      const templateVersion = Number(args.templateVersion)
+      if (!Number.isSafeInteger(templateVersion) || templateVersion < 1) {
+        return { ok: false, issues: [`templateVersion 必须是正整数，收到: ${String(args.templateVersion)}`] }
       }
-      const result = service.parse(request) as { ok: boolean; template?: unknown; issues?: string[] }
-      if (result.ok) {
-        service.persist(String(args.templateId), Number(args.templateVersion), result.template)
-        return { ok: true, template: toJson(result.template) }
+      const result = service.parse({ document: args.observationDocument, templateId: String(args.templateId), templateVersion, createdAt: Number(args.createdAt ?? Date.now()) }) as { ok?: boolean; template?: unknown; issues?: string[] }
+      if (result?.ok === true && result.template !== undefined) {
+        let projectId: string | null = null
+        if (args.projectId !== undefined) {
+          const project = await research.requireCurrentProject(undefined, args.projectId)
+          projectId = project.id
+        }
+        const record = await service.persist({
+          templateId: String(args.templateId),
+          templateVersion,
+          template: result.template,
+          projectId,
+        })
+        return {
+          ok: true,
+          template: toJson(record.template),
+          registration: toJson({ templateId: record.templateId, version: record.version, projectId: record.projectId }),
+        }
       }
       return { ok: false, issues: toJson(result.issues ?? []) }
     },
   }
 
-  const requirementsTool: RawToolDefinition = {
+  const requirementsTool = {
     name: 'funding_template_requirements',
-    description: '从已解析的模板包提取申报要求清单：章节树（含层级）、每章填写指令与限字数、表格要求、内容槽位。',
+    description: '从已解析的模板包（或按 templateId 从库中读取）提取申报要求清单：章节树、每章填写指令与限字数、表格要求。',
     parameters: {
-      type: 'object',
-      properties: {
-        template: { type: 'object', description: '已解析的模板包' },
-      },
-      required: ['template'],
+      template: { type: 'object', description: '已解析的模板包（缺省时按 templateId 读取）' },
+      templateId: { type: 'string', description: '从库中读取已登记模板' },
     },
-    output: { schema: OUTPUT_SCHEMA, render: (_args, value) => [{ type: 'text', text: JSON.stringify(value) }] },
+    output: { schema: OUTPUT_SCHEMA, render: (_args: unknown, value: unknown) => [{ type: 'text', text: JSON.stringify(value) }] },
     execute: async (args: any) => {
-      const template = args.template ?? {}
-      const sections: Array<Record<string, unknown>> = template.sections ?? []
-      const requirements = sections.map((section, index) => {
+      let template = args.template
+      if (template === undefined) {
+        const record = args.templateId === undefined ? null : await service.getTemplate(String(args.templateId))
+        if (!record) throw new Error('未提供 template，且 templateId 在库中不存在。')
+        template = record.template
+      }
+      const sections: Array<Record<string, unknown>> = template?.sections ?? []
+      const requirements = sections.map((section: Record<string, unknown>, index: number) => {
         const entry: Record<string, unknown> = {
-          sectionId: section.sectionId ?? `section-${index}`,
-          title: section.title ?? `章节 ${index + 1}`,
-          level: section.level ?? null,
+          sectionId: section['sectionId'] ?? `section-${index}`,
+          title: section['title'] ?? `章节 ${index + 1}`,
+          level: section['level'] ?? null,
         }
         const wordLimit = (section as { wordLimit?: { max?: number } }).wordLimit?.max
         if (wordLimit !== undefined) entry.wordLimit = wordLimit
@@ -150,49 +166,135 @@ export function createFundingTools(dataFile?: string): RawToolDefinition[] {
     },
   }
 
-  const checkTool: RawToolDefinition = {
+  const checkTool = {
     name: 'funding_template_check',
     description: '校验一个模板包的完整性（digest 与结构 schema）。用于导入/传输后的可信性确认。',
     parameters: {
-      type: 'object',
-      properties: {
-        templatePackage: { type: 'object', description: '待校验的模板包' },
-      },
-      required: ['templatePackage'],
+      templatePackage: { type: 'object', description: '待校验的模板包', required: true },
     },
     output: {
       schema: {
         type: 'object',
         additionalProperties: true,
-        properties: {
-          ok: { type: 'boolean', description: '校验是否通过' },
-          issues: { type: 'array', items: { type: 'string' }, description: '失败时的具体问题' },
-        },
+        properties: { ok: { type: 'boolean' }, issues: { type: 'array', items: { type: 'string' } } },
       },
-      render: (_args, value) => [{ type: 'text', text: JSON.stringify(value) }],
+      render: (_args: unknown, value: unknown) => [{ type: 'text', text: JSON.stringify(value) }],
     },
     execute: async (args: any) => service.verify(args.templatePackage),
   }
 
-  const diffTool: RawToolDefinition = {
+  const diffTool = {
     name: 'funding_template_diff',
     description: '对比模板旧版与新版的结构化差异（章节/指令/表格/字段映射/排版变化）。',
     parameters: {
-      type: 'object',
-      properties: {
-        oldPackage: { type: 'object', description: '旧版模板包' },
-        newPackage: { type: 'object', description: '新版模板包' },
-      },
-      required: ['oldPackage', 'newPackage'],
+      oldPackage: { type: 'object', description: '旧版模板包', required: true },
+      newPackage: { type: 'object', description: '新版模板包', required: true },
     },
-    output: { schema: OUTPUT_SCHEMA, render: (_args, value) => [{ type: 'text', text: JSON.stringify(value) }] },
+    output: { schema: OUTPUT_SCHEMA, render: (_args: unknown, value: unknown) => [{ type: 'text', text: JSON.stringify(value) }] },
     execute: async (args: any) => ({ diff: toJson(service.diff(args.oldPackage, args.newPackage)) }),
   }
 
-  return [parseTool, requirementsTool, checkTool, diffTool]
-}
+  const materialGapTool = {
+    name: 'funding_material_gap',
+    description: '对照模板要求与当前项目已知信息，报告材料缺口。第一版为诚实启发式：只报告模板章节摘要、项目已知字段与「必须由用户确认」的事实类别（履历/团队/成果/经费等），绝不编造。',
+    parameters: {
+      templateId: { type: 'string', description: '已登记的模板 id', required: true },
+      projectId: { type: 'string', description: '可选；只能重复当前 session 已绑定项目 id' },
+    },
+    output: { schema: OUTPUT_SCHEMA, render: (_args: unknown, value: unknown) => [{ type: 'text', text: JSON.stringify(value) }] },
+    execute: async (args: any, exec: ToolRunContext) => {
+      const record = await service.getTemplate(String(args.templateId))
+      if (!record) throw new Error(`模板不存在: ${args.templateId}`)
+      const project = await research.requireCurrentProject(exec.agent, args.projectId)
+      const template = record.template as { sections?: Array<Record<string, unknown>> }
+      const sections = (template.sections ?? []).map((section: Record<string, unknown>, index: number) => {
+        const entry: Record<string, unknown> = {
+          sectionId: section['sectionId'] ?? `section-${index}`,
+          title: section['title'] ?? `章节 ${index + 1}`,
+        }
+        const wordLimit = (section as { wordLimit?: { max?: number } }).wordLimit?.max
+        if (wordLimit !== undefined) entry.wordLimit = wordLimit
+        return entry
+      })
+      const fieldNames = ['title', 'discipline', 'researchQuestion', 'researchObject', 'methodology', 'stage', 'keywords', 'publicationIntent', 'notes'] as const
+      const fieldValues = [
+        project.title, project.discipline, project.researchQuestion, project.researchObject,
+        project.methodology, project.stage, project.keywords, project.publicationIntent, project.notes,
+      ]
+      const projectKnownFields = fieldNames.filter((_, index) => fieldValues[index] !== undefined && fieldValues[index] !== null)
+      return {
+        templateId: record.templateId,
+        templateVersion: record.version,
+        sections,
+        projectKnownFields,
+        userFactsRequired: USER_FACT_CATEGORIES.map((category) => ({
+          category,
+          status: 'needs_user_confirmation',
+          note: '系统无法自行核验该类事实，需用户提供后才能写入申报材料。',
+        })),
+      }
+    },
+  }
 
-/** 领域对象 → 无损 JSON（canonical 输出）。 */
-function toJson(value: unknown): unknown {
-  return JSON.parse(JSON.stringify(value))
+  const sectionDraftTool = {
+    name: 'funding_section_draft',
+    description: '登记一个申报书章节草稿。草稿文本由你（模型）撰写；工具会校验所引用的 Evidence 真实存在并持久化草稿。未核验内容必须在草稿中显式标注「待核验」。',
+    parameters: {
+      projectId: { type: 'string', description: '可选；只能重复当前 session 已绑定项目 id' },
+      templateId: { type: 'string', description: '已登记的模板 id', required: true },
+      sectionId: { type: 'string', description: '模板章节 id', required: true },
+      draftText: { type: 'string', description: '草稿正文', required: true },
+      usedEvidenceIds: { type: 'json', description: '草稿引用的 Evidence id 数组' },
+    },
+    output: { schema: OUTPUT_SCHEMA, render: (_args: unknown, value: unknown) => [{ type: 'text', text: JSON.stringify(value) }] },
+    execute: async (args: any, exec: ToolRunContext) => {
+      const project = await research.requireCurrentProject(exec.agent, args.projectId)
+      const usedEvidenceIds = args.usedEvidenceIds === undefined
+        ? []
+        : Array.isArray(args.usedEvidenceIds)
+          ? args.usedEvidenceIds.map((value: unknown) => String(value))
+          : (() => { throw new Error('usedEvidenceIds 必须是 Evidence id 数组。') })()
+      const draft = await service.saveSectionDraft({
+        projectId: project.id,
+        templateId: String(args.templateId),
+        sectionId: String(args.sectionId),
+        draftText: String(args.draftText ?? ''),
+        usedEvidenceIds,
+      })
+      return { ok: true, draft: toJson(draft) }
+    },
+  }
+
+  const draftListTool = {
+    name: 'funding_draft_list',
+    description: '列出当前项目已登记的申报书章节草稿（可按 templateId 过滤）。',
+    parameters: {
+      projectId: { type: 'string', description: '可选；只能重复当前 session 已绑定项目 id' },
+      templateId: { type: 'string', description: '按模板过滤' },
+    },
+    output: { schema: OUTPUT_SCHEMA, render: (_args: unknown, value: unknown) => [{ type: 'text', text: JSON.stringify(value) }] },
+    execute: async (args: any, exec: ToolRunContext) => {
+      const project = await research.requireCurrentProject(exec.agent, args.projectId)
+      const drafts = await service.listSectionDrafts(project.id, args.templateId === undefined ? undefined : String(args.templateId))
+      return { total: drafts.length, drafts: drafts.map(toJson) }
+    },
+  }
+
+  const templateListTool = {
+    name: 'funding_template_list',
+    description: '列出已登记的申报书模板（可按项目过滤）。',
+    parameters: {
+      projectId: { type: 'string', description: '按项目过滤' },
+    },
+    output: { schema: OUTPUT_SCHEMA, render: (_args: unknown, value: unknown) => [{ type: 'text', text: JSON.stringify(value) }] },
+    execute: async (args: any) => {
+      const templates = await service.listTemplates(args.projectId === undefined ? undefined : String(args.projectId))
+      return {
+        total: templates.length,
+        templates: templates.map((record) => toJson({ templateId: record.templateId, version: record.version, projectId: record.projectId, updatedAt: record.updatedAt })),
+      }
+    },
+  }
+
+  return [parseTool, requirementsTool, checkTool, diffTool, materialGapTool, sectionDraftTool, draftListTool, templateListTool]
 }
