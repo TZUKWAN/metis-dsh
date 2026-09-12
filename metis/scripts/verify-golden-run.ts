@@ -23,7 +23,7 @@ const METIS_DIR = path.resolve(SCRIPT_DIR, '..')
 const CHECKOUT_ROOT = path.resolve(METIS_DIR, '..')
 const BASE_BUNDLE_PATCH = path.join(CHECKOUT_ROOT, 'packages', 'bundle', 'base', 'cordis.patch.yml')
 const MODEL = { provider: 'cloudlob', model: 'qwen3.8-flash-bai' }
-const TURN_TIMEOUT_MS = 600_000
+const TURN_TIMEOUT_MS = 900_000
 
 interface State {
   sandbox: string
@@ -118,7 +118,9 @@ async function phaseRun(state: State): Promise<void> {
     })
     const topic = '生成式人工智能如何影响知识工作者技能形成与职业分层'
     await sendAndAwaitIdle(ctx, handle.agent,
-      `开始一个社会学课题：《${topic}》。请建立研究项目档案，然后真实检索国内外文献并把至少 2 篇保存进项目。`)
+      `开始一个社会学课题：《${topic}》。第一步：建立研究项目档案。`)
+    await sendAndAwaitIdle(ctx, handle.agent,
+      '第二步：真实检索该课题的国内外文献，并把至少 2 篇保存进项目。')
 
     data = await MetisDataStore.open(state.databasePath)
     let project = data.listProjects()[0]
@@ -129,8 +131,8 @@ async function phaseRun(state: State): Promise<void> {
     data.close()
 
     await sendAndAwaitIdle(ctx, handle.agent,
-      '现在请基于项目里已保存的文献，在 workspace 写出综述初稿 review-draft.md（含研究传统/争议/缺口三部分），'
-      + '把该文件登记为 artifact，并为主判断建立 claim、关联已保存文献的证据。')
+      '第三步：基于项目里已保存的文献，在 workspace 写出综述初稿 review-draft.md（含研究传统/争议/缺口三部分），'
+      + '把该文件登记为 artifact。')
     data = await MetisDataStore.open(state.databasePath)
     project = data.getProject(project!.id)!
     const artifacts = data.listArtifacts({ projectId: project.id })
