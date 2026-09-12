@@ -88,6 +88,8 @@ if (FULL) {
   }
   try { require('node:fs').rmSync(stateFile, { force: true }) } catch {}
 
+  status.checks.push(run('guard negative matrix', 'node', ['metis/scripts/verify-guard-negative.mjs'], { cwd: CHECKOUT_ROOT }))
+
   if (process.env.CLOUDLOB_API_KEY) {
     status.checks.push(run(
       'real agent E2E (model-driven tools via user-supplied endpoint)',
@@ -97,6 +99,8 @@ if (FULL) {
     ))
   } else {
     status.checks.push({ check: 'real agent E2E', command: 'skipped', status: 'SKIPPED', reason: 'CLOUDLOB_API_KEY not set in environment' })
+    status.checks.push({ check: 'golden long-run', command: 'skipped', status: 'SKIPPED', reason: 'CLOUDLOB_API_KEY not set in environment' })
+    status.checks.push({ check: 'research evals (8 tasks)', command: 'skipped', status: 'SKIPPED', reason: 'CLOUDLOB_API_KEY not set in environment' })
   }
 
   const tarballs = readdirSafe(path.join(METIS_ROOT, 'dist-tarballs')).filter((name) => name.endsWith('.tgz'))

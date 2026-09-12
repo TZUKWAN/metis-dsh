@@ -1,55 +1,48 @@
-# INSTALLATION — METIS Research Plugins 安装指南
+# INSTALLATION — 安装指南
 
 ## 前置
+- Node.js >= 24（自带 node:sqlite）；pnpm >= 9
+- 一个 DSH 安装（本仓库 checkout 或 npm 安装版）
 
-- Node.js >= 24（或 22.19+）
-- pnpm（Corepack 可自动解析）
-- DSH checkout（`metis/` 的父目录即 DSH 仓库），已完成 `pnpm install && pnpm run build`
+## 从本仓库安装（推荐路径）
+1. 构建打包：
+   ```bash
+   cd metis
+   pnpm install
+   pnpm run build:plugins
+   pnpm run pack:plugins
+   ```
+2. 全量安装到 profile：
+   ```bash
+   dsh plugin --profile <profile> add dist-tarballs/*.tgz
+   ```
+   或按需最小安装：`dsh-metis-core`、`dsh-metis-literature` + 任一 provider。
 
-## 安装插件
+## 配置模型（METIS 不管理凭据）
+- DeepSeek 官方：settings.yaml `llm-deepseek:` 段；密钥走 DSH Credential Store 或 `DEEPSEEK_API_KEY`。
+- OpenAI 兼容端点（示例）：
+  ```yaml
+  llm-pi-ai:
+    providers:
+      my-endpoint:
+        displayName: My Endpoint
+        api: openai-completions
+        baseURL: https://example.com/v1
+        apiKeyEnv: MY_ENDPOINT_KEY
+        models:
+          - id: my-model
+            name: My Model
+            contextWindow: 262144
+            maxTokens: 32768
+  ```
+  然后把默认模型设为该路由（Web Models 页或 `agent-default-model` 层）。
+- **任何密钥不得进入 git / 日志 / ENGINEERING_STATUS**；正式用户使用 DSH Credential Store，环境变量仅用于 CI/E2E。
 
-在 DSH checkout 根目录执行：
-
-```sh
-pnpm dsh plugin --profile metis-dev add ./metis/plugins/core
-pnpm dsh plugin --profile metis-dev add ./metis/plugins/evidence
-pnpm dsh plugin --profile metis-dev add ./metis/plugins/literature
-pnpm dsh plugin --profile metis-dev add ./metis/plugins/literature-crossref
-pnpm dsh plugin --profile metis-dev add ./metis/plugins/literature-openalex
-pnpm dsh plugin --profile metis-dev add ./metis/plugins/literature-ncpssd
-pnpm dsh plugin --profile metis-dev add ./metis/plugins/scenario
-pnpm dsh plugin --profile metis-dev add ./metis/plugins/artifact
-pnpm dsh plugin --profile metis-dev add ./metis/plugins/funding
-pnpm dsh plugin --profile metis-dev add ./metis/plugins/submission
+## 验证安装
+```bash
+node --import tsx/esm metis/scripts/verify-dsh-dist.ts metis/dist-tarballs/*.tgz
 ```
+（该脚本内部即使用官方 `dsh plugin add` 装入全新 profile 并做 30 工具执行矩阵。）
 
-每次 add 后 `dsh.profile.bundles` 自动追加对应 bundle。
-
-## 启动
-
-```sh
-pnpm dsh --profile metis-dev
-```
-
-启动日志确认各插件加载（无 error）。
-
-## 卸载
-
-```sh
-pnpm dsh plugin --profile metis-dev remove ./metis/plugins/<name>
-```
-
-卸载后 DSH 原生 Chat/Goal/Plan 等不受影响。
-
-## 数据迁移（可选）
-
-从旧 METIS 迁移领域数据：
-
-```sh
-python metis/scripts/migrate-legacy.py            # dry-run
-python metis/scripts/migrate-legacy.py --apply    # 真正写库
-```
-
-## API Key
-
-真实模型调用需在环境变量或 `.env` 配置 `DEEPSEEK_API_KEY`。
+## 数据在哪里
+profile 工作目录下 `metis-data/metis.db`（SQLite；全部科研领域状态）。

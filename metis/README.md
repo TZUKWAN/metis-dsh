@@ -34,3 +34,46 @@ metis/
 
 《DeepSeek Harness × METIS 插件化重构：详细任务清单》。按其第 34 节推荐顺序严格执行；
 每阶段通过对应 Gate 后才进入下一阶段。
+
+
+## 安装（面向使用者）
+
+前置：已安装 pnpm；使用 DSH 官方插件通道。
+
+```bash
+# 构建 + 打包全部 METIS 插件
+pnpm run build:plugins
+pnpm run pack:plugins          # 产出 dist-tarballs/*.tgz
+
+# 一键安装到你的 profile
+dsh plugin --profile <profile> add dist-tarballs/*.tgz
+```
+
+## 配置模型
+
+METIS 不管理凭据。DeepSeek 官方：`DEEPSEEK_API_KEY` 或 settings.yaml `llm-deepseek:` 段；
+任意 OpenAI 兼容端点：settings.yaml `llm-pi-ai:` 段（providers → baseURL / apiKeyEnv / models）。
+详见 docs/INSTALLATION.md。
+
+## 开始一个科研任务
+
+在 DSH 对话中选择 Workspace 后，直接提出研究任务，例如：
+
+> 帮我研究“生成式人工智能如何影响知识工作者内部职业分层”。先真实检索国内外文献并保存，再形成可继续使用的文献综述与研究方案。
+
+Agent 会自主建立项目 → 真实检索 → 登记证据 → 产出可版本化的成果。数据保存在
+profile 目录下 `metis-data/metis.db`（SQLite，WAL，版本化迁移）。
+
+## 验证体系（全部真实运行，无 fakeCtx）
+
+| 层级 | 命令 |
+|---|---|
+| L1 单元/集成（50+） | `pnpm test` |
+| 上游守卫（本地 + fresh clone + 负向矩阵） | `node scripts/check-dsh-untouched.mjs` / `node scripts/verify-fresh-clone.mjs` / `node scripts/verify-guard-negative.mjs` |
+| L2 真实 Loader Runtime + 重启恢复 | `node --import tsx/esm scripts/verify-dsh-runtime.ts setup/verify <state>` |
+| L4 真实模型 Agent E2E | `CLOUDLOB_API_KEY=… node --import tsx/esm scripts/verify-real-agent.ts` |
+| L3 分发门（30 工具执行矩阵） | `node --import tsx/esm scripts/verify-dsh-dist.ts dist-tarballs/*.tgz` |
+| 长程 Golden Run | `node --import tsx/esm scripts/verify-golden-run.ts run/resume <state>` |
+| Research Evals（8 任务） | `node --import tsx/esm evals/run-evals.ts` |
+
+机器生成状态：`node scripts/generate-engineering-status.mjs [--full]` → `ENGINEERING_STATUS.json`。

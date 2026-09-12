@@ -38,6 +38,9 @@ const EXPECTED_TOOLS = [
   'funding_material_gap', 'funding_section_draft', 'funding_draft_list', 'funding_template_list',
   'evidence_claim_list', 'evidence_claim_status', 'evidence_excerpt_add', 'evidence_excerpt_list',
   'artifact_evidence_check', 'artifact_finalize', 'artifact_compare',
+  'journal_record', 'journal_get', 'journal_verify', 'journal_requirements_set', 'journal_requirements',
+  'journal_artifact_match', 'submission_case_create', 'submission_case_get', 'submission_case_update',
+  'submission_case_list', 'submission_gap_check',
   'journal_search', 'journal_targeting_match',
 ]
 
@@ -305,6 +308,21 @@ try {
   const draft = ok(await execute('funding_section_draft', { templateId: 'smoke', sectionId: 'section-1', draftText: '第一版草稿（待核验：经费数字）。' }))
   check('funding_section_draft executes', draft?.ok === true && typeof draft?.draft?.id === 'string', draft)
   check('funding_draft_list executes', ok(await execute('funding_draft_list', {}))?.total >= 1)
+
+  // ── submission persistence tools ──
+  const journalEntry = ok(await execute('journal_record', { journal: { name: 'Smoke Journal of Sociology', issn: '1234-5678' }, source: 'letpub' }))
+  check('journal_record executes', typeof journalEntry?.journalId === 'string', journalEntry)
+  check('journal_get executes', ok(await execute('journal_get', { journalId: journalEntry.journalId }))?.found === true)
+  check('journal_verify executes', ok(await execute('journal_verify', { journalId: journalEntry.journalId, source: 'official-site', verificationState: 'verified' }))?.ok === true)
+  check('journal_requirements_set executes', ok(await execute('journal_requirements_set', { journalId: journalEntry.journalId, requirements: { wordLimit: 8000, anonymous: true }, verificationState: 'unverified' }))?.ok === true)
+  check('journal_requirements executes', ok(await execute('journal_requirements', { journalId: journalEntry.journalId }))?.total >= 1)
+  check('journal_artifact_match executes', ok(await execute('journal_artifact_match', { artifactId: artifact.artifact.id, journalId: journalEntry.journalId, score: 0.8 }))?.ok === true)
+  const caseCreated = ok(await execute('submission_case_create', { artifactId: artifact.artifact.id, journalId: journalEntry.journalId, notes: 'smoke case' }))
+  check('submission_case_create executes', caseCreated?.caseRecord?.status === 'researching', caseCreated)
+  check('submission_case_update executes', ok(await execute('submission_case_update', { id: caseCreated.caseRecord.id, status: 'candidate' }))?.caseRecord?.status === 'candidate')
+  const gapReport = ok(await execute('submission_gap_check', { id: caseCreated.caseRecord.id }))
+  check('submission_gap_check executes with honest report', gapReport?.report?.requirementSets?.length >= 1, gapReport)
+  check('submission_case_list executes', ok(await execute('submission_case_list', {}))?.total >= 1)
 
   // ── v2 claim-level / artifact integrity tools ──
   const claimV2 = ok(await execute('evidence_claim_create', {

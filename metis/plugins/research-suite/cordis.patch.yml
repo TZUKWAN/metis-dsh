@@ -1,0 +1,22 @@
+# dsh-metis-research-suite: inserts the full METIS family (all dependencies).
+- insert:
+    - id: metis-core
+      name: dsh-metis-core
+    - id: metis-evidence
+      name: dsh-metis-evidence
+    - id: metis-literature
+      name: dsh-metis-literature
+    - id: metis-literature-crossref
+      name: dsh-metis-literature-crossref
+    - id: metis-literature-openalex
+      name: dsh-metis-literature-openalex
+    - id: metis-literature-ncpssd
+      name: dsh-metis-literature-ncpssd
+    - id: metis-scenario
+      name: dsh-metis-scenario
+    - id: metis-artifact
+      name: dsh-metis-artifact
+    - id: metis-funding
+      name: dsh-metis-funding
+    - id: metis-submission
+      name: dsh-metis-submission

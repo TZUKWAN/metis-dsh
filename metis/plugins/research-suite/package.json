@@ -1,0 +1,27 @@
+{
+  "name": "dsh-metis-research-suite",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "METIS Research Suite — one-bundle composition of the full METIS research plugin family (组合-only，零业务实现)",
+  "files": [
+    "./cordis.patch.yml"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "dependencies": {
+    "dsh-metis-core": "0.1.0",
+    "dsh-metis-evidence": "0.1.0",
+    "dsh-metis-literature": "0.1.0",
+    "dsh-metis-literature-crossref": "0.1.0",
+    "dsh-metis-literature-openalex": "0.1.0",
+    "dsh-metis-literature-ncpssd": "0.1.0",
+    "dsh-metis-scenario": "0.1.0",
+    "dsh-metis-artifact": "0.1.0",
+    "dsh-metis-funding": "0.1.0",
+    "dsh-metis-submission": "0.1.0"
+  }
+}

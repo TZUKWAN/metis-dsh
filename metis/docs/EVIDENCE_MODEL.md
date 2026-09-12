@@ -1,34 +1,10 @@
-# EVIDENCE MODEL — 证据领域模型
+# EVIDENCE_MODEL — 证据与 Claim 模型
 
-## 核心类型
+三层结构：
+1. **Source**（来源身份）：provider + sourceId/URL/DOI 归一去重；
+2. **Evidence**（证据记录）：一次对来源的观察，含 verification_state（unverified → verified/conflicting/invalid/stale）；
+3. **Claim**（科研判断）：claimType（factual/literature_finding/theoretical_proposition/statistical_result/web_fact/user_provided_fact）、可归属 Artifact、状态流转；通过 claim_evidence_links（supports/contradicts/context + confidence）关联证据；支持原文摘录与定位器（abstract/page/section/paragraph/table/figure/dataset_row/web_fragment/metadata）。
 
-```ts
-interface EvidenceRecord {
-  id: string                        // ev-<ts>-<rand>
-  projectId: string | null          // 归属项目（null=未归属）
-  sourceType: EvidenceSourceType    // literature/web_page/database_observation/computation/user_provided/model_inference/file
-  source: {
-    provider: string                // crossref/openalex/ncpssd/user
-    sourceId?: string               // 来源内部 id（DOI/OpenAlex id）
-    url?: string
-    retrievedAt?: number
-  }
-  title: string
-  observation?: string              // 原文摘录（≤4000 字符，截断标 truncated）
-  doi?: string                      // 规范化小写
-  url?: string
-  observedAt: number
-  verificationState: 'unverified'|'verified'|'rejected'|'conflicted'|'stale'
-  createdByTool: string
-  createdAt / updatedAt
-}
-```
+覆盖检查：`artifact_evidence_check { artifactId }` → totalClaims/supported/unverified/coverageRatio（第一版启发式，诚实标注）。
 
-## 生命周期
-
-unverified → verified / rejected / conflicted / stale（由 verify/reject/markConflict/markStale 转移）。
-
-## 优先来源
-
-NCPSSD / Crossref / OpenAlex / Semantic Scholar / arXiv / 期刊官网 / 出版社 / 权威数据库。
-能核验 DOI 时必须核验；模型记忆中的文献未经验证不得进入正式成果。
+硬边界：正式引用必须对应已保存 LiteratureRecord 及其 Evidence；未核验内容必须显式标注「待核验」；系统不给无来源判断伪造证据。

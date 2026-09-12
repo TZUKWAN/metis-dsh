@@ -11,6 +11,7 @@ const DEST = path.join(METIS_ROOT, 'dist-tarballs')
 const PLUGINS = [
   'core', 'evidence', 'literature', 'scenario', 'artifact', 'funding', 'submission',
   'literature-crossref', 'literature-openalex', 'literature-ncpssd',
+  'research-suite',
 ]
 
 rmSync(DEST, { recursive: true, force: true })

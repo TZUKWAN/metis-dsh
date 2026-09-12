@@ -11,8 +11,7 @@
  * Usage: node scripts/build-plugins.mjs
  */
 
-import { rmSync } from 'node:fs'
-import { readdirSync } from 'node:fs'
+import { existsSync, readdirSync, rmSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { build } from 'esbuild'
@@ -29,6 +28,7 @@ const EXTERNAL = [
 
 const pluginNames = readdirSync(PLUGINS_DIR, { withFileTypes: true })
   .filter((entry) => entry.isDirectory())
+  .filter((entry) => existsSync(path.join(PLUGINS_DIR, entry.name, 'src', 'index.ts')))
   .map((entry) => entry.name)
   .sort()
 

@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "tasks": [
+    {
+      "id": "sociology-lit-review",
+      "discipline": "社会学",
+      "prompt": "研究课题：生成式人工智能如何影响知识工作者内部职业分层。请真实检索国内外文献（含中文），把最重要的文献保存进项目，然后形成一份包含研究传统、争议与研究缺口的文献综述草稿，登记为 artifact。缺口必须由已有研究推演，不得罗列文献。",
+      "turns": 2,
+      "expect": { "artifact": true, "literatureMin": 2, "claims": true }
+    },
+    {
+      "id": "marxist-theory",
+      "discipline": "马克思主义理论",
+      "prompt": "分析生成式人工智能条件下自由时间与剩余价值生产之间的关系。关键概念须有正式理论来源；先把支撑性文献检索并保存进项目，再写一份短的分析提纲登记为 artifact；未核验的判断必须标注待核验。",
+      "turns": 1,
+      "expect": { "artifact": true, "literatureMin": 1, "claims": true }
+    },
+    {
+      "id": "political-science-design",
+      "discipline": "政治学",
+      "prompt": "研究问题：数字技术如何影响基层治理能力？请真实检索相关文献并保存，然后形成一份研究设计提纲（问题/理论/机制/变量/数据/方法/替代解释）登记为 artifact。",
+      "turns": 1,
+      "expect": { "artifact": true, "literatureMin": 1, "claims": false }
+    },
+    {
+      "id": "education-ai-learning",
+      "discipline": "教育学",
+      "prompt": "研究课题：生成式 AI 对高校学生深度学习的影响。请检索实证与理论文献并保存进项目，形成研究缺口分析草稿并登记为 artifact。",
+      "turns": 1,
+      "expect": { "artifact": true, "literatureMin": 1, "claims": false }
+    },
+    {
+      "id": "paper-review",
+      "discipline": "论文审读",
+      "prompt": "workspace 中已有文件 manuscript.md（一篇关于平台劳动的短稿）。请先检索相关真实文献保存进项目作为参照，然后调用论文审读场景，按论证链/概念/文献/方法问题审读该稿并把审读报告登记为 artifact。",
+      "turns": 1,
+      "expect": { "artifact": true, "literatureMin": 1, "claims": false, "seedsManuscript": true }
+    },
+    {
+      "id": "journal-selection",
+      "discipline": "选刊",
+      "prompt": "我的论文题：《算法管理下的劳动过程重构——基于平台骑手的质性研究》。请真实检索同主题近期论文并保存，用选刊工具聚合候选期刊（criteria: categories=[\"ssci\",\"cssci\"], language=\"any\", notes=\"\"），把最佳候选登记为 Journal 记录并创建投稿案例。",
+      "turns": 1,
+      "expect": { "artifact": false, "literatureMin": 1, "claims": false, "submissionCase": true }
+    },
+    {
+      "id": "funding-template",
+      "discipline": "基金申报",
+      "prompt": "workspace 中已有 funding-observation.json（一份申报书模板的观察文档）。请用 funding 工具解析并登记该模板（templateId: user:eval-template），然后对当前项目做一次材料缺口检查，把缺口结论写成一个说明文件并登记为 artifact。",
+      "turns": 1,
+      "expect": { "artifact": true, "literatureMin": 0, "claims": false, "templateId": "user:eval-template" }
+    },
+    {
+      "id": "history-concept",
+      "discipline": "历史/文本研究",
+      "prompt": "研究课题：「治理」概念在中国当代政策文本中的语义演变。请真实检索相关文献并保存进项目，形成概念演变分析的提纲（时序/语境/主体/文本类型）登记为 artifact；引用必须来自已保存文献。",
+      "turns": 1,
+      "expect": { "artifact": true, "literatureMin": 1, "claims": false }
+    }
+  ]
+}
