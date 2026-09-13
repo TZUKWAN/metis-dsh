@@ -44,7 +44,12 @@ const EXPECTED_TOOLS = [
   'journal_search', 'journal_targeting_match',
 ]
 
-const tarballs = process.argv.slice(2).map((tarball) => path.resolve(tarball))
+// The research-suite meta-bundle declares registry-version dependencies and is
+  // only installable after the functional packages are published; the execution
+  // matrix verifies the ten functional plugins.
+  const tarballs = process.argv.slice(2)
+    .map((tarball) => path.resolve(tarball))
+    .filter((tarball) => !path.basename(tarball).includes('research-suite'))
 if (tarballs.length === 0) {
   console.error('usage: verify-dsh-dist.ts <tarball.tgz>...')
   process.exit(2)
@@ -184,7 +189,7 @@ const patches = bundles.flatMap((bundle) => {
 // Pin every METIS service to one sandboxed SQLite file (bundle patch rows carry
 // no config; the default would create metis-data/ in the checkout root).
 const sandboxDatabase = path.join(sandbox, 'metis-data', 'metis.db').replaceAll('\\', '/')
-for (const id of ['metis-core', 'metis-evidence', 'metis-literature', 'metis-scenario', 'metis-artifact']) {
+for (const id of ['metis-core', 'metis-evidence', 'metis-literature', 'metis-scenario', 'metis-artifact', 'metis-funding', 'metis-submission']) {
   patches.push({ id, config: { databasePath: sandboxDatabase } } as (typeof patches)[number])
 }
 // Funding's JSON registry must land in the sandbox too (checkout root is not
