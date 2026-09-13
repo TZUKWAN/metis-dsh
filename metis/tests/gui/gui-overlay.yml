@@ -1,0 +1,58 @@
+# GUI black-box acceptance overlay (generated).
+- insert:
+    - id: metis-core
+      name: 'file:///D:/LATEXTEST/METIS4DSH/deepseek-harness/metis/plugins/core/src/index.ts'
+    - id: metis-evidence
+      name: 'file:///D:/LATEXTEST/METIS4DSH/deepseek-harness/metis/plugins/evidence/src/index.ts'
+    - id: metis-literature
+      name: 'file:///D:/LATEXTEST/METIS4DSH/deepseek-harness/metis/plugins/literature/src/index.ts'
+    - id: metis-scenario
+      name: 'file:///D:/LATEXTEST/METIS4DSH/deepseek-harness/metis/plugins/scenario/src/index.ts'
+    - id: metis-artifact
+      name: 'file:///D:/LATEXTEST/METIS4DSH/deepseek-harness/metis/plugins/artifact/src/index.ts'
+    - id: metis-literature-crossref
+      name: 'file:///D:/LATEXTEST/METIS4DSH/deepseek-harness/metis/plugins/literature-crossref/src/index.ts'
+    - id: metis-literature-openalex
+      name: 'file:///D:/LATEXTEST/METIS4DSH/deepseek-harness/metis/plugins/literature-openalex/src/index.ts'
+    - id: metis-literature-ncpssd
+      name: 'file:///D:/LATEXTEST/METIS4DSH/deepseek-harness/metis/plugins/literature-ncpssd/src/index.ts'
+-
+  id: metis-core
+  config:
+    databasePath: 'C:/METIS-GUI-ACCEPT/metis-data/metis.db'
+-
+  id: metis-evidence
+  config:
+    databasePath: 'C:/METIS-GUI-ACCEPT/metis-data/metis.db'
+-
+  id: metis-literature
+  config:
+    databasePath: 'C:/METIS-GUI-ACCEPT/metis-data/metis.db'
+-
+  id: metis-scenario
+  config:
+    databasePath: 'C:/METIS-GUI-ACCEPT/metis-data/metis.db'
+-
+  id: metis-artifact
+  config:
+    databasePath: 'C:/METIS-GUI-ACCEPT/metis-data/metis.db'
+-
+  id: llm-pi-ai
+  config:
+    providers:
+      cloudlob:
+        displayName: CloudLob
+        api: openai-completions
+        baseURL: https://cloudlob.xyz/v1
+        apiKeyEnv: CLOUDLOB_API_KEY
+        timeoutMs: 180000
+        models:
+          - id: qwen3.8-flash-bai
+            name: Qwen3.8 Flash
+            contextWindow: 262144
+            maxTokens: 32768
+-
+  id: agent-default-model
+  config:
+    provider: cloudlob
+    model: qwen3.8-flash-bai

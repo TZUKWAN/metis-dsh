@@ -14,6 +14,7 @@ import {
 } from '../../../shared/data/src/index.ts'
 import type { MetisResearch } from '../../core/src/index.ts'
 import { ARTIFACT_TYPES, isArtifactType } from './domain.ts'
+import { normalizeJsonArrayArg } from '../../../shared/contracts/src/index.ts'
 import { buildResearchQualityReport, criticalIssues } from './research-quality.ts'
 
 export interface Config {
@@ -24,6 +25,13 @@ export interface Config {
 interface WorkspaceScope {
   id: string
   path: string
+}
+
+function normalizeEvidenceIds(value: unknown): string[] {
+  if (value === undefined) return []
+  const ids = normalizeJsonArrayArg(value, 'evidenceIds').map((item) => (typeof item === 'string' ? item.trim() : ''))
+  if (ids.some((id) => !id)) throw new Error('evidenceIds 必须是 Evidence id 字符串数组。')
+  return ids
 }
 
 function toJson(value: unknown): JsonValue {
@@ -109,9 +117,7 @@ export class MetisArtifact extends Service {
         if (!isArtifactType(args.type)) {
           return { ok: false, artifact: null, error: `未知成果类型: ${args.type}（可用: ${ARTIFACT_TYPES.join('/')}）` }
         }
-        if (args.evidenceIds !== undefined && (!Array.isArray(args.evidenceIds) || !args.evidenceIds.every((value) => typeof value === 'string'))) {
-          return { ok: false, artifact: null, error: 'evidenceIds 必须是 Evidence id 字符串数组。' }
-        }
+        const evidenceIds = normalizeEvidenceIds(args.evidenceIds)
         const project = await this.research.requireCurrentProject(exec.agent, args.projectId)
         const workspace = resolveWorkspaceScope(ctx, exec.agent)
         const file = workspaceRelativePath(workspace.path, args.path)
@@ -127,7 +133,7 @@ export class MetisArtifact extends Service {
           ...(args.note ? { note: args.note } : {}),
           contentHash: createHash('sha256').update(readFileSync(file.absolutePath)).digest('hex'),
           createdBy: 'model',
-          evidenceIds: args.evidenceIds ?? [],
+          evidenceIds,
         })
         return { ok: true, artifact: toJson(artifact), error: '' }
       },
@@ -237,12 +243,13 @@ export class MetisArtifact extends Service {
         const data = await this.dataStore()
         const existing = data.getArtifact(args.id)
         if (!existing || existing.projectId !== project.id) return { ok: false as const, artifact: null, error: `当前项目中不存在 Artifact: ${args.id}` }
+        const normalizedEvidenceIds = args.evidenceIds === undefined ? undefined : normalizeEvidenceIds(args.evidenceIds)
         const status = args.status === undefined ? undefined : configuredStatus(args.status)
         if (args.status !== undefined && !status) return { ok: false as const, artifact: null, error: `未知 Artifact 状态: ${args.status}` }
         const artifact = data.updateArtifact(args.id, {
           ...(args.title === undefined ? {} : { title: args.title }),
           ...(status ? { status } : {}),
-          ...(args.evidenceIds === undefined ? {} : { evidenceIds: args.evidenceIds }),
+          ...(normalizedEvidenceIds === undefined ? {} : { evidenceIds: normalizedEvidenceIds }),
         })
         if (!artifact) return { ok: false as const, artifact: null, error: `Artifact 不存在: ${args.id}` }
         return { ok: true as const, artifact: toJson(artifact), error: '' as string }
