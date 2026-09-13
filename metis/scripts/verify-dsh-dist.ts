@@ -345,7 +345,11 @@ try {
   check('evidence_excerpt_list executes', ok(await execute('evidence_excerpt_list', { evidenceId: savedRow?.evidenceId }))?.total >= 1)
   const coverage = ok(await execute('artifact_evidence_check', { artifactId: artifact.artifact.id }))
   check('artifact_evidence_check reports coverage', coverage?.report?.totalClaims === 1 && coverage?.report?.supportedClaims === 1, coverage)
-  check('artifact_finalize executes', ok(await execute('artifact_finalize', { id: artifact.artifact.id }))?.artifact?.status === 'final')
+  const blockedFinalize = ok(await execute('artifact_finalize', { id: artifact.artifact.id }))
+  check('artifact_finalize quality gate blocks low-quality draft',
+    blockedFinalize?.ok === false && Array.isArray(blockedFinalize?.warnings) && blockedFinalize.warnings.length > 0, blockedFinalize)
+  const forcedFinalize = ok(await execute('artifact_finalize', { id: artifact.artifact.id, force: true }))
+  check('artifact_finalize force=true finalizes with warnings', forcedFinalize?.artifact?.status === 'final' && Array.isArray(forcedFinalize?.warnings), forcedFinalize)
   const compare = ok(await execute('artifact_compare', { id: artifact.artifact.id, fromVersion: 1, toVersion: 2 }))
   check('artifact_compare executes with hashes and diff', compare?.ok === true && typeof compare?.diff?.from?.contentHash === 'string' && compare?.diff?.added >= 0, compare)
 
