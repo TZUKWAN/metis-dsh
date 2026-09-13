@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-13T01:52:17.329Z",
+  "generatedAt": "2026-09-13T21:10:34.377Z",
   "model": "cloudlob/qwen3.8-flash-bai",
   "summary": {
     "total": 8,
@@ -11,73 +11,171 @@
     {
       "id": "sociology-lit-review",
       "status": "FAIL",
-      "projectId": null,
-      "metrics": {},
+      "projectId": "rp-1afb0dde-77f1-4f24-a311-0fdc3a8e2593",
+      "metrics": {
+        "taskCompleted": false,
+        "artifactCreated": true,
+        "citationsTotal": 9,
+        "citationsVerified": 9,
+        "evidenceCoverage": 0,
+        "unsupportedClaims": 1,
+        "toolErrors": 2,
+        "providerFailures": 1,
+        "hallucinatedReferences": "structural-check-not-applicable",
+        "restartRecoverable": "covered-by-runtime-gate",
+        "finalTextChars": 0
+      },
       "failures": [
-        "task did not finish within the continue-loop budget: 研究课题：生成式人工智能如何影响知识工作者内部职业分层。请真实检索国内外文献（含中文），把最重要的文"
+        "模型未产出最终说明文本"
       ]
     },
     {
       "id": "marxist-theory",
       "status": "FAIL",
-      "projectId": null,
-      "metrics": {},
+      "projectId": "rp-0281d571-fab7-42a1-925b-0023861ae67a",
+      "metrics": {
+        "taskCompleted": false,
+        "artifactCreated": true,
+        "citationsTotal": 17,
+        "citationsVerified": 17,
+        "evidenceCoverage": 0.5,
+        "unsupportedClaims": 5,
+        "toolErrors": 1,
+        "providerFailures": 0,
+        "hallucinatedReferences": "structural-check-not-applicable",
+        "restartRecoverable": "covered-by-runtime-gate",
+        "finalTextChars": 0
+      },
       "failures": [
-        "task did not finish within the continue-loop budget: 分析生成式人工智能条件下自由时间与剩余价值生产之间的关系。关键概念须有正式理论来源；先把支撑性文献检"
+        "模型未产出最终说明文本"
       ]
     },
     {
       "id": "political-science-design",
       "status": "FAIL",
-      "projectId": null,
-      "metrics": {},
+      "projectId": "rp-75809baf-9b22-4480-b2e8-5b9f146eab81",
+      "metrics": {
+        "taskCompleted": false,
+        "artifactCreated": true,
+        "citationsTotal": 8,
+        "citationsVerified": 8,
+        "evidenceCoverage": 0.67,
+        "unsupportedClaims": 1,
+        "toolErrors": 1,
+        "providerFailures": 0,
+        "hallucinatedReferences": "structural-check-not-applicable",
+        "restartRecoverable": "covered-by-runtime-gate",
+        "finalTextChars": 0
+      },
       "failures": [
-        "task did not finish within the continue-loop budget: 研究问题：数字技术如何影响基层治理能力？请真实检索相关文献并保存，然后形成一份研究设计提纲（问题/理"
+        "模型未产出最终说明文本"
       ]
     },
     {
       "id": "education-ai-learning",
       "status": "FAIL",
-      "projectId": null,
-      "metrics": {},
+      "projectId": "rp-b990663d-d913-442b-b0d7-765baea10d77",
+      "metrics": {
+        "taskCompleted": false,
+        "artifactCreated": true,
+        "citationsTotal": 33,
+        "citationsVerified": 33,
+        "evidenceCoverage": 0.88,
+        "unsupportedClaims": 2,
+        "toolErrors": 2,
+        "providerFailures": 1,
+        "hallucinatedReferences": "structural-check-not-applicable",
+        "restartRecoverable": "covered-by-runtime-gate",
+        "finalTextChars": 0
+      },
       "failures": [
-        "task did not finish within the continue-loop budget: 研究课题：生成式 AI 对高校学生深度学习的影响。请检索实证与理论文献并保存进项目，形成研究缺口分析"
+        "模型未产出最终说明文本"
       ]
     },
     {
       "id": "paper-review",
       "status": "FAIL",
-      "projectId": null,
-      "metrics": {},
+      "projectId": "rp-b39a80c7-1bab-4d98-8970-f5c95f1203c3",
+      "metrics": {
+        "taskCompleted": false,
+        "artifactCreated": true,
+        "citationsTotal": 8,
+        "citationsVerified": 8,
+        "evidenceCoverage": 1,
+        "unsupportedClaims": 0,
+        "toolErrors": 0,
+        "providerFailures": 0,
+        "hallucinatedReferences": "structural-check-not-applicable",
+        "restartRecoverable": "covered-by-runtime-gate",
+        "finalTextChars": 0
+      },
       "failures": [
-        "task did not finish within the continue-loop budget: workspace 中已有文件 manuscript.md（一篇关于平台劳动的短稿）。请先检索相关真"
+        "模型未产出最终说明文本"
       ]
     },
     {
       "id": "journal-selection",
       "status": "FAIL",
-      "projectId": null,
-      "metrics": {},
+      "projectId": "rp-fa4df526-cede-4d40-bdd3-f10db982d16e",
+      "metrics": {
+        "taskCompleted": false,
+        "artifactCreated": true,
+        "citationsTotal": 12,
+        "citationsVerified": 12,
+        "evidenceCoverage": 0,
+        "unsupportedClaims": 0,
+        "toolErrors": 3,
+        "providerFailures": 0,
+        "hallucinatedReferences": "structural-check-not-applicable",
+        "restartRecoverable": "covered-by-runtime-gate",
+        "finalTextChars": 0
+      },
       "failures": [
-        "task did not finish within the continue-loop budget: 我的论文题：《算法管理下的劳动过程重构——基于平台骑手的质性研究》。请真实检索同主题近期论文并保存，"
+        "模型未产出最终说明文本",
+        "未创建投稿案例"
       ]
     },
     {
       "id": "funding-template",
       "status": "FAIL",
-      "projectId": null,
-      "metrics": {},
+      "projectId": "rp-8f486bbe-e4cb-4e7a-a0dd-8b471d15a466",
+      "metrics": {
+        "taskCompleted": false,
+        "artifactCreated": true,
+        "citationsTotal": 0,
+        "citationsVerified": 0,
+        "evidenceCoverage": 0,
+        "unsupportedClaims": 2,
+        "toolErrors": 0,
+        "providerFailures": 0,
+        "hallucinatedReferences": "structural-check-not-applicable",
+        "restartRecoverable": "covered-by-runtime-gate",
+        "finalTextChars": 0
+      },
       "failures": [
-        "task did not finish within the continue-loop budget: 继续完成任务：如检索/保存/登记尚未完成请继续；已完成则把核心判断建立为 claim 并关联证据，最"
+        "模型未产出最终说明文本",
+        "模板未登记: user:eval-template"
       ]
     },
     {
       "id": "history-concept",
       "status": "FAIL",
-      "projectId": null,
-      "metrics": {},
+      "projectId": "rp-4514e755-bdd4-492a-81d6-19c474272fc8",
+      "metrics": {
+        "taskCompleted": false,
+        "artifactCreated": true,
+        "citationsTotal": 9,
+        "citationsVerified": 9,
+        "evidenceCoverage": 0,
+        "unsupportedClaims": 4,
+        "toolErrors": 4,
+        "providerFailures": 1,
+        "hallucinatedReferences": "structural-check-not-applicable",
+        "restartRecoverable": "covered-by-runtime-gate",
+        "finalTextChars": 0
+      },
       "failures": [
-        "task did not finish within the continue-loop budget: 研究课题：「治理」概念在中国当代政策文本中的语义演变。请真实检索相关文献并保存进项目，形成概念演变分"
+        "模型未产出最终说明文本"
       ]
     }
   ]

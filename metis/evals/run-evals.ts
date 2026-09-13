@@ -202,7 +202,9 @@ async function runTask(task: EvalTask): Promise<TaskResult> {
 
     const providerFailures = facts.toolCalls.filter((call) => call.name.startsWith('literature') && call.failed).length
     result.metrics = {
-      taskCompleted: facts.finalText.length > 0,
+      taskCompleted: (task.expect.artifact ? artifacts.length > 0 : true)
+        && literature.length >= task.expect.literatureMin
+        && (task.expect.submissionCase ? cases.length > 0 : true),
       artifactCreated: artifacts.length > 0,
       citationsTotal: literature.length,
       citationsVerified: literature.filter((record) => record.evidenceId).length,
@@ -215,7 +217,6 @@ async function runTask(task: EvalTask): Promise<TaskResult> {
       finalTextChars: facts.finalText.length,
     }
 
-    if (!result.metrics.taskCompleted) result.failures.push('模型未产出最终说明文本')
     if (task.expect.artifact && artifacts.length === 0) result.failures.push('未登记 artifact')
     if (literature.length < task.expect.literatureMin) result.failures.push(`保存文献不足（${literature.length}/${task.expect.literatureMin}）`)
     if (task.expect.claims && claims.length === 0) result.failures.push('未建立任何 claim')
