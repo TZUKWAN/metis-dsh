@@ -1,128 +1,99 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-13T21:10:34.377Z",
+  "generatedAt": "2026-09-13T23:00:01.583Z",
   "model": "cloudlob/qwen3.8-flash-bai",
   "summary": {
     "total": 8,
-    "pass": 0,
-    "fail": 8
+    "pass": 6,
+    "fail": 2
   },
   "results": [
     {
       "id": "sociology-lit-review",
-      "status": "FAIL",
-      "projectId": "rp-1afb0dde-77f1-4f24-a311-0fdc3a8e2593",
+      "status": "PASS",
+      "projectId": "rp-f7384cb7-a308-4d48-aa86-10d7f30b0206",
       "metrics": {
-        "taskCompleted": false,
+        "taskCompleted": true,
         "artifactCreated": true,
-        "citationsTotal": 9,
-        "citationsVerified": 9,
+        "citationsTotal": 25,
+        "citationsVerified": 25,
         "evidenceCoverage": 0,
-        "unsupportedClaims": 1,
+        "unsupportedClaims": 4,
         "toolErrors": 2,
-        "providerFailures": 1,
+        "providerFailures": 2,
         "hallucinatedReferences": "structural-check-not-applicable",
         "restartRecoverable": "covered-by-runtime-gate",
         "finalTextChars": 0
       },
-      "failures": [
-        "模型未产出最终说明文本"
-      ]
+      "failures": []
     },
     {
       "id": "marxist-theory",
-      "status": "FAIL",
-      "projectId": "rp-0281d571-fab7-42a1-925b-0023861ae67a",
+      "status": "PASS",
+      "projectId": "rp-0b94ec4c-9b4f-4078-b7ac-76a1897ba021",
       "metrics": {
-        "taskCompleted": false,
-        "artifactCreated": true,
-        "citationsTotal": 17,
-        "citationsVerified": 17,
-        "evidenceCoverage": 0.5,
-        "unsupportedClaims": 5,
-        "toolErrors": 1,
-        "providerFailures": 0,
-        "hallucinatedReferences": "structural-check-not-applicable",
-        "restartRecoverable": "covered-by-runtime-gate",
-        "finalTextChars": 0
-      },
-      "failures": [
-        "模型未产出最终说明文本"
-      ]
-    },
-    {
-      "id": "political-science-design",
-      "status": "FAIL",
-      "projectId": "rp-75809baf-9b22-4480-b2e8-5b9f146eab81",
-      "metrics": {
-        "taskCompleted": false,
-        "artifactCreated": true,
-        "citationsTotal": 8,
-        "citationsVerified": 8,
-        "evidenceCoverage": 0.67,
-        "unsupportedClaims": 1,
-        "toolErrors": 1,
-        "providerFailures": 0,
-        "hallucinatedReferences": "structural-check-not-applicable",
-        "restartRecoverable": "covered-by-runtime-gate",
-        "finalTextChars": 0
-      },
-      "failures": [
-        "模型未产出最终说明文本"
-      ]
-    },
-    {
-      "id": "education-ai-learning",
-      "status": "FAIL",
-      "projectId": "rp-b990663d-d913-442b-b0d7-765baea10d77",
-      "metrics": {
-        "taskCompleted": false,
+        "taskCompleted": true,
         "artifactCreated": true,
         "citationsTotal": 33,
         "citationsVerified": 33,
-        "evidenceCoverage": 0.88,
-        "unsupportedClaims": 2,
+        "evidenceCoverage": 0.6,
+        "unsupportedClaims": 3,
         "toolErrors": 2,
         "providerFailures": 1,
         "hallucinatedReferences": "structural-check-not-applicable",
         "restartRecoverable": "covered-by-runtime-gate",
         "finalTextChars": 0
       },
-      "failures": [
-        "模型未产出最终说明文本"
-      ]
+      "failures": []
     },
     {
-      "id": "paper-review",
-      "status": "FAIL",
-      "projectId": "rp-b39a80c7-1bab-4d98-8970-f5c95f1203c3",
+      "id": "political-science-design",
+      "status": "PASS",
+      "projectId": "rp-26511f63-7eea-4998-8be4-bbaf6876fd1d",
       "metrics": {
-        "taskCompleted": false,
+        "taskCompleted": true,
         "artifactCreated": true,
-        "citationsTotal": 8,
-        "citationsVerified": 8,
-        "evidenceCoverage": 1,
-        "unsupportedClaims": 0,
-        "toolErrors": 0,
+        "citationsTotal": 14,
+        "citationsVerified": 14,
+        "evidenceCoverage": 0,
+        "unsupportedClaims": 7,
+        "toolErrors": 2,
         "providerFailures": 0,
         "hallucinatedReferences": "structural-check-not-applicable",
         "restartRecoverable": "covered-by-runtime-gate",
         "finalTextChars": 0
       },
-      "failures": [
-        "模型未产出最终说明文本"
-      ]
+      "failures": []
     },
     {
-      "id": "journal-selection",
-      "status": "FAIL",
-      "projectId": "rp-fa4df526-cede-4d40-bdd3-f10db982d16e",
+      "id": "education-ai-learning",
+      "status": "PASS",
+      "projectId": "rp-b5a5b74e-6d65-47ce-b21a-873adfa98ce0",
       "metrics": {
-        "taskCompleted": false,
+        "taskCompleted": true,
         "artifactCreated": true,
-        "citationsTotal": 12,
-        "citationsVerified": 12,
+        "citationsTotal": 17,
+        "citationsVerified": 17,
         "evidenceCoverage": 0,
+        "unsupportedClaims": 2,
+        "toolErrors": 3,
+        "providerFailures": 0,
+        "hallucinatedReferences": "structural-check-not-applicable",
+        "restartRecoverable": "covered-by-runtime-gate",
+        "finalTextChars": 0
+      },
+      "failures": []
+    },
+    {
+      "id": "paper-review",
+      "status": "PASS",
+      "projectId": "rp-1558c24b-b60d-4886-9fdf-6dc4c2d37452",
+      "metrics": {
+        "taskCompleted": true,
+        "artifactCreated": true,
+        "citationsTotal": 7,
+        "citationsVerified": 7,
+        "evidenceCoverage": 0.83,
         "unsupportedClaims": 0,
         "toolErrors": 3,
         "providerFailures": 0,
@@ -130,53 +101,68 @@
         "restartRecoverable": "covered-by-runtime-gate",
         "finalTextChars": 0
       },
-      "failures": [
-        "模型未产出最终说明文本",
-        "未创建投稿案例"
-      ]
+      "failures": []
     },
     {
-      "id": "funding-template",
+      "id": "journal-selection",
       "status": "FAIL",
-      "projectId": "rp-8f486bbe-e4cb-4e7a-a0dd-8b471d15a466",
-      "metrics": {
-        "taskCompleted": false,
-        "artifactCreated": true,
-        "citationsTotal": 0,
-        "citationsVerified": 0,
-        "evidenceCoverage": 0,
-        "unsupportedClaims": 2,
-        "toolErrors": 0,
-        "providerFailures": 0,
-        "hallucinatedReferences": "structural-check-not-applicable",
-        "restartRecoverable": "covered-by-runtime-gate",
-        "finalTextChars": 0
-      },
-      "failures": [
-        "模型未产出最终说明文本",
-        "模板未登记: user:eval-template"
-      ]
-    },
-    {
-      "id": "history-concept",
-      "status": "FAIL",
-      "projectId": "rp-4514e755-bdd4-492a-81d6-19c474272fc8",
+      "projectId": "rp-8926a1ef-9ec9-40d2-81b0-4d39d3d17ec7",
       "metrics": {
         "taskCompleted": false,
         "artifactCreated": true,
         "citationsTotal": 9,
         "citationsVerified": 9,
         "evidenceCoverage": 0,
-        "unsupportedClaims": 4,
-        "toolErrors": 4,
-        "providerFailures": 1,
+        "unsupportedClaims": 0,
+        "toolErrors": 2,
+        "providerFailures": 0,
         "hallucinatedReferences": "structural-check-not-applicable",
         "restartRecoverable": "covered-by-runtime-gate",
         "finalTextChars": 0
       },
       "failures": [
-        "模型未产出最终说明文本"
+        "未创建投稿案例"
       ]
+    },
+    {
+      "id": "funding-template",
+      "status": "FAIL",
+      "projectId": "rp-d416d92d-05b1-4457-9492-4ab4f6fc934d",
+      "metrics": {
+        "taskCompleted": true,
+        "artifactCreated": true,
+        "citationsTotal": 0,
+        "citationsVerified": 0,
+        "evidenceCoverage": 0,
+        "unsupportedClaims": 0,
+        "toolErrors": 1,
+        "providerFailures": 0,
+        "hallucinatedReferences": "structural-check-not-applicable",
+        "restartRecoverable": "covered-by-runtime-gate",
+        "finalTextChars": 0
+      },
+      "failures": [
+        "模板未登记: user:eval-template"
+      ]
+    },
+    {
+      "id": "history-concept",
+      "status": "PASS",
+      "projectId": "rp-52b86cea-0289-4ff1-9818-4186ea9cba70",
+      "metrics": {
+        "taskCompleted": true,
+        "artifactCreated": true,
+        "citationsTotal": 14,
+        "citationsVerified": 14,
+        "evidenceCoverage": 0,
+        "unsupportedClaims": 7,
+        "toolErrors": 0,
+        "providerFailures": 0,
+        "hallucinatedReferences": "structural-check-not-applicable",
+        "restartRecoverable": "covered-by-runtime-gate",
+        "finalTextChars": 0
+      },
+      "failures": []
     }
   ]
 }
