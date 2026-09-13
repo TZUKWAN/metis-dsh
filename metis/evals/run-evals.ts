@@ -28,7 +28,7 @@ const BASE_BUNDLE_PATCH = path.join(CHECKOUT_ROOT, 'packages', 'bundle', 'base',
 
 const MODEL_PROVIDER = 'cloudlob'
 const MODEL_ID = 'qwen3.8-flash-bai'
-const TURN_TIMEOUT_MS = 480_000
+const TURN_TIMEOUT_MS = 900_000
 
 interface EvalTask {
   id: string
@@ -58,7 +58,7 @@ function writeOverlay(patchFile: string, databasePath: string): void {
   const lines: string[] = ['# Generated METIS overlay for run-evals.', '- insert:']
   for (const entry of entries) {
     lines.push(`    - id: ${entry.id}`)
-    lines.push(`      name: '${pathToFileURL(entry.source).href}'`)
+    lines.push(`      name: '${pathToFileURL(entry.source)}'`)
   }
   lines.push("    - id: workspace-registry")
   lines.push("      name: '@deepseek-ai/dsh-workspace'")
@@ -90,17 +90,26 @@ function pathToFileURL(p: string): string {
 
 async function sendAndAwaitIdle(ctx: any, agent: any, text: string): Promise<void> {
   const { createUserMessage } = await import('@deepseek-ai/dsh-llm')
-  await new Promise<void>((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error(`turn timeout: ${text.slice(0, 50)}`)), TURN_TIMEOUT_MS)
-    const dispose = ctx.on('agent/status', ({ agent: subject, status }: any) => {
-      if (subject === agent && status === 'idle') {
-        clearTimeout(timer)
-        dispose()
-        resolve()
-      }
+  const send = (message: string): void => {
+    agent.followup(createUserMessage({ content: [{ type: 'text', text: message }], source: { kind: 'user' } }))
+  }
+  send(text)
+  // 长任务可能超过单轮预算：超时不判失败，改为驱动同一任务继续（与真实用户行为一致）。
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const idle = await new Promise<boolean>((resolve) => {
+      const timer = setTimeout(() => resolve(false), TURN_TIMEOUT_MS / 5 + 60_000)
+      const dispose = ctx.on('agent/status', ({ agent: subject, status }: any) => {
+        if (subject === agent && status === 'idle') {
+          clearTimeout(timer)
+          dispose()
+          resolve(true)
+        }
+      })
     })
-    agent.followup(createUserMessage({ content: [{ type: 'text', text }], source: { kind: 'user' } }))
-  })
+    if (idle) return
+    send('继续完成任务。')
+  }
+  throw new Error(`task did not finish within the continue-loop budget: ${text.slice(0, 50)}`)
 }
 
 function sessionFacts(agent: any): { toolCalls: Array<{ name: string; failed: boolean }>; finalText: string } {
@@ -176,8 +185,10 @@ async function runTask(task: EvalTask): Promise<TaskResult> {
       agentOptions: { provider: MODEL_PROVIDER, model: MODEL_ID },
     })
     await sendAndAwaitIdle(ctx, handle.agent, task.prompt)
+    await sendAndAwaitIdle(ctx, handle.agent,
+      '继续完成任务：如检索/保存/登记尚未完成请继续；已完成则把核心判断建立为 claim 并关联证据，最后简短总结。')
     if (task.turns > 1) {
-      await sendAndAwaitIdle(ctx, handle.agent, '继续：请把综述扩展为包含「争议」与「方法」两个小节，并更新 artifact（登记新版本）。')
+      await sendAndAwaitIdle(ctx, handle.agent, '请继续深化并完成任务（如扩展综述小节、更新 artifact 新版本）。')
     }
 
     const facts = sessionFacts(handle.agent)

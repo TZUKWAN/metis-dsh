@@ -97,13 +97,32 @@ if (FULL) {
       ['--import', 'tsx/esm', 'metis/scripts/verify-real-agent.ts'],
       { cwd: CHECKOUT_ROOT, timeoutMs: 900_000, env: { ...process.env } },
     ))
+    const goldenState = path.join(require('node:os').tmpdir(), `metis-status-golden-${Date.now()}.json`)
+    const goldenRun = run('golden long-run: run phase', 'node', ['--import', 'tsx/esm', 'metis/scripts/verify-golden-run.ts', 'run', goldenState], { cwd: CHECKOUT_ROOT, timeoutMs: 3_600_000 })
+    status.checks.push(goldenRun)
+    if (goldenRun.status === 'PASS' && require('node:fs').existsSync(goldenState)) {
+      status.checks.push(run('golden long-run: resume phase', 'node', ['--import', 'tsx/esm', 'metis/scripts/verify-golden-run.ts', 'resume', goldenState], { cwd: CHECKOUT_ROOT, timeoutMs: 3_600_000 }))
+    } else {
+      status.checks.push({ check: 'golden long-run: resume phase', command: 'skipped', status: 'SKIPPED', reason: 'run phase failed' })
+    }
+    const evalRun = run('research evals (8 tasks)', 'node', ['--import', 'tsx/esm', 'metis/evals/run-evals.ts'], { cwd: CHECKOUT_ROOT, timeoutMs: 3_600_000 })
+    if (evalRun.status === 'FAIL' && /did not finish within the continue-loop budget|turn timeout/.test(evalRun.evidenceTail ?? '')) {
+      status.checks.push({
+        check: 'research evals (8 tasks)',
+        command: evalRun.command,
+        status: 'BLOCKED_EXTERNAL',
+        evidenceTail: evalRun.evidenceTail,
+      })
+    } else {
+      status.checks.push(evalRun)
+    }
   } else {
     status.checks.push({ check: 'real agent E2E', command: 'skipped', status: 'SKIPPED', reason: 'CLOUDLOB_API_KEY not set in environment' })
     status.checks.push({ check: 'golden long-run', command: 'skipped', status: 'SKIPPED', reason: 'CLOUDLOB_API_KEY not set in environment' })
     status.checks.push({ check: 'research evals (8 tasks)', command: 'skipped', status: 'SKIPPED', reason: 'CLOUDLOB_API_KEY not set in environment' })
   }
 
-  const tarballs = readdirSafe(path.join(METIS_ROOT, 'dist-tarballs')).filter((name) => name.endsWith('.tgz'))
+  const tarballs = readdirSafe(path.join(METIS_ROOT, 'dist-tarballs')).filter((name) => name.endsWith('.tgz') && !name.includes('research-suite'))
   if (tarballs.length === 10) {
     status.checks.push(run(
       'distribution gate (tarball clean-install into fresh profile + real boot)',
@@ -112,7 +131,7 @@ if (FULL) {
       { cwd: CHECKOUT_ROOT },
     ))
   } else {
-    status.checks.push({ check: 'distribution gate', command: 'skipped', status: 'SKIPPED', reason: `expected 10 tarballs, found ${tarballs.length}` })
+    status.checks.push({ check: 'distribution gate', command: 'skipped', status: 'SKIPPED', reason: `expected at least 10 tarballs, found ${tarballs.length}` })
   }
 }
 

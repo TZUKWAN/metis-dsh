@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-13T01:52:17.329Z",
+  "model": "cloudlob/qwen3.8-flash-bai",
+  "summary": {
+    "total": 8,
+    "pass": 0,
+    "fail": 8
+  },
+  "results": [
+    {
+      "id": "sociology-lit-review",
+      "status": "FAIL",
+      "projectId": null,
+      "metrics": {},
+      "failures": [
+        "task did not finish within the continue-loop budget: 研究课题：生成式人工智能如何影响知识工作者内部职业分层。请真实检索国内外文献（含中文），把最重要的文"
+      ]
+    },
+    {
+      "id": "marxist-theory",
+      "status": "FAIL",
+      "projectId": null,
+      "metrics": {},
+      "failures": [
+        "task did not finish within the continue-loop budget: 分析生成式人工智能条件下自由时间与剩余价值生产之间的关系。关键概念须有正式理论来源；先把支撑性文献检"
+      ]
+    },
+    {
+      "id": "political-science-design",
+      "status": "FAIL",
+      "projectId": null,
+      "metrics": {},
+      "failures": [
+        "task did not finish within the continue-loop budget: 研究问题：数字技术如何影响基层治理能力？请真实检索相关文献并保存，然后形成一份研究设计提纲（问题/理"
+      ]
+    },
+    {
+      "id": "education-ai-learning",
+      "status": "FAIL",
+      "projectId": null,
+      "metrics": {},
+      "failures": [
+        "task did not finish within the continue-loop budget: 研究课题：生成式 AI 对高校学生深度学习的影响。请检索实证与理论文献并保存进项目，形成研究缺口分析"
+      ]
+    },
+    {
+      "id": "paper-review",
+      "status": "FAIL",
+      "projectId": null,
+      "metrics": {},
+      "failures": [
+        "task did not finish within the continue-loop budget: workspace 中已有文件 manuscript.md（一篇关于平台劳动的短稿）。请先检索相关真"
+      ]
+    },
+    {
+      "id": "journal-selection",
+      "status": "FAIL",
+      "projectId": null,
+      "metrics": {},
+      "failures": [
+        "task did not finish within the continue-loop budget: 我的论文题：《算法管理下的劳动过程重构——基于平台骑手的质性研究》。请真实检索同主题近期论文并保存，"
+      ]
+    },
+    {
+      "id": "funding-template",
+      "status": "FAIL",
+      "projectId": null,
+      "metrics": {},
+      "failures": [
+        "task did not finish within the continue-loop budget: 继续完成任务：如检索/保存/登记尚未完成请继续；已完成则把核心判断建立为 claim 并关联证据，最"
+      ]
+    },
+    {
+      "id": "history-concept",
+      "status": "FAIL",
+      "projectId": null,
+      "metrics": {},
+      "failures": [
+        "task did not finish within the continue-loop budget: 研究课题：「治理」概念在中国当代政策文本中的语义演变。请真实检索相关文献并保存进项目，形成概念演变分"
+      ]
+    }
+  ]
+}

@@ -319,7 +319,7 @@ try {
   check('journal_artifact_match executes', ok(await execute('journal_artifact_match', { artifactId: artifact.artifact.id, journalId: journalEntry.journalId, score: 0.8 }))?.ok === true)
   const caseCreated = ok(await execute('submission_case_create', { artifactId: artifact.artifact.id, journalId: journalEntry.journalId, notes: 'smoke case' }))
   check('submission_case_create executes', caseCreated?.caseRecord?.status === 'researching', caseCreated)
-  check('submission_case_update executes', ok(await execute('submission_case_update', { id: caseCreated.caseRecord.id, status: 'candidate' }))?.caseRecord?.status === 'candidate')
+  check('submission_case_update executes', caseCreated?.caseRecord?.id !== undefined && ok(await execute('submission_case_update', { id: caseCreated.caseRecord.id, status: 'candidate' }))?.caseRecord?.status === 'candidate', caseCreated)
   const gapReport = ok(await execute('submission_gap_check', { id: caseCreated.caseRecord.id }))
   check('submission_gap_check executes with honest report', gapReport?.report?.requirementSets?.length >= 1, gapReport)
   check('submission_case_list executes', ok(await execute('submission_case_list', {}))?.total >= 1)
