@@ -33,8 +33,7 @@ const TURN_TIMEOUT_MS = 900_000
 interface EvalTask {
   id: string
   discipline: string
-  prompt: string
-  turns: number
+  steps: string[]
   expect: { artifact: boolean; literatureMin: number; claims: boolean; submissionCase?: boolean; templateId?: string; seedsManuscript?: boolean }
 }
 
@@ -94,10 +93,11 @@ async function sendAndAwaitIdle(ctx: any, agent: any, text: string): Promise<voi
     agent.followup(createUserMessage({ content: [{ type: 'text', text: message }], source: { kind: 'user' } }))
   }
   send(text)
-  // 长任务可能超过单轮预算：超时不判失败，改为驱动同一任务继续（与真实用户行为一致）。
-  for (let attempt = 0; attempt < 5; attempt += 1) {
+  // 与 golden-run 相同的等待语义：单轮 900s；仅超时一次后发送一次「继续」驱动收尾。
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    if (attempt > 0) send('请收尾当前步骤：完成手头操作后简短总结。')
     const idle = await new Promise<boolean>((resolve) => {
-      const timer = setTimeout(() => resolve(false), TURN_TIMEOUT_MS / 5 + 60_000)
+      const timer = setTimeout(() => resolve(false), TURN_TIMEOUT_MS)
       const dispose = ctx.on('agent/status', ({ agent: subject, status }: any) => {
         if (subject === agent && status === 'idle') {
           clearTimeout(timer)
@@ -107,7 +107,6 @@ async function sendAndAwaitIdle(ctx: any, agent: any, text: string): Promise<voi
       })
     })
     if (idle) return
-    send('继续完成任务。')
   }
   throw new Error(`task did not finish within the continue-loop budget: ${text.slice(0, 50)}`)
 }
@@ -184,11 +183,10 @@ async function runTask(task: EvalTask): Promise<TaskResult> {
       meta: { cwd: ws.path },
       agentOptions: { provider: MODEL_PROVIDER, model: MODEL_ID },
     })
-    await sendAndAwaitIdle(ctx, handle.agent, task.prompt)
-    await sendAndAwaitIdle(ctx, handle.agent,
-      '继续完成任务：如检索/保存/登记尚未完成请继续；已完成则把核心判断建立为 claim 并关联证据，最后简短总结。')
-    if (task.turns > 1) {
-      await sendAndAwaitIdle(ctx, handle.agent, '请继续深化并完成任务（如扩展综述小节、更新 artifact 新版本）。')
+    // Staged prompts (v2): each task delivers its work the way the successful
+    // golden run does — a sequence of focused user turns, not one giant turn.
+    for (const step of task.steps) {
+      await sendAndAwaitIdle(ctx, handle.agent, step)
     }
 
     const facts = sessionFacts(handle.agent)
