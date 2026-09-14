@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-13T23:00:01.583Z",
+  "generatedAt": "2026-09-14T07:00:23.356Z",
   "model": "cloudlob/qwen3.8-flash-bai",
   "summary": {
     "total": 8,
@@ -11,70 +11,13 @@
     {
       "id": "sociology-lit-review",
       "status": "PASS",
-      "projectId": "rp-f7384cb7-a308-4d48-aa86-10d7f30b0206",
+      "projectId": "rp-103fe2d5-3501-4e97-a2f3-160bb5ae44be",
       "metrics": {
         "taskCompleted": true,
         "artifactCreated": true,
-        "citationsTotal": 25,
-        "citationsVerified": 25,
-        "evidenceCoverage": 0,
-        "unsupportedClaims": 4,
-        "toolErrors": 2,
-        "providerFailures": 2,
-        "hallucinatedReferences": "structural-check-not-applicable",
-        "restartRecoverable": "covered-by-runtime-gate",
-        "finalTextChars": 0
-      },
-      "failures": []
-    },
-    {
-      "id": "marxist-theory",
-      "status": "PASS",
-      "projectId": "rp-0b94ec4c-9b4f-4078-b7ac-76a1897ba021",
-      "metrics": {
-        "taskCompleted": true,
-        "artifactCreated": true,
-        "citationsTotal": 33,
-        "citationsVerified": 33,
-        "evidenceCoverage": 0.6,
-        "unsupportedClaims": 3,
-        "toolErrors": 2,
-        "providerFailures": 1,
-        "hallucinatedReferences": "structural-check-not-applicable",
-        "restartRecoverable": "covered-by-runtime-gate",
-        "finalTextChars": 0
-      },
-      "failures": []
-    },
-    {
-      "id": "political-science-design",
-      "status": "PASS",
-      "projectId": "rp-26511f63-7eea-4998-8be4-bbaf6876fd1d",
-      "metrics": {
-        "taskCompleted": true,
-        "artifactCreated": true,
-        "citationsTotal": 14,
-        "citationsVerified": 14,
-        "evidenceCoverage": 0,
-        "unsupportedClaims": 7,
-        "toolErrors": 2,
-        "providerFailures": 0,
-        "hallucinatedReferences": "structural-check-not-applicable",
-        "restartRecoverable": "covered-by-runtime-gate",
-        "finalTextChars": 0
-      },
-      "failures": []
-    },
-    {
-      "id": "education-ai-learning",
-      "status": "PASS",
-      "projectId": "rp-b5a5b74e-6d65-47ce-b21a-873adfa98ce0",
-      "metrics": {
-        "taskCompleted": true,
-        "artifactCreated": true,
-        "citationsTotal": 17,
-        "citationsVerified": 17,
-        "evidenceCoverage": 0,
+        "citationsTotal": 19,
+        "citationsVerified": 19,
+        "evidenceCoverage": 0.88,
         "unsupportedClaims": 2,
         "toolErrors": 3,
         "providerFailures": 0,
@@ -85,18 +28,75 @@
       "failures": []
     },
     {
-      "id": "paper-review",
+      "id": "marxist-theory",
       "status": "PASS",
-      "projectId": "rp-1558c24b-b60d-4886-9fdf-6dc4c2d37452",
+      "projectId": "rp-89d4dc56-5d8f-4990-8b65-c5145b669c05",
       "metrics": {
         "taskCompleted": true,
         "artifactCreated": true,
-        "citationsTotal": 7,
-        "citationsVerified": 7,
-        "evidenceCoverage": 0.83,
-        "unsupportedClaims": 0,
-        "toolErrors": 3,
+        "citationsTotal": 34,
+        "citationsVerified": 34,
+        "evidenceCoverage": 0,
+        "unsupportedClaims": 7,
+        "toolErrors": 1,
         "providerFailures": 0,
+        "hallucinatedReferences": "structural-check-not-applicable",
+        "restartRecoverable": "covered-by-runtime-gate",
+        "finalTextChars": 0
+      },
+      "failures": []
+    },
+    {
+      "id": "political-science-design",
+      "status": "PASS",
+      "projectId": "rp-1ccfa9ad-1f4b-4e4d-800d-5cfa83d91632",
+      "metrics": {
+        "taskCompleted": true,
+        "artifactCreated": true,
+        "citationsTotal": 11,
+        "citationsVerified": 11,
+        "evidenceCoverage": 0,
+        "unsupportedClaims": 0,
+        "toolErrors": 0,
+        "providerFailures": 0,
+        "hallucinatedReferences": "structural-check-not-applicable",
+        "restartRecoverable": "covered-by-runtime-gate",
+        "finalTextChars": 0
+      },
+      "failures": []
+    },
+    {
+      "id": "education-ai-learning",
+      "status": "PASS",
+      "projectId": "rp-9e79f54c-7066-401c-9128-fe80b17c1d6d",
+      "metrics": {
+        "taskCompleted": true,
+        "artifactCreated": true,
+        "citationsTotal": 26,
+        "citationsVerified": 26,
+        "evidenceCoverage": 0,
+        "unsupportedClaims": 2,
+        "toolErrors": 0,
+        "providerFailures": 0,
+        "hallucinatedReferences": "structural-check-not-applicable",
+        "restartRecoverable": "covered-by-runtime-gate",
+        "finalTextChars": 0
+      },
+      "failures": []
+    },
+    {
+      "id": "paper-review",
+      "status": "PASS",
+      "projectId": "rp-a791f9ef-700b-48d0-809a-951470663d5f",
+      "metrics": {
+        "taskCompleted": true,
+        "artifactCreated": true,
+        "citationsTotal": 6,
+        "citationsVerified": 6,
+        "evidenceCoverage": 0.5,
+        "unsupportedClaims": 0,
+        "toolErrors": 2,
+        "providerFailures": 1,
         "hallucinatedReferences": "structural-check-not-applicable",
         "restartRecoverable": "covered-by-runtime-gate",
         "finalTextChars": 0
@@ -106,14 +106,14 @@
     {
       "id": "journal-selection",
       "status": "FAIL",
-      "projectId": "rp-8926a1ef-9ec9-40d2-81b0-4d39d3d17ec7",
+      "projectId": "rp-1d2dcf7e-1ff8-401d-9fd4-7a24046940cb",
       "metrics": {
         "taskCompleted": false,
         "artifactCreated": true,
-        "citationsTotal": 9,
-        "citationsVerified": 9,
-        "evidenceCoverage": 0,
-        "unsupportedClaims": 0,
+        "citationsTotal": 19,
+        "citationsVerified": 19,
+        "evidenceCoverage": 0.88,
+        "unsupportedClaims": 1,
         "toolErrors": 2,
         "providerFailures": 0,
         "hallucinatedReferences": "structural-check-not-applicable",
@@ -127,7 +127,7 @@
     {
       "id": "funding-template",
       "status": "FAIL",
-      "projectId": "rp-d416d92d-05b1-4457-9492-4ab4f6fc934d",
+      "projectId": "rp-f2f29807-a8f0-41e9-9149-a544e5c3b41a",
       "metrics": {
         "taskCompleted": true,
         "artifactCreated": true,
@@ -135,7 +135,7 @@
         "citationsVerified": 0,
         "evidenceCoverage": 0,
         "unsupportedClaims": 0,
-        "toolErrors": 1,
+        "toolErrors": 2,
         "providerFailures": 0,
         "hallucinatedReferences": "structural-check-not-applicable",
         "restartRecoverable": "covered-by-runtime-gate",
@@ -148,15 +148,15 @@
     {
       "id": "history-concept",
       "status": "PASS",
-      "projectId": "rp-52b86cea-0289-4ff1-9818-4186ea9cba70",
+      "projectId": "rp-a09d9348-6f2b-4557-9b04-a90b3ccc89f7",
       "metrics": {
         "taskCompleted": true,
         "artifactCreated": true,
         "citationsTotal": 14,
         "citationsVerified": 14,
-        "evidenceCoverage": 0,
-        "unsupportedClaims": 7,
-        "toolErrors": 0,
+        "evidenceCoverage": 0.57,
+        "unsupportedClaims": 3,
+        "toolErrors": 4,
         "providerFailures": 0,
         "hallucinatedReferences": "structural-check-not-applicable",
         "restartRecoverable": "covered-by-runtime-gate",

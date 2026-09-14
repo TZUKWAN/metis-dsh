@@ -23,7 +23,7 @@ const METIS_DIR = path.resolve(SCRIPT_DIR, '..')
 const CHECKOUT_ROOT = path.resolve(METIS_DIR, '..')
 const BASE_BUNDLE_PATCH = path.join(CHECKOUT_ROOT, 'packages', 'bundle', 'base', 'cordis.patch.yml')
 const MODEL = { provider: 'cloudlob', model: 'qwen3.8-flash-bai' }
-const TURN_TIMEOUT_MS = 900_000
+const TURN_TIMEOUT_MS = 1_200_000
 
 interface State {
   sandbox: string
@@ -53,7 +53,7 @@ function check(name: string, ok: boolean, detail?: unknown): void {
 }
 
 function writeOverlay(patchFile: string, databasePath: string): void {
-  const pluginNames = ['core', 'evidence', 'literature', 'scenario', 'artifact']
+  const pluginNames = ['core', 'evidence', 'literature', 'scenario', 'artifact', 'literature-crossref', 'literature-openalex', 'literature-ncpssd']
   const dbForward = databasePath.replaceAll('\\', '/')
   const lines: string[] = ['# Generated overlay for golden run.', '- insert:']
   for (const name of pluginNames) {
@@ -156,8 +156,10 @@ async function phaseRun(state: State): Promise<void> {
       agentOptions: MODEL,
     })
     await sendAndAwaitIdle(ctx2, handle.agent,
-      '补充要求：你之前的缺口判断可能不够成立。请重新检索 algorithmic management worker autonomy 相关文献，'
-      + '把新增文献保存进项目，修订 workspace 中的 review-draft.md，并把这个修订登记为 artifact 的新版本。')
+      '补充要求：请重新检索 algorithmic management worker autonomy 相关文献，把新增文献保存进项目。')
+
+    await sendAndAwaitIdle(ctx2, handle.agent,
+      '现在请修订 workspace 中的 review-draft.md，并把这个修订登记为 artifact 的新版本。')
 
     data2 = await MetisDataStore.open(state.databasePath)
     state.literatureCount = data2.listLiterature(state.projectId!).length
