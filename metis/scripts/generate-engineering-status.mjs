@@ -12,7 +12,8 @@
  */
 
 import { spawnSync } from 'node:child_process'
-import { existsSync, readdirSync, writeFileSync } from 'node:fs'
+import os from 'node:os'
+import { existsSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -86,7 +87,7 @@ if (FULL) {
   } else {
     status.checks.push({ check: 'runtime verification: verify (fresh process restart recovery)', command: 'skipped', status: 'SKIPPED', reason: 'setup failed' })
   }
-  try { require('node:fs').rmSync(stateFile, { force: true }) } catch {}
+  try { rmSync(stateFile, { force: true }) } catch {}
 
   status.checks.push(run('guard negative matrix', 'node', ['metis/scripts/verify-guard-negative.mjs'], { cwd: CHECKOUT_ROOT }))
 
@@ -97,10 +98,10 @@ if (FULL) {
       ['--import', 'tsx/esm', 'metis/scripts/verify-real-agent.ts'],
       { cwd: CHECKOUT_ROOT, timeoutMs: 900_000, env: { ...process.env } },
     ))
-    const goldenState = path.join(require('node:os').tmpdir(), `metis-status-golden-${Date.now()}.json`)
+    const goldenState = path.join(os.tmpdir(), `metis-status-golden-${Date.now()}.json`)
     const goldenRun = run('golden long-run: run phase', 'node', ['--import', 'tsx/esm', 'metis/scripts/verify-golden-run.ts', 'run', goldenState], { cwd: CHECKOUT_ROOT, timeoutMs: 3_600_000 })
     status.checks.push(goldenRun)
-    if (goldenRun.status === 'PASS' && require('node:fs').existsSync(goldenState)) {
+    if (goldenRun.status === 'PASS' && existsSync(goldenState)) {
       status.checks.push(run('golden long-run: resume phase', 'node', ['--import', 'tsx/esm', 'metis/scripts/verify-golden-run.ts', 'resume', goldenState], { cwd: CHECKOUT_ROOT, timeoutMs: 3_600_000 }))
     } else {
       status.checks.push({ check: 'golden long-run: resume phase', command: 'skipped', status: 'SKIPPED', reason: 'run phase failed' })
