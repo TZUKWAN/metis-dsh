@@ -1,0 +1,109 @@
+{
+  "evalId": "funding-template",
+  "runId": "run-1789499956180",
+  "status": "FAIL",
+  "startedAt": "2026-09-15T19:29:48.397Z",
+  "finishedAt": "2026-09-15T19:32:24.375Z",
+  "attempt": 1,
+  "model": "cloudlob/qwen3.8-flash-bai",
+  "provider": "cloudlob",
+  "workspaceId": "48f1a409-417d-498d-9987-f1064ed41194",
+  "sessionId": "metis-eval-ff345c5c-df26-4c8a-8c42-7cad6f41136e",
+  "projectId": null,
+  "artifactIds": [],
+  "toolCalls": [
+    {
+      "name": "research_project_get",
+      "failed": false
+    },
+    {
+      "name": "scenario_list",
+      "failed": false
+    },
+    {
+      "name": "funding_template_list",
+      "failed": false
+    },
+    {
+      "name": "glob",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "funding_template_parse",
+      "failed": false
+    },
+    {
+      "name": "glob",
+      "failed": false
+    },
+    {
+      "name": "funding_template_list",
+      "failed": false
+    },
+    {
+      "name": "funding_material_gap",
+      "failed": true
+    },
+    {
+      "name": "research_project_get",
+      "failed": false
+    },
+    {
+      "name": "artifact_list",
+      "failed": true
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_list",
+      "failed": true
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "write",
+      "failed": false
+    },
+    {
+      "name": "artifact_register",
+      "failed": true
+    }
+  ],
+  "toolFailures": 4,
+  "literatureSaved": 0,
+  "researchQualityChecks": null,
+  "failureReason": null,
+  "finalTextChars": 0,
+  "metrics": {
+    "taskCompleted": false,
+    "artifactCreated": false,
+    "citationsTotal": 0,
+    "citationsVerified": 0,
+    "evidenceCoverage": null,
+    "unsupportedClaims": 0,
+    "toolErrors": 4,
+    "providerFailures": 0,
+    "finalTextChars": 0
+  },
+  "failures": [
+    "任务交付物未完成",
+    "未登记 artifact",
+    "模板未登记: user:eval-template"
+  ]
+}
