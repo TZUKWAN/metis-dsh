@@ -18,7 +18,7 @@ const DEFAULT_TURN_TIMEOUT_MS = 900_000
 const TURN_TIMEOUT_BY_TASK = { 'journal-selection': 1_200_000, 'funding-template': 1_200_000 }
 
 function writeOverlay(patchFile, databasePath) {
-  const entries = ['core', 'evidence', 'literature', 'scenario', 'artifact'].map(name => ({ id: `metis-${name}`, source: path.join(METIS_DIR, 'plugins', name, 'src', 'index.ts') }))
+  const entries = ['core', 'evidence', 'literature', 'scenario', 'artifact', 'funding', 'submission'].map(name => ({ id: `metis-${name}`, source: path.join(METIS_DIR, 'plugins', name, 'src', 'index.ts') }))
   for (const name of ['literature-crossref', 'literature-openalex', 'literature-ncpssd']) entries.push({ id: `metis-${name}`, source: path.join(METIS_DIR, 'plugins', name, 'src', 'index.ts') })
   const dbFwd = databasePath.split(path.sep).join('/')
   const lines = ['# Generated METIS overlay.', '- insert:']

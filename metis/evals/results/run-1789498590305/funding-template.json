@@ -1,0 +1,173 @@
+{
+  "evalId": "funding-template",
+  "runId": "run-1789498590305",
+  "status": "FAIL",
+  "startedAt": "2026-09-15T19:11:18.129Z",
+  "finishedAt": "2026-09-15T19:17:24.803Z",
+  "attempt": 1,
+  "model": "cloudlob/qwen3.8-flash-bai",
+  "provider": "cloudlob",
+  "workspaceId": "7eb7587b-9c5d-45df-b725-95f44397fdca",
+  "sessionId": "metis-eval-6b1e7bc4-50fe-4b65-ae4f-0ad451af905f",
+  "projectId": "rp-4b464851-67f5-427c-b075-27ea6921d8dc",
+  "artifactIds": [
+    "art-d15091b1-3ef3-49d4-950d-f757ac18547f",
+    "art-ca7ba24f-a112-4409-992d-d4a951c8f35e"
+  ],
+  "toolCalls": [
+    {
+      "name": "research_project_get",
+      "failed": false
+    },
+    {
+      "name": "scenario_list",
+      "failed": false
+    },
+    {
+      "name": "research_project_update",
+      "failed": false
+    },
+    {
+      "name": "glob",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "research_project_update",
+      "failed": false
+    },
+    {
+      "name": "research_project_get",
+      "failed": false
+    },
+    {
+      "name": "grep",
+      "failed": false
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "evidence_query",
+      "failed": false
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "write",
+      "failed": false
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "artifact_register",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_create",
+      "failed": false
+    },
+    {
+      "name": "research_project_update",
+      "failed": false
+    },
+    {
+      "name": "artifact_get",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_list",
+      "failed": false
+    },
+    {
+      "name": "research_project_get",
+      "failed": false
+    },
+    {
+      "name": "artifact_list",
+      "failed": false
+    },
+    {
+      "name": "literature_search_project",
+      "failed": false
+    },
+    {
+      "name": "artifact_evidence_check",
+      "failed": false
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "write",
+      "failed": false
+    },
+    {
+      "name": "edit",
+      "failed": false
+    },
+    {
+      "name": "artifact_register",
+      "failed": false
+    },
+    {
+      "name": "research_project_update",
+      "failed": false
+    },
+    {
+      "name": "artifact_list",
+      "failed": false
+    }
+  ],
+  "toolFailures": 0,
+  "literatureSaved": 0,
+  "researchQualityChecks": {
+    "coverageRatio": 0,
+    "totalClaims": 0
+  },
+  "failureReason": null,
+  "finalTextChars": 0,
+  "metrics": {
+    "taskCompleted": true,
+    "artifactCreated": true,
+    "citationsTotal": 0,
+    "citationsVerified": 0,
+    "evidenceCoverage": 0,
+    "unsupportedClaims": 1,
+    "toolErrors": 0,
+    "providerFailures": 0,
+    "finalTextChars": 0
+  },
+  "failures": [
+    "模板未登记: user:eval-template"
+  ]
+}
