@@ -91,7 +91,7 @@ export function createFundingTools(research: MetisResearch, data: Promise<MetisD
 
   const parseTool = {
     name: 'funding_template_parse',
-    description: '把申报书模板的观察文档（PDF/DOCX 解析产物：页/样式/文本块/表格）解析为结构化模板包：章节树、填写指令、限字数、表格要求、字段映射。解析成功后登记进 SQLite（可带 projectId 关联当前项目）。解析失败时返回具体 issues，不猜测。',
+    description: '把申报书模板的观察文档解析为结构化模板包并自动登记到 SQLite。成功返回 ok=true 和 template 对象；后续可用 funding_template_requirements 提取要求，用 funding_material_gap 检查材料缺口。解析失败时返回具体 issues，不猜测。',
     parameters: {
       observationDocument: { type: 'object', description: '模板观察文档（contractVersion=1，含 pages/styles/blocks）', required: true },
       createdAt: { type: 'number', description: '模板创建时间戳（缺省当前时间）' },
@@ -196,7 +196,7 @@ export function createFundingTools(research: MetisResearch, data: Promise<MetisD
 
   const materialGapTool = {
     name: 'funding_material_gap',
-    description: '对照模板要求与当前项目已知信息，报告材料缺口。第一版为诚实启发式：只报告模板章节摘要、项目已知字段与「必须由用户确认」的事实类别（履历/团队/成果/经费等），绝不编造。',
+    description: '对照模板要求与当前项目已知信息，报告材料缺口。输出 sections（模板章节清单）、projectKnownFields（项目已有字段）、userFactsRequired（需用户确认的事实类别）。请根据结果撰写申报草稿并用 funding_section_draft 保存。',
     parameters: {
       templateId: { type: 'string', description: '已登记的模板 id', required: true },
       projectId: { type: 'string', description: '可选；只能重复当前 session 已绑定项目 id' },

@@ -145,7 +145,7 @@ export default {
 function registerTools(ctx: Context, service: MetisSubmission): void {
   ctx.tools.register(defineTool({
     name: 'journal_search',
-    description: '在真实期刊目录（LetPub）中按名称/主题检索期刊。返回结构化条目；指标类信息只透出来源字段，不用模型记忆补充。',
+    description: '在真实期刊目录（LetPub）中按名称/主题检索期刊。找到候选后，用 journal_record 登记有价值的期刊，再用 submission_case_create 创建正式投稿案例。指标类信息只透出来源字段，不用模型记忆补充。',
     parameters: {
       query: { type: 'string', description: '期刊名称或主题关键词', required: true },
       page: { type: 'number', description: '页码（默认 1）' },
@@ -171,7 +171,7 @@ function registerTools(ctx: Context, service: MetisSubmission): void {
 
   ctx.tools.register(defineTool({
     name: 'journal_targeting_match',
-    description: '基于「主题相关近期论文的发表期刊」聚合选刊候选。输入一组论文（题名/期刊/年份），输出候选期刊与核心层级标注（白名单判定，非模型推断）。',
+    description: '基于「主题相关近期论文的发表期刊」聚合选刊候选。输出候选期刊排序与层级标注。确定最佳候选后，用 journal_record 登记期刊信息，再创建 Submission Case 持久化选刊结果。',
     parameters: {
       papers: { type: 'json', description: '论文数组 [{ title, venue, year, source, doi?, issn? }]', required: true },
       criteria: { type: 'json', description: '选刊条件 { categories, language, notes }', required: true },
@@ -381,7 +381,7 @@ function registerPersistenceTools(ctx: Context, service: MetisSubmission): void 
 
   ctx.tools.register(defineTool({
     name: 'submission_case_create',
-    description: '创建投稿案例（researching 起点的持久化生命周期）。项目关联只能指向当前 DSH Workspace/Session 已绑定项目。',
+    description: '创建投稿案例用于持久化选刊结果（候选期刊、投稿要求、适配检查和状态恢复）。当你已经确定候选期刊并准备进入正式评估阶段时，必须调用此工具创建 Submission Case，否则选刊结果不会被保存。项目关联只能指向当前 DSH Workspace/Session 已绑定项目。',
     parameters: {
       projectId: { type: 'string', description: '可选；只能重复当前 session 已绑定项目 id' },
       artifactId: { type: 'string', description: '关联 Artifact' },
