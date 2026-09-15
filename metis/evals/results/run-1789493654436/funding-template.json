@@ -1,0 +1,113 @@
+{
+  "evalId": "funding-template",
+  "runId": "run-1789493654436",
+  "status": "FAIL",
+  "startedAt": "2026-09-15T17:41:16.100Z",
+  "finishedAt": "2026-09-15T17:44:15.946Z",
+  "attempt": 1,
+  "model": "cloudlob/qwen3.8-flash-bai",
+  "provider": "cloudlob",
+  "workspaceId": "fc3bf0e9-45b8-46be-b87d-a30a3ca6fb8e",
+  "sessionId": "metis-eval-25a72b14-3c12-467b-89ff-25c2c9c97dce",
+  "projectId": "rp-b53ce302-2f16-4de6-9225-a191aef91902",
+  "artifactIds": [
+    "art-dee2dceb-829e-49bd-9285-65e0740745da",
+    "art-f73ca914-3619-4c36-8d59-77f68864d898"
+  ],
+  "toolCalls": [
+    {
+      "name": "glob",
+      "failed": false
+    },
+    {
+      "name": "research_project_get",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "research_project_update",
+      "failed": false
+    },
+    {
+      "name": "research_project_get",
+      "failed": false
+    },
+    {
+      "name": "scenario_list",
+      "failed": false
+    },
+    {
+      "name": "artifact_list",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_list",
+      "failed": false
+    },
+    {
+      "name": "literature_search_project",
+      "failed": false
+    },
+    {
+      "name": "artifact_register",
+      "failed": false
+    },
+    {
+      "name": "research_project_update",
+      "failed": false
+    },
+    {
+      "name": "artifact_evidence_check",
+      "failed": false
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "write",
+      "failed": false
+    },
+    {
+      "name": "artifact_register",
+      "failed": false
+    },
+    {
+      "name": "artifact_list",
+      "failed": false
+    }
+  ],
+  "toolFailures": 0,
+  "literatureSaved": 0,
+  "researchQualityChecks": {
+    "coverageRatio": 0,
+    "totalClaims": 0
+  },
+  "failureReason": null,
+  "finalTextChars": 0,
+  "metrics": {
+    "taskCompleted": true,
+    "artifactCreated": true,
+    "citationsTotal": 0,
+    "citationsVerified": 0,
+    "evidenceCoverage": 0,
+    "unsupportedClaims": 0,
+    "toolErrors": 0,
+    "providerFailures": 0,
+    "finalTextChars": 0
+  },
+  "failures": [
+    "模板未登记: user:eval-template"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "evalId": "journal-selection",
+  "runId": "run-1789493582170",
+  "status": "RUNNING",
+  "startedAt": "2026-09-15T17:33:02.264Z",
+  "finishedAt": null,
+  "attempt": 1,
+  "model": "cloudlob/qwen3.8-flash-bai",
+  "provider": "cloudlob",
+  "workspaceId": null,
+  "sessionId": null,
+  "projectId": null,
+  "artifactIds": [],
+  "toolCalls": [],
+  "toolFailures": 0,
+  "literatureSaved": 0,
+  "researchQualityChecks": null,
+  "failureReason": null,
+  "finalTextChars": 0,
+  "metrics": {},
+  "failures": []
+}

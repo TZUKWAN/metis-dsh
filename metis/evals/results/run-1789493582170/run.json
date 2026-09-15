@@ -1,0 +1,10 @@
+{
+  "runId": "run-1789493582170",
+  "startedAt": "2026-09-15T17:33:02.262Z",
+  "commit": "11b5450efffc303f35643ebf0adc3e2c27167dbc",
+  "model": "cloudlob/qwen3.8-flash-bai",
+  "tasks": [
+    "journal-selection",
+    "funding-template"
+  ]
+}

@@ -6,9 +6,9 @@ import os from 'node:os'
 import path from 'node:path'
 import { execSync } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 
-const EVALS_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
+const EVALS_DIR = path.dirname(fileURLToPath(import.meta.url))
 const METIS_DIR = path.resolve(EVALS_DIR, '..')
 const CHECKOUT_ROOT = path.resolve(METIS_DIR, '..')
 const BASE_BUNDLE_PATCH = path.join(CHECKOUT_ROOT, 'packages', 'bundle', 'base', 'cordis.patch.yml')
@@ -79,7 +79,7 @@ async function runSingleTask(task, runDir, attempt) {
   const rootConfig = path.join(profileDir, 'cordis.yml'); const patchFile = path.join(profileDir, 'metis.patch.yml')
   writeFileSync(rootConfig, '[]\n', 'utf8'); writeOverlay(patchFile, databasePath)
   process.env.DSH_HOME = home; process.env.DSH_PERMISSION_MODE = 'danger-full-access'
-  const { boot, loadOverlayPatches } = await import(path.join(CHECKOUT_ROOT, 'packages', 'boot', 'app-boot', 'src', 'index.ts'))
+  const { boot, loadOverlayPatches } = await import('file:///' + path.join(CHECKOUT_ROOT, 'packages', 'boot', 'app-boot', 'src', 'index.ts').split(path.sep).join('/'))
   const basePatches = loadOverlayPatches('run-evals', BASE_BUNDLE_PATCH)
   const metisPatches = loadOverlayPatches('run-evals', patchFile)
   const ctx = await boot('dsh', rootConfig, [...basePatches, ...metisPatches])
@@ -92,7 +92,7 @@ async function runSingleTask(task, runDir, attempt) {
     for (const step of task.steps) { await sendAndAwaitIdle(ctx, handle.agent, step, turnTimeout) }
     const facts = sessionFacts(handle.agent)
     result.toolCalls = facts.toolCalls; result.toolFailures = facts.toolCalls.filter(c => c.failed).length; result.finalTextChars = facts.finalText.length
-    const dataModule = await import(path.join(CHECKOUT_ROOT, 'metis', 'shared', 'data', 'src', 'index.ts'))
+    const dataModule = await import('file:///' + path.join(CHECKOUT_ROOT, 'metis', 'shared', 'data', 'src', 'index.ts').split(path.sep).join('/'))
     const data = await dataModule.MetisDataStore.open(databasePath)
     const project = data.listProjects()[0]; result.projectId = project?.id ?? null
     const literature = project ? data.listLiterature(project.id) : []

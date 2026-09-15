@@ -1,0 +1,193 @@
+{
+  "evalId": "journal-selection",
+  "runId": "run-1789493654436",
+  "status": "FAIL",
+  "startedAt": "2026-09-15T17:34:14.567Z",
+  "finishedAt": "2026-09-15T17:41:16.062Z",
+  "attempt": 1,
+  "model": "cloudlob/qwen3.8-flash-bai",
+  "provider": "cloudlob",
+  "workspaceId": "1e56b200-6f77-445b-9fb1-728a187e3c67",
+  "sessionId": "metis-eval-07b24224-fbf2-4340-8e1e-f5a0728e789d",
+  "projectId": "rp-1ae08804-75a0-4f1b-89eb-9370e8f018a7",
+  "artifactIds": [
+    "art-9fa98cc1-154d-4e2f-8cbd-3fb6df1c304f"
+  ],
+  "toolCalls": [
+    {
+      "name": "research_project_get",
+      "failed": false
+    },
+    {
+      "name": "scenario_list",
+      "failed": false
+    },
+    {
+      "name": "research_project_update",
+      "failed": false
+    },
+    {
+      "name": "glob",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "research_project_update",
+      "failed": false
+    },
+    {
+      "name": "literature_search",
+      "failed": false
+    },
+    {
+      "name": "literature_search",
+      "failed": false
+    },
+    {
+      "name": "literature_search",
+      "failed": false
+    },
+    {
+      "name": "literature_search",
+      "failed": false
+    },
+    {
+      "name": "literature_get",
+      "failed": false
+    },
+    {
+      "name": "literature_get",
+      "failed": false
+    },
+    {
+      "name": "literature_get",
+      "failed": false
+    },
+    {
+      "name": "literature_get",
+      "failed": false
+    },
+    {
+      "name": "literature_get",
+      "failed": false
+    },
+    {
+      "name": "literature_search",
+      "failed": false
+    },
+    {
+      "name": "literature_save",
+      "failed": false
+    },
+    {
+      "name": "literature_get",
+      "failed": false
+    },
+    {
+      "name": "literature_save",
+      "failed": false
+    },
+    {
+      "name": "evidence_excerpt_add",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_create",
+      "failed": false
+    },
+    {
+      "name": "literature_search_project",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_link",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_status",
+      "failed": false
+    },
+    {
+      "name": "scenario_get",
+      "failed": false
+    },
+    {
+      "name": "literature_search",
+      "failed": false
+    },
+    {
+      "name": "web_fetch",
+      "failed": false
+    },
+    {
+      "name": "web_fetch",
+      "failed": false
+    },
+    {
+      "name": "write",
+      "failed": true
+    },
+    {
+      "name": "write",
+      "failed": false
+    },
+    {
+      "name": "artifact_register",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_create",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_link",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_link",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_status",
+      "failed": false
+    },
+    {
+      "name": "research_project_update",
+      "failed": false
+    }
+  ],
+  "toolFailures": 1,
+  "literatureSaved": 6,
+  "researchQualityChecks": {
+    "coverageRatio": 0,
+    "totalClaims": 0
+  },
+  "failureReason": null,
+  "finalTextChars": 0,
+  "metrics": {
+    "taskCompleted": false,
+    "artifactCreated": true,
+    "citationsTotal": 6,
+    "citationsVerified": 6,
+    "evidenceCoverage": 0,
+    "unsupportedClaims": 0,
+    "toolErrors": 1,
+    "providerFailures": 0,
+    "finalTextChars": 0
+  },
+  "failures": [
+    "任务交付物未完成",
+    "未创建投稿案例"
+  ]
+}
