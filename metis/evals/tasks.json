@@ -9,7 +9,11 @@
         "第二步：真实检索该课题的国内外文献（中英文都要），把至少 2 篇保存进项目（不要凭记忆列文献）。",
         "第三步：基于项目里已保存的文献，写出包含研究传统、争议、研究缺口的文献综述，登记为 artifact。缺口必须由已纳入文献推演，不得罗列式综述。"
       ],
-      "expect": { "artifact": true, "literatureMin": 2, "claims": false }
+      "expect": {
+        "artifact": true,
+        "literatureMin": 2,
+        "claims": false
+      }
     },
     {
       "id": "marxist-theory",
@@ -19,7 +23,11 @@
         "第二步：真实检索支撑文献（Free time / surplus value / automation 相关）并保存至少 1 篇进项目。",
         "第三步：写出分析提纲并登记为 artifact。关键概念须有正式理论来源；未核验判断必须标注待核验。"
       ],
-      "expect": { "artifact": true, "literatureMin": 1, "claims": false }
+      "expect": {
+        "artifact": true,
+        "literatureMin": 1,
+        "claims": false
+      }
     },
     {
       "id": "political-science-design",
@@ -29,7 +37,11 @@
         "第二步：真实检索相关文献并保存至少 1 篇进项目。",
         "第三步：写出研究设计提纲（问题/理论/机制/变量/数据/方法/替代解释）并登记为 artifact。"
       ],
-      "expect": { "artifact": true, "literatureMin": 1, "claims": false }
+      "expect": {
+        "artifact": true,
+        "literatureMin": 1,
+        "claims": false
+      }
     },
     {
       "id": "education-ai-learning",
@@ -39,7 +51,11 @@
         "第二步：真实检索实证与理论文献并保存至少 1 篇进项目。",
         "第三步：写出研究缺口分析草稿并登记为 artifact。"
       ],
-      "expect": { "artifact": true, "literatureMin": 1, "claims": false }
+      "expect": {
+        "artifact": true,
+        "literatureMin": 1,
+        "claims": false
+      }
     },
     {
       "id": "paper-review",
@@ -48,7 +64,12 @@
         "workspace 中已有 manuscript.md（平台劳动短稿）。第一步：建立研究项目档案，并真实检索平台劳动相关文献保存至少 1 篇作为审读参照。",
         "第二步：基于项目文献对稿件做审读（论证链/概念/文献/方法），把审读报告登记为 artifact。"
       ],
-      "expect": { "artifact": true, "literatureMin": 1, "claims": false, "seedsManuscript": true }
+      "expect": {
+        "artifact": true,
+        "literatureMin": 1,
+        "claims": false,
+        "seedsManuscript": true
+      }
     },
     {
       "id": "journal-selection",
@@ -56,19 +77,30 @@
       "steps": [
         "开始选刊课题：论文《算法管理下的劳动过程重构——基于平台骑手的质性研究》。第一步：建立研究项目档案。",
         "第二步：真实检索同主题近期论文并保存至少 1 篇进项目。",
-        "第三步：用选刊工具聚合候选期刊（criteria: categories=[\"ssci\",\"cssci\"], language=\"any\", notes=\"\"），把最佳候选登记为 Journal 记录并创建投稿案例。"
+        "第三步：用 journal_targeting_match 聚合候选期刊（criteria: categories=[\"ssci\",\"cssci\"], language=\"any\", notes=\"\"）。然后用 journal_record 登记最佳候选期刊（把 journal_targeting_match 返回的候选期刊信息填入 journal 参数）。",
+        "第四步：用 journal_requirements_set 登记投稿要求，用 submission_case_create 创建投稿案例（关联当前项目和刚登记的 Journal），用 journal_artifact_match 关联。最后把选刊分析写成文件并登记为 artifact。"
       ],
-      "expect": { "artifact": false, "literatureMin": 1, "claims": false, "submissionCase": true }
+      "expect": {
+        "artifact": false,
+        "literatureMin": 1,
+        "claims": false,
+        "submissionCase": true
+      }
     },
     {
       "id": "funding-template",
       "discipline": "基金申报",
       "steps": [
-        "workspace 中已有 funding-observation.json（申报书模板观察文档）。第一步：建立研究项目档案。",
-        "第二步：用 funding 工具解析并登记该模板（templateId: user:eval-template），然后对当前项目做一次材料缺口检查。",
-        "第三步：把缺口结论写成说明文件并登记为 artifact。"
+        "开始基金申报课题。第一步：建立研究项目档案。",
+        "第二步：workspace 中已有 funding-observation.json。用 funding_template_parse 解析该模板并登记（templateId: user:eval-template, templateVersion: 1）。",
+        "第三步：用 funding_material_gap 检查材料缺口，然后把缺口分析写成说明文件并登记为 artifact。"
       ],
-      "expect": { "artifact": true, "literatureMin": 0, "claims": false, "templateId": "user:eval-template" }
+      "expect": {
+        "artifact": true,
+        "literatureMin": 0,
+        "claims": false,
+        "templateId": "user:eval-template"
+      }
     },
     {
       "id": "history-concept",
@@ -78,7 +110,11 @@
         "第二步：真实检索相关文献并保存至少 1 篇进项目。",
         "第三步：写出概念演变分析提纲（时序/语境/主体/文本类型）并登记为 artifact。引用必须来自已保存文献。"
       ],
-      "expect": { "artifact": true, "literatureMin": 1, "claims": false }
+      "expect": {
+        "artifact": true,
+        "literatureMin": 1,
+        "claims": false
+      }
     }
   ]
 }
