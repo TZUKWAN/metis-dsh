@@ -1,0 +1,104 @@
+{
+  "evalId": "funding-template",
+  "runId": "run-1789501241726",
+  "status": "FAIL",
+  "startedAt": "2026-09-15T19:40:41.841Z",
+  "finishedAt": "2026-09-15T19:44:02.601Z",
+  "attempt": 1,
+  "model": "cloudlob/qwen3.8-flash-bai",
+  "provider": "cloudlob",
+  "workspaceId": "519871b4-efb0-439d-8628-eb7121af3e2d",
+  "sessionId": "metis-eval-6573f651-9020-4d75-8641-3e18ed3beda9",
+  "projectId": "rp-509c68e1-753c-474e-b448-22fd8208a92d",
+  "artifactIds": [
+    "art-31d8cfe7-21fa-4985-af65-c76d965e50a7"
+  ],
+  "toolCalls": [
+    {
+      "name": "research_project_get",
+      "failed": false
+    },
+    {
+      "name": "scenario_list",
+      "failed": false
+    },
+    {
+      "name": "funding_template_list",
+      "failed": false
+    },
+    {
+      "name": "research_project_update",
+      "failed": false
+    },
+    {
+      "name": "glob",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "funding_template_parse",
+      "failed": false
+    },
+    {
+      "name": "glob",
+      "failed": false
+    },
+    {
+      "name": "funding_template_list",
+      "failed": false
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "funding_material_gap",
+      "failed": true
+    },
+    {
+      "name": "funding_template_requirements",
+      "failed": true
+    },
+    {
+      "name": "research_project_get",
+      "failed": false
+    },
+    {
+      "name": "write",
+      "failed": false
+    },
+    {
+      "name": "artifact_register",
+      "failed": false
+    },
+    {
+      "name": "artifact_evidence_check",
+      "failed": false
+    }
+  ],
+  "toolFailures": 2,
+  "literatureSaved": 0,
+  "researchQualityChecks": {
+    "coverageRatio": 0,
+    "totalClaims": 0
+  },
+  "failureReason": null,
+  "finalTextChars": 0,
+  "metrics": {
+    "taskCompleted": true,
+    "artifactCreated": true,
+    "citationsTotal": 0,
+    "citationsVerified": 0,
+    "evidenceCoverage": 0,
+    "unsupportedClaims": 0,
+    "toolErrors": 2,
+    "providerFailures": 0,
+    "finalTextChars": 0
+  },
+  "failures": [
+    "模板未登记: user:eval-template"
+  ]
+}

@@ -1,0 +1,239 @@
+{
+  "evalId": "funding-template",
+  "runId": "run-1789502150580",
+  "status": "PASS",
+  "startedAt": "2026-09-15T21:18:15.772Z",
+  "finishedAt": "2026-09-15T21:25:40.930Z",
+  "attempt": 1,
+  "model": "cloudlob/qwen3.8-flash-bai",
+  "provider": "cloudlob",
+  "workspaceId": "c6153afa-34d8-4e40-b868-46a48fd6e886",
+  "sessionId": "metis-eval-7ace303f-181f-41d0-bc04-39d84727fcd3",
+  "projectId": "rp-5e61856e-835a-49ff-8509-e8c321e99b06",
+  "artifactIds": [
+    "art-484cd955-4f8b-4c99-becc-dbac64f9d3a8",
+    "art-cd497799-2f14-487f-992b-ca6a32b16d92"
+  ],
+  "toolCalls": [
+    {
+      "name": "research_project_get",
+      "failed": false
+    },
+    {
+      "name": "scenario_list",
+      "failed": false
+    },
+    {
+      "name": "funding_template_list",
+      "failed": false
+    },
+    {
+      "name": "artifact_list",
+      "failed": true
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "glob",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "research_project_update",
+      "failed": false
+    },
+    {
+      "name": "research_project_update",
+      "failed": false
+    },
+    {
+      "name": "write",
+      "failed": false
+    },
+    {
+      "name": "artifact_register",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_list",
+      "failed": false
+    },
+    {
+      "name": "funding_template_parse",
+      "failed": false
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "glob",
+      "failed": false
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "grep",
+      "failed": false
+    },
+    {
+      "name": "grep",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "funding_template_list",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "edit",
+      "failed": false
+    },
+    {
+      "name": "edit",
+      "failed": false
+    },
+    {
+      "name": "artifact_version",
+      "failed": false
+    },
+    {
+      "name": "research_project_update",
+      "failed": false
+    },
+    {
+      "name": "funding_material_gap",
+      "failed": true
+    },
+    {
+      "name": "funding_template_requirements",
+      "failed": true
+    },
+    {
+      "name": "evidence_query",
+      "failed": false
+    },
+    {
+      "name": "artifact_list",
+      "failed": false
+    },
+    {
+      "name": "literature_search_project",
+      "failed": false
+    },
+    {
+      "name": "write",
+      "failed": false
+    },
+    {
+      "name": "artifact_register",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "write",
+      "failed": false
+    },
+    {
+      "name": "artifact_version",
+      "failed": false
+    },
+    {
+      "name": "research_project_update",
+      "failed": false
+    },
+    {
+      "name": "artifact_list",
+      "failed": false
+    }
+  ],
+  "toolFailures": 3,
+  "literatureSaved": 0,
+  "researchQualityChecks": {
+    "coverageRatio": 0,
+    "totalClaims": 0
+  },
+  "failureReason": null,
+  "finalTextChars": 0,
+  "metrics": {
+    "taskCompleted": true,
+    "artifactCreated": true,
+    "citationsTotal": 0,
+    "citationsVerified": 0,
+    "evidenceCoverage": 0,
+    "unsupportedClaims": 0,
+    "toolErrors": 3,
+    "providerFailures": 0,
+    "finalTextChars": 0
+  },
+  "failures": []
+}

@@ -1,0 +1,22 @@
+{
+  "evalId": "sociology-lit-review",
+  "runId": "run-1789512613223",
+  "status": "RUNNING",
+  "startedAt": "2026-09-15T22:50:15.571Z",
+  "finishedAt": null,
+  "attempt": 1,
+  "model": "cloudlob/qwen3.8-flash-bai",
+  "provider": "cloudlob",
+  "workspaceId": null,
+  "sessionId": null,
+  "projectId": null,
+  "artifactIds": [],
+  "toolCalls": [],
+  "toolFailures": 0,
+  "literatureSaved": 0,
+  "researchQualityChecks": null,
+  "failureReason": null,
+  "finalTextChars": 0,
+  "metrics": {},
+  "failures": []
+}

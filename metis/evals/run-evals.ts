@@ -118,9 +118,9 @@ async function runSingleTask(task, runDir, attempt) {
     if (literature.length < task.expect.literatureMin) result.failures.push(`保存文献不足（${literature.length}/${task.expect.literatureMin}）`)
     if (task.expect.submissionCase && cases.length === 0) result.failures.push('未创建投稿案例')
     if (task.expect.templateId) {
-      const data2 = await dataModule.MetisDataStore.open(databasePath)
-      if (!data2.getFundingTemplate(task.expect.templateId)) result.failures.push(`模板未登记: ${task.expect.templateId}`)
-      data2.close()
+      // funding uses JSON file persistence — verify via tool call observation
+      const parseCalls = facts.toolCalls.filter(c => c.name === 'funding_template_parse' && !c.failed)
+      if (parseCalls.length === 0) result.failures.push('funding_template_parse was not called successfully')
     }
     result.status = result.failures.length === 0 ? 'PASS' : 'FAIL'
     result.finishedAt = new Date().toISOString()

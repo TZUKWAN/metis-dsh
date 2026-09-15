@@ -1,0 +1,140 @@
+{
+  "evalId": "funding-template",
+  "runId": "run-1789501482160",
+  "status": "FAIL",
+  "startedAt": "2026-09-15T19:44:42.361Z",
+  "finishedAt": "2026-09-15T19:48:43.862Z",
+  "attempt": 1,
+  "model": "cloudlob/qwen3.8-flash-bai",
+  "provider": "cloudlob",
+  "workspaceId": "01ebcfe1-cfe2-4d73-9793-6e03a515549d",
+  "sessionId": "metis-eval-30668c38-ebb9-4e79-bdb3-4bf31f16e4e2",
+  "projectId": "rp-0a55e47b-d5cb-403e-bfaf-938ae997a912",
+  "artifactIds": [
+    "art-90df9161-dd10-41b5-92dd-0781f2b9bdce"
+  ],
+  "toolCalls": [
+    {
+      "name": "research_project_get",
+      "failed": false
+    },
+    {
+      "name": "scenario_list",
+      "failed": false
+    },
+    {
+      "name": "funding_template_list",
+      "failed": false
+    },
+    {
+      "name": "artifact_list",
+      "failed": true
+    },
+    {
+      "name": "glob",
+      "failed": false
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "research_project_update",
+      "failed": false
+    },
+    {
+      "name": "research_project_get",
+      "failed": false
+    },
+    {
+      "name": "funding_template_parse",
+      "failed": false
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "grep",
+      "failed": true
+    },
+    {
+      "name": "glob",
+      "failed": false
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "funding_template_parse",
+      "failed": false
+    },
+    {
+      "name": "funding_template_list",
+      "failed": false
+    },
+    {
+      "name": "funding_material_gap",
+      "failed": true
+    },
+    {
+      "name": "literature_search_project",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_list",
+      "failed": false
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "write",
+      "failed": false
+    },
+    {
+      "name": "evidence_query",
+      "failed": false
+    },
+    {
+      "name": "artifact_register",
+      "failed": false
+    }
+  ],
+  "toolFailures": 3,
+  "literatureSaved": 0,
+  "researchQualityChecks": {
+    "coverageRatio": 0,
+    "totalClaims": 0
+  },
+  "failureReason": null,
+  "finalTextChars": 0,
+  "metrics": {
+    "taskCompleted": true,
+    "artifactCreated": true,
+    "citationsTotal": 0,
+    "citationsVerified": 0,
+    "evidenceCoverage": 0,
+    "unsupportedClaims": 0,
+    "toolErrors": 3,
+    "providerFailures": 0,
+    "finalTextChars": 0
+  },
+  "failures": [
+    "模板未登记: user:eval-template"
+  ]
+}

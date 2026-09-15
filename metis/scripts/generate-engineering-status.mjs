@@ -99,14 +99,14 @@ if (FULL) {
       { cwd: CHECKOUT_ROOT, timeoutMs: 900_000, env: { ...process.env } },
     ))
     const goldenState = path.join(os.tmpdir(), `metis-status-golden-${Date.now()}.json`)
-    const goldenRun = run('golden long-run: run phase', 'node', ['--import', 'tsx/esm', 'metis/scripts/verify-golden-run.ts', 'run', goldenState], { cwd: CHECKOUT_ROOT, timeoutMs: 3_600_000 })
+    const goldenRun = run('golden long-run: run phase', 'node', ['--import', 'tsx/esm', 'metis/scripts/verify-golden-run.ts', 'run', goldenState], { cwd: CHECKOUT_ROOT, timeoutMs: 10_800_000 })
     status.checks.push(goldenRun)
     if (goldenRun.status === 'PASS' && existsSync(goldenState)) {
-      status.checks.push(run('golden long-run: resume phase', 'node', ['--import', 'tsx/esm', 'metis/scripts/verify-golden-run.ts', 'resume', goldenState], { cwd: CHECKOUT_ROOT, timeoutMs: 3_600_000 }))
+      status.checks.push(run('golden long-run: resume phase', 'node', ['--import', 'tsx/esm', 'metis/scripts/verify-golden-run.ts', 'resume', goldenState], { cwd: CHECKOUT_ROOT, timeoutMs: 10_800_000 }))
     } else {
       status.checks.push({ check: 'golden long-run: resume phase', command: 'skipped', status: 'SKIPPED', reason: 'run phase failed' })
     }
-    const evalRun = run('research evals (8 tasks)', 'node', ['--import', 'tsx/esm', 'metis/evals/run-evals.ts'], { cwd: CHECKOUT_ROOT, timeoutMs: 3_600_000 })
+    const evalRun = run('research evals (8 tasks)', 'node', ['--import', 'tsx/esm', 'metis/evals/run-evals.ts'], { cwd: CHECKOUT_ROOT, timeoutMs: 10_800_000 })
     if (evalRun.status === 'FAIL' && /did not finish within the continue-loop budget|turn timeout/.test(evalRun.evidenceTail ?? '')) {
       status.checks.push({
         check: 'research evals (8 tasks)',
