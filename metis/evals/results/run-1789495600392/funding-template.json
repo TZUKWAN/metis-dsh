@@ -1,0 +1,125 @@
+{
+  "evalId": "funding-template",
+  "runId": "run-1789495600392",
+  "status": "FAIL",
+  "startedAt": "2026-09-15T18:19:20.264Z",
+  "finishedAt": "2026-09-15T18:22:02.540Z",
+  "attempt": 1,
+  "model": "cloudlob/qwen3.8-flash-bai",
+  "provider": "cloudlob",
+  "workspaceId": "1e6bbbe2-03db-48f6-9f49-de218bb95279",
+  "sessionId": "metis-eval-64ca17b0-ad6d-475d-9914-4be3197de3c4",
+  "projectId": "rp-335bc3c8-fae0-4b4a-b1db-327674bc77b1",
+  "artifactIds": [
+    "art-859c772a-b593-4af8-915c-c5710afee2e9",
+    "art-036cc566-4d3c-4f3b-8b04-432b155167ec"
+  ],
+  "toolCalls": [
+    {
+      "name": "glob",
+      "failed": false
+    },
+    {
+      "name": "research_project_get",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "research_project_update",
+      "failed": false
+    },
+    {
+      "name": "research_project_get",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_list",
+      "failed": false
+    },
+    {
+      "name": "scenario_list",
+      "failed": false
+    },
+    {
+      "name": "artifact_list",
+      "failed": false
+    },
+    {
+      "name": "grep",
+      "failed": false
+    },
+    {
+      "name": "evidence_query",
+      "failed": false
+    },
+    {
+      "name": "literature_search_project",
+      "failed": false
+    },
+    {
+      "name": "artifact_register",
+      "failed": false
+    },
+    {
+      "name": "artifact_evidence_check",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_list",
+      "failed": false
+    },
+    {
+      "name": "artifact_list",
+      "failed": false
+    },
+    {
+      "name": "write",
+      "failed": false
+    },
+    {
+      "name": "artifact_register",
+      "failed": false
+    },
+    {
+      "name": "artifact_list",
+      "failed": false
+    },
+    {
+      "name": "artifact_evidence_check",
+      "failed": false
+    }
+  ],
+  "toolFailures": 0,
+  "literatureSaved": 0,
+  "researchQualityChecks": {
+    "coverageRatio": 0,
+    "totalClaims": 0
+  },
+  "failureReason": null,
+  "finalTextChars": 0,
+  "metrics": {
+    "taskCompleted": true,
+    "artifactCreated": true,
+    "citationsTotal": 0,
+    "citationsVerified": 0,
+    "evidenceCoverage": 0,
+    "unsupportedClaims": 0,
+    "toolErrors": 0,
+    "providerFailures": 0,
+    "finalTextChars": 0
+  },
+  "failures": [
+    "模板未登记: user:eval-template"
+  ]
+}

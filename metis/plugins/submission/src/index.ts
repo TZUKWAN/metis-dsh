@@ -163,9 +163,15 @@ function registerTools(ctx: Context, service: MetisSubmission): void {
     },
     execute: async (args, exec: ToolRunContext) => {
       const query = String(args.query ?? '').trim()
-      if (!query) return { total: 0, journals: [] }
+      if (!query) return { total: 0, journals: [], nextRecommendedActions: ['请提供检索词'] }
       const journals = await service.searchLetPub(query, Math.max(1, Math.floor(Number(args.page ?? 1)) || 1), exec.signal)
-      return { total: journals.length, journals: journals.map(toJson) }
+      return {
+        total: journals.length,
+        journals: journals.map(toJson),
+        nextRecommendedActions: journals.length > 0
+          ? ['用 journal_record 登记候选期刊', '用 journal_targeting_match 聚合排序', '确定最佳候选后用 submission_case_create 创建投稿案例']
+          : ['调整检索词重试'],
+      }
     },
   }))
 

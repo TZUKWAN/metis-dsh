@@ -1,0 +1,407 @@
+{
+  "evalId": "journal-selection",
+  "runId": "run-1789495600392",
+  "status": "FAIL",
+  "startedAt": "2026-09-15T18:06:41.616Z",
+  "finishedAt": "2026-09-15T18:19:20.210Z",
+  "attempt": 1,
+  "model": "cloudlob/qwen3.8-flash-bai",
+  "provider": "cloudlob",
+  "workspaceId": "908cb2a0-521f-4c15-9785-3e92748968a6",
+  "sessionId": "metis-eval-9f08c932-0f86-4f21-8a66-8a1d16a7d700",
+  "projectId": "rp-ac905c1e-01b7-41e0-930c-395251aa7580",
+  "artifactIds": [
+    "art-9d01e60e-aa71-44ad-8e94-61f9ce780996",
+    "art-70a175fc-2dee-41ae-93c0-265f38e04c26",
+    "art-4057bc64-56da-4fe5-a3f4-60ca20296a57"
+  ],
+  "toolCalls": [
+    {
+      "name": "research_project_get",
+      "failed": false
+    },
+    {
+      "name": "scenario_list",
+      "failed": false
+    },
+    {
+      "name": "research_project_update",
+      "failed": false
+    },
+    {
+      "name": "scenario_get",
+      "failed": false
+    },
+    {
+      "name": "glob",
+      "failed": false
+    },
+    {
+      "name": "artifact_list",
+      "failed": false
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "read",
+      "failed": false
+    },
+    {
+      "name": "research_project_update",
+      "failed": false
+    },
+    {
+      "name": "literature_search",
+      "failed": false
+    },
+    {
+      "name": "literature_search",
+      "failed": false
+    },
+    {
+      "name": "literature_search",
+      "failed": false
+    },
+    {
+      "name": "literature_search",
+      "failed": false
+    },
+    {
+      "name": "literature_search",
+      "failed": false
+    },
+    {
+      "name": "literature_search",
+      "failed": false
+    },
+    {
+      "name": "literature_search",
+      "failed": false
+    },
+    {
+      "name": "literature_search",
+      "failed": false
+    },
+    {
+      "name": "literature_search",
+      "failed": false
+    },
+    {
+      "name": "literature_save",
+      "failed": false
+    },
+    {
+      "name": "literature_get",
+      "failed": false
+    },
+    {
+      "name": "literature_get",
+      "failed": false
+    },
+    {
+      "name": "web_fetch",
+      "failed": false
+    },
+    {
+      "name": "literature_search",
+      "failed": false
+    },
+    {
+      "name": "web_fetch",
+      "failed": true
+    },
+    {
+      "name": "evidence_claim_create",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_create",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_create",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_create",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_link",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_link",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_link",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_link",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_link",
+      "failed": false
+    },
+    {
+      "name": "evidence_excerpt_add",
+      "failed": false
+    },
+    {
+      "name": "evidence_excerpt_add",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_status",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_status",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_status",
+      "failed": false
+    },
+    {
+      "name": "literature_search_project",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_list",
+      "failed": false
+    },
+    {
+      "name": "research_project_update",
+      "failed": false
+    },
+    {
+      "name": "todo_write",
+      "failed": false
+    },
+    {
+      "name": "glob",
+      "failed": false
+    },
+    {
+      "name": "web_search",
+      "failed": true
+    },
+    {
+      "name": "web_search",
+      "failed": true
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "pwsh",
+      "failed": false
+    },
+    {
+      "name": "web_fetch",
+      "failed": false
+    },
+    {
+      "name": "web_fetch",
+      "failed": false
+    },
+    {
+      "name": "web_fetch",
+      "failed": false
+    },
+    {
+      "name": "web_fetch",
+      "failed": false
+    },
+    {
+      "name": "web_fetch",
+      "failed": false
+    },
+    {
+      "name": "web_fetch",
+      "failed": false
+    },
+    {
+      "name": "web_fetch",
+      "failed": false
+    },
+    {
+      "name": "web_fetch",
+      "failed": true
+    },
+    {
+      "name": "web_fetch",
+      "failed": false
+    },
+    {
+      "name": "web_fetch",
+      "failed": false
+    },
+    {
+      "name": "web_fetch",
+      "failed": false
+    },
+    {
+      "name": "web_fetch",
+      "failed": false
+    },
+    {
+      "name": "web_fetch",
+      "failed": false
+    },
+    {
+      "name": "web_fetch",
+      "failed": false
+    },
+    {
+      "name": "web_fetch",
+      "failed": false
+    },
+    {
+      "name": "web_fetch",
+      "failed": false
+    },
+    {
+      "name": "web_fetch",
+      "failed": false
+    },
+    {
+      "name": "literature_save",
+      "failed": true
+    },
+    {
+      "name": "literature_get",
+      "failed": false
+    },
+    {
+      "name": "literature_save",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_create",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_create",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_create",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_create",
+      "failed": false
+    },
+    {
+      "name": "evidence_excerpt_add",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_link",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_link",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_link",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_link",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_status",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_status",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_status",
+      "failed": false
+    },
+    {
+      "name": "evidence_claim_status",
+      "failed": false
+    },
+    {
+      "name": "write",
+      "failed": false
+    },
+    {
+      "name": "write",
+      "failed": false
+    },
+    {
+      "name": "write",
+      "failed": false
+    },
+    {
+      "name": "artifact_register",
+      "failed": false
+    },
+    {
+      "name": "artifact_register",
+      "failed": false
+    },
+    {
+      "name": "artifact_register",
+      "failed": false
+    },
+    {
+      "name": "research_project_update",
+      "failed": false
+    },
+    {
+      "name": "todo_write",
+      "failed": false
+    }
+  ],
+  "toolFailures": 5,
+  "literatureSaved": 7,
+  "researchQualityChecks": {
+    "coverageRatio": 0,
+    "totalClaims": 0
+  },
+  "failureReason": null,
+  "finalTextChars": 0,
+  "metrics": {
+    "taskCompleted": false,
+    "artifactCreated": true,
+    "citationsTotal": 7,
+    "citationsVerified": 7,
+    "evidenceCoverage": 0,
+    "unsupportedClaims": 1,
+    "toolErrors": 5,
+    "providerFailures": 1,
+    "finalTextChars": 0
+  },
+  "failures": [
+    "任务交付物未完成",
+    "未创建投稿案例"
+  ]
+}

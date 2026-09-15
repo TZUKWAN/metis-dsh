@@ -122,6 +122,11 @@ export function createFundingTools(research: MetisResearch, data: Promise<MetisD
           ok: true,
           template: toJson(record.template),
           registration: toJson({ templateId: record.templateId, version: record.version, projectId: record.projectId }),
+          nextRecommendedActions: [
+            '用 funding_material_gap 检查材料缺口',
+            '用 funding_section_draft 开始撰写章节草稿',
+            '用 funding_template_requirements 提取详细要求',
+          ],
         }
       }
       return { ok: false, issues: toJson(result.issues ?? []) }
@@ -261,7 +266,14 @@ export function createFundingTools(research: MetisResearch, data: Promise<MetisD
         draftText: String(args.draftText ?? ''),
         usedEvidenceIds,
       })
-      return { ok: true, draft: toJson(draft) }
+      return {
+        ok: true,
+        draft: toJson(draft),
+        nextRecommendedActions: [
+          '用 funding_material_gap 检查是否还有材料缺口',
+          '继续撰写其他章节',
+        ],
+      }
     },
   }
 
